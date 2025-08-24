@@ -10,6 +10,7 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -155,6 +156,7 @@ class UserController extends Controller
 
     private function qrGen($file,$tok) 
     {
+        Log::info($file,["tok"=>$tok]);
         if(file_exists($file)) return;
         $qrCode = new QrCode($tok);
         $writer = new PngWriter();
@@ -216,6 +218,7 @@ class UserController extends Controller
             return $this->err('Duplicate Entry not allowed');
         }
 
+        $typNm = attDict()[$request->typ];
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,
@@ -225,6 +228,24 @@ class UserController extends Controller
             'location'      => $request->location,
         ]);
 
-        return $this->ok("Marked presence of : ".$user->uid);
+        return $this->ok("Marked <b>".$typNm."</b> for ".$user->uid);
+    }
+
+    public function scanStat(Request $request)
+    {
+        $gateId = $request->get('gate_id');
+        if (!$gateId) return $this->ok("ok",["data"=>[]]);
+        $today = Carbon::today();
+        $scans = Attendance::where('post', $gateId)
+            ->whereDate('scan_datetime', $today);
+        $inCount  = (clone $scans)->where('typ', 'IN')->count();
+        $outCount = (clone $scans)->where('typ', 'OUT')->count();
+        $insideCount = $inCount - $outCount;
+        $stats = [
+            [ 'name' => 'IN',     'count' => $inCount,    'color' => 'success' ],
+            [ 'name' => 'OUT',    'count' => $outCount,   'color' => 'danger'  ],
+            [ 'name' => 'Inside',   'count' => $insideCount,'color' => 'primary' ],
+        ];
+        return $this->ok("ok",["data"=>$stats]);
     }
 }

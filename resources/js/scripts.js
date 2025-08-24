@@ -146,6 +146,7 @@ function xFocus(elm) {
 
 function webserv(typ, api, dt, f1 = null, f2 = null) {
     let isFormData = (dt instanceof FormData);
+
     if (!isFormData && typeof dt === "string") {
         // MEANS FORM NAME
         const formData = {};
@@ -168,11 +169,14 @@ function webserv(typ, api, dt, f1 = null, f2 = null) {
         dt = formData;
     }
 
-    if (!isFormData && typ != "GET") dt._token = $('meta[name="csrf-token"]').attr("content");
+    if (!isFormData && typ != "GET") {
+        dt._token = $('meta[name="csrf-token"]').attr("content");
+    }
     if (!isFormData && typ === "PUT") {
         dt._method = "PUT";
         typ = "POST";
     }
+
     const params = {
         type: typ,
         dataType: "json",
@@ -204,8 +208,14 @@ function webserv(typ, api, dt, f1 = null, f2 = null) {
             params.processData = false;
             params.contentType = false;
         } else if (Object.keys(dt).length > 0) {
-            params.data = JSON.stringify(dt);
-            params.contentType = "application/json";
+            if (typ === "GET") {
+                // Send as query params
+                params.data = dt;
+            } else {
+                // Send JSON body
+                params.data = JSON.stringify(dt);
+                params.contentType = "application/json";
+            }
         }
     }
 

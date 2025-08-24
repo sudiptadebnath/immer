@@ -2,21 +2,22 @@
 
 @section('content')
 
-<div class="d-flex flex-column justify-content-center align-items-center">
-    <div class="row mb-2">
-        <x-select size="6" icon="people" name="post" title="Post" :value="postDict()" />
-        <x-select size="6" icon="check" name="typ" title="Type" :value="attDict()" />
+<div class="container mt-3">
+<div class="row g-2">
+    <x-select size="4" icon="door-closed" name="post" title="Gate" :value="postDict()" sel="1" />
+    <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="in" />
+
+    <div class="col-md-4">
+        <button id="toggle-scan" class="btn btn-primary mb-3" onclick="toggleScan()">
+            <i class="bi bi-qr-code-scan me-2"></i><span>Start</span>
+        </button>
     </div>
 
-    <button id="start-scan" class="btn btn-primary mb-3" onclick="startScan()">
-        <i class="bi bi-qr-code-scan me-2"></i>Start Scan
-    </button>
-    <button id="restart-scan" class="btn btn-success mb-3" style="display:none;" onclick="restartScan()">
-        <i class="bi bi-arrow-repeat me-2"></i>Scan Next
-    </button>
-
-    <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
-    <div id="qr-result" class="mt-2"></div>
+    <div class="col-md-12 d-flex flex-column align-items-center justify-content-center">
+        <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
+        <div id="qr-result" class="alert alert-primary mt-2 w-100 d-none"></div>
+    </div>
+</div>
 </div>
 
 @endsection
@@ -25,12 +26,12 @@
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <script>
-let html5QrcodeScanner;
+let html5QrCode;
+let isScanning = false;
 
 function validate() {
     const post = $('#post').val();
     const typ  = $('#typ').val();
-
     if (!post || !typ) {
         myAlert("Please select Post and Type before scanning.", "danger");
         return false;
@@ -38,51 +39,70 @@ function validate() {
     return true;
 }
 
-function startScan() {
-    if(!validate()) return;
-    document.getElementById('qr-reader').style.display = 'block';
-    document.getElementById('start-scan').style.display = 'none';
-    document.getElementById('restart-scan').style.display = 'none';
-    $('#qr-result').html('');
+function toggleScan() {
+    const btn = $('#toggle-scan span'); // span holds Start/Stop text
 
-    if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+    if (!isScanning) {
+        if (!validate()) return;
+
+        btn.text("Stop");
+        $('#qr-result').html('');
+        $('#qr-result').hide();
+        $('#qr-reader').show();
+
+        if (!html5QrCode) {
+            html5QrCode = new Html5Qrcode("qr-reader");
+        }
+
+        html5QrCode.start(
+            { facingMode: "environment" }, // back camera
+            { fps: 10, qrbox: 250 },
+            onScanSuccess
+        ).then(() => {
+            isScanning = true;
+        }).catch(err => {
+            $('#qr-result').html("Camera error: " + err);
+            btn.text("Start");
+            $('#qr-result').hide();
+            $('#qr-reader').hide();
+        });
+
+    } else {
+        stopScan();
     }
-
-    html5QrcodeScanner.render(onScanSuccess);
 }
 
-function restartScan() {
-    if(!validate()) return;
-    document.getElementById('qr-reader').style.display = 'block';
-    document.getElementById('restart-scan').style.display = 'none';
-    $('#qr-result').html('');
-
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.render(onScanSuccess);
+function stopScan() {
+    if (html5QrCode && isScanning) {
+        html5QrCode.stop().then(() => {
+            isScanning = false;
+            $('#toggle-scan span').text("Start");
+            $('#qr-result').hide();
+            $('#qr-reader').hide();
+        }).catch(err => {
+            console.error("Stop failed", err);
+        });
     }
 }
 
 function onScanSuccess(decodedText, decodedResult) {
-    $('#qr-result').html(decodedText);
-
-    // Stop scanner immediately
-    html5QrcodeScanner.clear().then(() => {
-        console.log("Scanner stopped after success.");
-        document.getElementById('qr-reader').style.display = 'none';
-        document.getElementById('restart-scan').style.display = 'inline-block';
-    }).catch(err => console.error(err));
-
-    // Send scanned token to server using your existing webserv function
+    stopScan();
     const post = $('#post').val();
     const typ  = $('#typ').val();
-
     webserv("POST", "{{ route('user.attendance') }}", { 
         token: decodedText, post, typ 
     }, function ok(resp) {
-        myAlert(resp.msg,"success");
+        $('#qr-result')
+        .removeClass('d-none alert-danger alert-success alert-primary')
+        .addClass('alert-success')
+        .html(resp.msg)
+        .show();
     }, function fail(resp) {
-        myAlert(resp.msg,"danger");
+        $('#qr-result')
+        .removeClass('d-none alert-danger alert-success alert-primary')
+        .addClass('alert-danger')
+        .html(resp.msg)
+        .show();
     });
 }
 

@@ -28,6 +28,7 @@ Route::middleware('check.user.session')->prefix('user')->group(function () {
         Route::get('/gpass/{id}', [UserController::class, 'gpass'])->name('user.gpass');
         Route::get('/gpass/pdf/{id}', [UserController::class, 'downloadPdf'])->name('user.gpass.pdf');
         Route::get('/scan', [UserController::class, 'scan'])->name('user.scan');
+        Route::get('/scanstat', [UserController::class, 'scanstat'])->name('user.scanstat');
         Route::post('/attendance', [UserController::class, 'attendance'])->name('user.attendance');
         Route::get('/{id}', [UserController::class, 'get']);
         Route::put('/{id}', [UserController::class, 'update']);

@@ -10,6 +10,7 @@ class Attendance extends Model
     use HasFactory;
 
     protected $table = 'attendance';
+    public $timestamps = false;
 
     protected $fillable = [
         'scan_datetime',

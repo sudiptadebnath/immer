@@ -4,6 +4,7 @@
     'title' => 'password',
     'icon' => 'person',
     'value' => [],
+    'sel' => '',
 ])
 <div class="col-md-{{$size}}">
     <div class="input-group">
@@ -17,7 +18,7 @@
         <select name="{{$name}}" id="{{$name}}" class="form-select" title="{{ ucfirst($title) }}" required>
         <option value="">Select {{$title}}</option>
         @foreach ($value as $key => $label)
-            <option value="{{ $key }}">{{ $label }}</option>
+            <option value="{{ $key }}"{{$sel==$key || $sel==$label ? ' selected' : '' }}>{{ $label }}</option>
         @endforeach
         </select>
     </div>

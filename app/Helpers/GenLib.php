@@ -52,10 +52,7 @@ if (!function_exists('postDict')) {
     function postDict($typ = 0)
     {
         $dict = [
-            "1" => "Post 1",
-            "2" => "Post 2",
-            "3" => "Post 3",
-            "4" => "Post 4",
+            "1" => "Gate 1",
         ];
         return $typ == 1 ? array_flip($dict) : $dict;
     }
