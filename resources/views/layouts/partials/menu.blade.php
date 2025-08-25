@@ -8,7 +8,7 @@
   <!-- Settings (Always open) -->
 @if (hasRole('a'))
   <li class="nav-item">
-    <a class="nav-link" href="#"><i class="bi bi-gear me-2"></i>Settings</a>
+    <a class="nav-link" href="{{ route('user.settings') }}"><i class="bi bi-gear me-2"></i>Settings</a>
   </li>
 @endif
 

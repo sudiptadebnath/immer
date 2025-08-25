@@ -30,6 +30,7 @@ Route::middleware('check.user.session')->prefix('user')->group(function () {
         Route::get('/scan', [UserController::class, 'scan'])->name('user.scan');
         Route::get('/scanstat', [UserController::class, 'scanstat'])->name('user.scanstat');
         Route::post('/attendance', [UserController::class, 'attendance'])->name('user.attendance');
+        Route::get('/settings', fn() => view("user.settings"))->name('user.settings');
         Route::get('/{id}', [UserController::class, 'get']);
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'delete']);
