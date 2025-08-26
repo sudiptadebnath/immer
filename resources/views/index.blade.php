@@ -2,13 +2,8 @@
 
 @section('content')
 <div class="container d-flex align-items-center justify-content-center login-container h-100">
-<div class="card border-primary col-md-6 col-lg-4">
-    <div class="card-header bg-primary text-white">
-        <h5 class="card-title mp0">
-            <i class="bi bi-box-arrow-in-right"></i> Log in
-        </h5>
-    </div>
-    <div class="card-body">
+<x-col md="6" lg="4">
+<x-card icon="box-arrow-in-right" title="Log in">
     <form id="signin" onsubmit="return signin_submt()" novalidate="novalidate">
     <div class="row gy-2">
         <x-text name="email" icon="person" title="Userid/Mail" required=true />
@@ -26,8 +21,10 @@
                 <i class="bi bi-person-plus"></i> Sign up
             </a>
         </div>
-    </div></form></div>
-</div></div>
+    </div></form>
+</x-card>
+</x-col>
+</div>
     
 @endsection
 
