@@ -15,7 +15,7 @@ class AllowSignUp
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ((bool)setting('USER_SIGNUP', '1')) {
+        if (!(bool)setting('USER_SIGNUP', '1')) {
             abort(403, 'Signup is disabled.');
         }
 

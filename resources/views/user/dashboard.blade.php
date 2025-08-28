@@ -42,7 +42,7 @@
 @section('content')
 <div class="container mt-4">
     <h4 class="d-flex mb-4">
-        <span>Gate Status : &nbsp;</span>
+        <span>Ghat Status : &nbsp;</span>
         <x-select size="4" icon="door-closed" name="post" title="Gate" :value="postDict()" sel="1" />
     </h4>
 

@@ -9,7 +9,10 @@
 
     <div class="col-md-4">
         <button id="toggle-scan" class="btn btn-primary mb-3" onclick="toggleScan()">
-            <i class="bi bi-qr-code-scan me-2"></i><span>Start</span>
+            <i class="bi bi-qr-code-scan me-2"></i><span>QR</span>
+        </button>
+        <button id="toggle-scan" class="btn btn-info mb-3" onclick="byOTP()">
+            <i class="bi bi-key me-2"></i><span>OTP</span>
         </button>
     </div>
 

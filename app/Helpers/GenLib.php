@@ -53,7 +53,7 @@ if (!function_exists('postDict')) {
     function postDict($typ = 0)
     {
         $dict = [
-            "1" => "Gate 1",
+            "1" => "Ghat 1",
         ];
         return $typ == 1 ? array_flip($dict) : $dict;
     }
@@ -63,11 +63,9 @@ if (!function_exists('attDict')) {
     function attDict($typ = 0)
     {
         $dict = [
+            "queue" => "Queue",
             "in" => "In",
             "out" => "Out",
-            "tempin" => "Temp In",
-            "tempout" => "Temp Out",
-            "att" => "Attendance",
         ];
         return $typ == 1 ? array_flip($dict) : $dict;
     }

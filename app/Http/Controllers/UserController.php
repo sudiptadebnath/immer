@@ -238,13 +238,13 @@ class UserController extends Controller
         $today = Carbon::today();
         $scans = Attendance::where('post', $gateId)
             ->whereDate('scan_datetime', $today);
-        $inCount  = (clone $scans)->where('typ', 'IN')->count();
-        $outCount = (clone $scans)->where('typ', 'OUT')->count();
-        $insideCount = $inCount - $outCount;
+        $qCount  = (clone $scans)->where('typ', 'QUEUE')->count();
+        $iCount  = (clone $scans)->where('typ', 'IN')->count();
+        $oCount  = (clone $scans)->where('typ', 'OUT')->count();
         $stats = [
-            ['name' => 'IN',     'count' => $inCount,    'color' => 'success'],
-            ['name' => 'OUT',    'count' => $outCount,   'color' => 'danger'],
-            ['name' => 'Inside',   'count' => $insideCount, 'color' => 'primary'],
+            ['name' => 'QUEUE', 'count' => $qCount, 'color' => 'danger'],
+            ['name' => 'IN',    'count' => $iCount, 'color' => 'success'],
+            ['name' => 'OUT',   'count' => $oCount, 'color' => 'primary'],
         ];
         return $this->ok("ok", ["data" => $stats]);
     }
