@@ -28,19 +28,23 @@
 	<div id="loader" class="d-none">
 	  <div class="spinner"></div>
 	</div>
-	
-	<div id="toastBackdrop" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-none" style="z-index: 9998;"></div>
-	<div id="myToast" class="toast align-items-center text-black bg-white position-fixed top-50 start-50 translate-middle"
-	role="alert" style="z-index: 9999;" data-bs-autohide="false" >
-	  <div class="d-flex flex-column p-1 position-relative">
-		<button type="button" class="btn-close btn-close position-absolute top-0 end-0 me-2 mt-2" data-bs-dismiss="toast"></button>
-		<div class="toast-body"></div>
-		<div class="w-100 text-center" id="toastButtons"></div>
-	  </div>
+
+	<div id="toastBackdrop" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 d-none"></div>
+	<div id="myToast" 
+	class="toast position-fixed top-50 start-50 translate-middle border-0 shadow-lg rounded-3"
+	role="alert" style="z-index: 9999;" data-bs-autohide="false">
+		<div class="d-flex align-items-start p-3 bg-light border-start border-4 rounded-3">
+			<i id="toastIcon" class="bi me-3 big-toast-icon"></i>
+			<div class="flex-grow-1">
+			<div class="toast-body"></div>
+			<div class="w-100 text-center" id="toastButtons"></div>
+			</div>
+			<button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
+		</div>
 	</div>
+
 	
     @include('layouts.partials.topbar')
-
 
 	<!-- ============================ MAIN LAYOUT ==================================== -->
 	<div class="d-flex flex-grow-1">

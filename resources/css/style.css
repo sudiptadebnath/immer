@@ -126,7 +126,7 @@ ul.nav.flex-column {
 
 .bigtxt {
     display: -webkit-box;
-    -webkit-line-clamp: 3;       /* limit to 3 lines */
+    -webkit-line-clamp: 3; /* limit to 3 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
     white-space: normal;
@@ -196,4 +196,21 @@ ul.nav.flex-column {
     height: 100%;
     line-height: inherit;
     padding: 0.1rem 0.1rem;
+}
+
+.big-toast-icon {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.custom-toast-body {
+    max-width: 500px;
+    max-height: 200px;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.custom-toast-body::-webkit-scrollbar {
+    display: none;
 }

@@ -2,30 +2,20 @@
 
 @section('content')
 <div class="container d-flex align-items-center justify-content-center login-container h-100">
-<x-col md="6" lg="4">
+<div class="col-md-6 col-lg-4">
 <x-card icon="box-arrow-in-right" title="Log in">
     <form id="signin" onsubmit="return signin_submt()" novalidate="novalidate">
     <div class="row gy-2">
         <x-text name="email" icon="person" title="Userid/Mail" required=true />
         <x-password name="password" icon="key" title="Password" required=true />
-        <div class="col-md-12">
-            <a href = "{{ url('/forgot') }}" >Forget Password ?</a>
-        </div>
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary btn-sm w-100">
-                <i class="bi bi-box-arrow-in-right"></i> Log in
-            </button>
-        </div>
-        <div class="col-md-12">
-            <a href = "{{ url('/register') }}" class="btn btn-outline-primary btn-sm w-100">
-                <i class="bi bi-person-plus"></i> Sign up
-            </a>
-        </div>
+        <x-button type="submit" title="Log in" icon="box-arrow-in-right" />
+        @if((bool)setting('USER_SIGNUP','1'))
+        <x-button type="link" title="Sign up" icon="person-plus" outline=true href="{{ url('/register') }}" />
+        @endif
     </div></form>
 </x-card>
-</x-col>
 </div>
-    
+</div>
 @endsection
 
 @section('scripts')

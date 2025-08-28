@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Setting;
 use Carbon\Carbon;
 
 if (!function_exists('hasRole')) {
@@ -110,3 +111,38 @@ if (!function_exists('dttmsql')) {
     }
 }
 
+if (!function_exists('setting')) {
+    function setting(string|array $key, $def = "")
+    {
+        $dbkey = is_array($key) ? array_shift($key) : $key;
+        $val = Setting::where('key', $dbkey)->value('val');
+        if ($val == null) return $def;
+        if (!is_array($key) || empty($key)) return $val;
+        $valjson = json_decode($val, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($valjson)) {
+            return $def;
+        }
+        $result = $valjson;
+        foreach ($key as $pathKey) {
+            if (is_array($result) && array_key_exists($pathKey, $result)) {
+                $result = $result[$pathKey];
+            } else {
+                return $def;
+            }
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('set_setting')) {
+    function set_setting(string $key, $val)
+    {
+        if (is_array($val) || is_object($val)) {
+            $val = json_encode($val, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        return Setting::updateOrCreate(
+            ['key' => $key],
+            ['val' => $val]
+        );
+    }
+}

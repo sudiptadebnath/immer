@@ -19,9 +19,9 @@ class UserController extends Controller
     {
         $query = User::orderBy('created_at', 'desc')->get()
             ->map(function ($row) {
-                $row['address']=$row->address ?? '';
-                $row['stat']=statDict()[$row->stat] ?? $row->role;
-                $row['role']=roleDict()[$row->role] ?? $row->role;
+                $row['address'] = $row->address ?? '';
+                $row['stat'] = statDict()[$row->stat] ?? $row->role;
+                $row['role'] = roleDict()[$row->role] ?? $row->role;
                 return $row;
             });
 
@@ -120,11 +120,11 @@ class UserController extends Controller
         if (!$user) return $this->err("No Such User");
 
         $err = $this->validate($request->all(), [
-            'uid' => 'required|string|min:4|max:20|regex:/^[a-zA-Z0-9._-]+$/|unique:users,uid,'. $id,
-            'name' => 'required|string|min:3|max:150|unique:users,name,'. $id,
+            'uid' => 'required|string|min:4|max:20|regex:/^[a-zA-Z0-9._-]+$/|unique:users,uid,' . $id,
+            'name' => 'required|string|min:3|max:150|unique:users,name,' . $id,
             'address' => 'required|string|min:3|max:250',
-            'email' => 'required|email|unique:users,email,'. $id,
-            'mob' => 'required|string|min:8|max:20|unique:users,mob,'. $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+            'mob' => 'required|string|min:8|max:20|unique:users,mob,' . $id,
         ]);
         if ($err) return $err;
 
@@ -154,10 +154,10 @@ class UserController extends Controller
         return $this->ok('User deleted successfully');
     }
 
-    private function qrGen($file,$tok) 
+    private function qrGen($file, $tok)
     {
-        Log::info($file,["tok"=>$tok]);
-        if(file_exists($file)) return;
+        Log::info($file, ["tok" => $tok]);
+        if (file_exists($file)) return;
         $qrCode = new QrCode($tok);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
@@ -171,7 +171,7 @@ class UserController extends Controller
         $path = public_path('qrs');
         if (!file_exists($path)) mkdir($path, 0755, true);
         $file = $path . '/' . $user->id . '.png';
-        $this->qrGen($file,$user->token);
+        $this->qrGen($file, $user->token);
         return view('user.gatepass', compact('user'));
     }
 
@@ -180,18 +180,18 @@ class UserController extends Controller
         $user = User::find($id);
         if (!$user) abort(404, 'User not found');
         $file = public_path("qrs/{$user->id}.png");
-        $this->qrGen($file,$user->token);
+        $this->qrGen($file, $user->token);
         $pdf = Pdf::loadView('user.gatepass-pdf', compact('user', 'file'));
         return $pdf->download("GatePass-{$user->uid}.pdf");
     }
 
-    public function scan() 
+    public function scan()
     {
         $user = $this->getUserObj();
-        return view('user.scan',compact('user'));
+        return view('user.scan', compact('user'));
     }
 
-    public function attendance(Request $request) 
+    public function attendance(Request $request)
     {
         $cuser = $this->getUserObj();
         $request->validate([
@@ -224,17 +224,17 @@ class UserController extends Controller
             'scan_by'       => $cuser->id,
             'user_id'       => $user->id,
             'post'          => $request->post ?? 'post1',
-            'typ'           => $request->typ ?? 'att', 
+            'typ'           => $request->typ ?? 'att',
             'location'      => $request->location,
         ]);
 
-        return $this->ok("Marked <b>".$typNm."</b> for ".$user->uid);
+        return $this->ok("Marked <b>" . $typNm . "</b> for " . $user->uid);
     }
 
     public function scanStat(Request $request)
     {
         $gateId = $request->get('gate_id');
-        if (!$gateId) return $this->ok("ok",["data"=>[]]);
+        if (!$gateId) return $this->ok("ok", ["data" => []]);
         $today = Carbon::today();
         $scans = Attendance::where('post', $gateId)
             ->whereDate('scan_datetime', $today);
@@ -242,10 +242,19 @@ class UserController extends Controller
         $outCount = (clone $scans)->where('typ', 'OUT')->count();
         $insideCount = $inCount - $outCount;
         $stats = [
-            [ 'name' => 'IN',     'count' => $inCount,    'color' => 'success' ],
-            [ 'name' => 'OUT',    'count' => $outCount,   'color' => 'danger'  ],
-            [ 'name' => 'Inside',   'count' => $insideCount,'color' => 'primary' ],
+            ['name' => 'IN',     'count' => $inCount,    'color' => 'success'],
+            ['name' => 'OUT',    'count' => $outCount,   'color' => 'danger'],
+            ['name' => 'Inside',   'count' => $insideCount, 'color' => 'primary'],
         ];
-        return $this->ok("ok",["data"=>$stats]);
+        return $this->ok("ok", ["data" => $stats]);
+    }
+
+    public function save_settings(Request $request)
+    {
+        Log::info("save_settings", $request->all());
+        foreach ($request->except(['_token', '_method']) as $key => $val) {
+            set_setting($key, $val);
+        }
+        return $this->ok("Saved Successfully");
     }
 }

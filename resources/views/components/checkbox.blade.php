@@ -14,16 +14,18 @@
 <div class="col-md-{{ $size }}">
     <div class="form-check d-flex align-items-center">
         <!-- Icon or label -->
+        <input type="hidden" 
+            id="{{ $name }}_hidden" 
+            name="{{ $name }}"
+            value = "{{ $checked ? '1' : '0' }}" >
         <input 
             class="form-check-input"
             type="checkbox" 
             id="{{ $name }}" 
-            name="{{ $name }}"
             value="1"
             @if($checked) checked @endif
             @if($required) required @endif
-        >
-        
+        >        
         <!-- Label -->
         <label class="form-check-label ms-1" for="{{ $name }}">
             {{ ucfirst($title) }}
@@ -31,3 +33,11 @@
     </div>
     <label class="error" for="{{ $name }}"></label>
 </div>
+
+@push("scripts")
+<script>
+$("#{{ $name }}").on("change", function () {
+    $("#{{ $name }}_hidden").val(this.checked ? 1 : 0);
+});
+</script>
+@endpush

@@ -10,9 +10,14 @@ Route::get('/', function () {
     }
     return view('index');
 });
-Route::get('/register', fn() => view("register"));
+
 Route::post('/login', [UserController::class, 'login']);
-Route::post('/register', [UserController::class, 'register']);
+
+Route::middleware('check.allowsignup')->group(function () {
+    Route::get('/register', fn() => view("register"));
+    Route::post('/register', [UserController::class, 'register']);
+});
+
 
 Route::middleware('check.user.session')->prefix('user')->group(function () {
 
@@ -20,7 +25,7 @@ Route::middleware('check.user.session')->prefix('user')->group(function () {
         Session::flush();
         return redirect('/');
     });
-    Route::get("/dashboard",fn() => view('user.dashboard'))->name('user.dashboard');
+    Route::get("/dashboard", fn() => view('user.dashboard'))->name('user.dashboard');
 
     Route::prefix('users')->group(function () {
         Route::get('/', fn() => view("user.users"))->name('user.users');
@@ -31,9 +36,9 @@ Route::middleware('check.user.session')->prefix('user')->group(function () {
         Route::get('/scanstat', [UserController::class, 'scanstat'])->name('user.scanstat');
         Route::post('/attendance', [UserController::class, 'attendance'])->name('user.attendance');
         Route::get('/settings', fn() => view("user.settings"))->name('user.settings');
+        Route::post('/settings', [UserController::class, 'save_settings'])->name('user.save_settings');
         Route::get('/{id}', [UserController::class, 'get']);
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'delete']);
     });
-
 });

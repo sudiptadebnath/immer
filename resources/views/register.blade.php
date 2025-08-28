@@ -2,13 +2,8 @@
 
 @section('content')
 <div class="container d-flex align-items-center justify-content-center login-container h-100">
-<div class="card border-primary col-md-6 col-lg-4">
-    <div class="card-header bg-primary text-white">
-        <h5 class="card-title mp0">
-            <i class="bi bi-person-plus"></i> Sign up
-        </h5>
-    </div>
-    <div class="card-body">
+<div class="col-md-6 col-lg-4">
+<x-card icon="person-plus" title="Sign up">
     <form id="register" onsubmit="return register_submt()" novalidate="novalidate">
     <div class="row gy-2">
         <x-text name="name" icon="person" title="Name" required=true />
@@ -16,17 +11,14 @@
         <x-text name="mob" icon="phone" title="Mobile" required=true />
         <x-password name="password" title="Password" required=true />
         <x-password name="password2" title="Repeat Password" required=true />
-
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-primary btn-sm w-100">
-                <i class="bi bi-person-plus"></i> Sign up
-            </button>
-        </div>
+        <x-button type="submit" title="Sign up" icon="person-plus" />
         <div class="col-md-12">
             Already Have Account ? <a href="{{ url('/') }}">Log in</a>
         </div>
-    </div></form></div>
-</div></div>
+    </div></form>
+</x-card>
+</div>
+</div>
     
 @endsection
 
