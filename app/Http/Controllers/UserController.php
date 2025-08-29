@@ -19,8 +19,7 @@ class UserController extends Controller
     {
         $query = User::orderBy('created_at', 'desc')->get()
             ->map(function ($row) {
-                $row['address'] = $row->address ?? '';
-                $row['stat'] = statDict()[$row->stat] ?? $row->role;
+                $row['stat'] = statDict()[$row->stat] ?? $row->stat;
                 $row['role'] = roleDict()[$row->role] ?? $row->role;
                 return $row;
             });
@@ -38,21 +37,11 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $err = $this->validate($request->all(), [
-            'email' => ['required', function ($attribute, $value, $fail) {
-                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                } elseif (!preg_match('/^[a-zA-Z0-9@._-]+$/', $value)) {
-                    $fail('User ID must be alphanumeric and may include @ . _ - characters.');
-                }
-            }],
-            'password' => 'required',
+            'mob' => ['required', 'regex:/^[6-9]\d{9}$/'],
+            'password' => 'required|min:4',
         ]);
         if ($err) return $err;
-
-        $user = User
-            ::where('email', $request->email)
-            ->orWhere('uid', $request->email)
-            ->first();
-
+        $user = User::where('secretary_mobile', $request->mob)->first();
         if ($user && Hash::check($request->password, $user->password)) {
             if ($user->stat == "i") {
                 return $this->err("Account is inactive");
@@ -70,34 +59,43 @@ class UserController extends Controller
         $isAdminAdd = $request->filled('role');
 
         $rules = [
-            'uid' => 'required|string|min:4|max:20|regex:/^[a-zA-Z0-9._-]+$/|unique:users,uid',
-            'name' => 'required|string|min:3|max:150|unique:users,name',
-            'address' => 'required|string|min:3|max:250',
-            'email' => 'required|email|unique:users,email',
-            'mob' => 'required|string|min:8|max:20|unique:users,mob',
-            'password' => 'required|string|min:6',
-            'password2' => 'required|same:password',
+            'puja_committee_name'   => 'required|string|min:3|max:100|unique:users,puja_committee_name',
+            'puja_committee_address' => 'nullable|string|min:3|max:200',
+            'secretary_name'        => 'required|string|min:3|max:100',
+            'secretary_mobile'      => 'required|string|min:8|max:20|unique:users,secretary_mobile',
+            'chairman_name'         => 'required|string|min:3|max:100',
+            'chairman_mobile'       => 'required|string|min:8|max:20|unique:users,chairman_mobile',
+            'proposed_immersion_date' => 'required|date',
+            'proposed_immersion_time' => 'required|string',
+            'vehicle_no'            => 'nullable|string|min:3|max:50',
+            'team_members'          => 'nullable|integer|min:1|max:100',
+            'password'              => 'required|string|min:6',
+            'password2'             => 'required|same:password',
         ];
 
         if ($isAdminAdd) {
-            $rules['name'] = 'nullable|string|min:3|max:150|unique:users,name';
-            $rules['address'] = 'nullable|string|min:3|max:250';
-            $rules['email'] = 'nullable|email|unique:users,email';
-            $rules['mob'] = 'nullable|string|min:8|max:20|unique:users,mob';
-            $rules['role'] = 'required';
+            $rules['role'] = 'required|string';
         }
 
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
 
         $userData = [
-            'uid' => $request->uid,
-            'name' => $request->name,
-            'address' => $request->address,
-            'email' => $request->mail,
-            'mob' => $request->mob,
-            'password' => $request->password, // auto-hashed by model mutator
-            'logged_at' => now(),
+            'newtown'               => $request->in_newtown,
+            'action_area'           => $request->action_area,
+            'category'              => $request->category,
+            'puja_committee_name'   => $request->puja_committee_name,
+            'puja_committee_address' => $request->puja_committee_address,
+            'secretary_name'        => $request->secretary_name,
+            'secretary_mobile'      => $request->secretary_mobile,
+            'chairman_name'         => $request->chairman_name,
+            'chairman_mobile'       => $request->chairman_mobile,
+            'proposed_immersion_date' => $request->proposed_immersion_date,
+            'proposed_immersion_time' => $request->proposed_immersion_time,
+            'vehicle_no'            => $request->vehicle_no,
+            'team_members'          => $request->team_members,
+            'password'              => $request->password, // auto-hashed in model
+            'logged_at'             => now(),
         ];
 
         if ($isAdminAdd) {
@@ -106,12 +104,11 @@ class UserController extends Controller
 
         $user = User::create($userData);
 
-        // Auto login only if self-registered
         if (!$isAdminAdd) {
             $this->setUser($user);
         }
 
-        return $this->ok($isAdminAdd ? 'User Saved Successfully' : 'Registration Successful');
+        return $this->ok($isAdminAdd ? 'Registration Successful' : 'Registration Successful');
     }
 
     public function update(Request $request, $id)
@@ -120,26 +117,39 @@ class UserController extends Controller
         if (!$user) return $this->err("No Such User");
 
         $err = $this->validate($request->all(), [
-            'uid' => 'required|string|min:4|max:20|regex:/^[a-zA-Z0-9._-]+$/|unique:users,uid,' . $id,
-            'name' => 'required|string|min:3|max:150|unique:users,name,' . $id,
-            'address' => 'required|string|min:3|max:250',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'mob' => 'required|string|min:8|max:20|unique:users,mob,' . $id,
+            'puja_committee_name'   => 'required|string|min:3|max:100|unique:users,puja_committee_name,' . $id,
+            'puja_committee_address' => 'nullable|string|min:3|max:200',
+            'secretary_name'        => 'required|string|min:3|max:100',
+            'secretary_mobile'      => 'required|string|min:8|max:20|unique:users,secretary_mobile,' . $id,
+            'chairman_name'         => 'required|string|min:3|max:100',
+            'chairman_mobile'       => 'required|string|min:8|max:20|unique:users,chairman_mobile,' . $id,
+            'proposed_immersion_date' => 'required|date',
+            'proposed_immersion_time' => 'required|string',
+            'vehicle_no'            => 'nullable|string|min:3|max:50',
+            'team_members'          => 'nullable|integer|min:1|max:100',
+            'role'                  => 'required|string',
+            'stat'                  => 'required|string',
         ]);
         if ($err) return $err;
 
-        // Update fields
-        $user->uid = $request->uid;
-        $user->name = $request->name;
-        $user->address = $request->address;
-        $user->email = $request->email;
-        $user->mob = $request->mob;
-        $user->role = $request->role;
-        $user->stat = $request->stat;
+        $user->newtown                = $request->in_newtown;
+        $user->action_area            = $request->action_area;
+        $user->category               = $request->category;
+        $user->puja_committee_name    = $request->puja_committee_name;
+        $user->puja_committee_address = $request->puja_committee_address;
+        $user->secretary_name         = $request->secretary_name;
+        $user->secretary_mobile       = $request->secretary_mobile;
+        $user->chairman_name          = $request->chairman_name;
+        $user->chairman_mobile        = $request->chairman_mobile;
+        $user->proposed_immersion_date = $request->proposed_immersion_date;
+        $user->proposed_immersion_time = $request->proposed_immersion_time;
+        $user->vehicle_no             = $request->vehicle_no;
+        $user->team_members           = $request->team_members;
+        $user->role                   = $request->role;
+        $user->stat                   = $request->stat;
 
-        // Only update password if it's provided
         if (!empty($request->password)) {
-            $user->password = $request->password; // auto-hashed
+            $user->password = $request->password; // auto-hashed by model
         }
 
         $user->save();

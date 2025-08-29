@@ -13,21 +13,27 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'uid' => 'admin',
-            'password' => 'admin', 
+            'secretary_mobile' => '9111111111',
+            'password' => 'admin',
             'role' => 'a'
         ]);
 
         User::create([
-            'uid' => 'operator',
+            'secretary_mobile' => '9222222222',
             'password' => 'operator',
             'role' => 'o',
         ]);
 
         User::create([
-            'uid' => 'user',
+            'secretary_mobile' => '9333333333',
+            'password' => 'scanner',
+            'role' => 's'
+        ]);
+
+        User::create([
+            'secretary_mobile' => '944444444',
             'password' => 'user',
             'role' => 'u'
-        ]);    
+        ]);
     }
 }

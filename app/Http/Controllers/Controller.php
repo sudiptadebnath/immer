@@ -45,15 +45,9 @@ abstract class Controller
 
     protected function setUser($user)
     {
-        Session::put('user', [
-            'id' => $user->id,
-            'uid' => $user->uid,
-            'name' => $user->name,
-            'email' => $user->email,
-            'mob' => $user->mob,
-            'role' => $user->role,
-            'token' => $user->token,
-        ]);
+        $data = $user->toArray();
+        $data['token'] = $user->token;
+        Session::put('user', $data);
     }
     protected function getUser()
     {

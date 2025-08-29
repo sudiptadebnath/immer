@@ -6,7 +6,7 @@
 <x-card icon="box-arrow-in-right" title="Log in">
     <form id="signin" onsubmit="return signin_submt()" novalidate="novalidate">
     <div class="row gy-2">
-        <x-text name="email" icon="person" title="Userid/Mail" required=true />
+        <x-text name="mob" icon="person" title="Mobile No" required=true />
         <x-password name="password" icon="key" title="Password" required=true />
         <x-button type="submit" title="Log in" icon="box-arrow-in-right" />
         @if((bool)setting('USER_SIGNUP','1'))
@@ -21,18 +21,16 @@
 @section('scripts')
 <script> 
 
-$.validator.addMethod("emailOrUid", function(value, element) {
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  const isUserID = /^[a-zA-Z0-9@._-]+$/.test(value);
-  return this.optional(element) || isEmail || isUserID;
-});
+$.validator.addMethod("indianMobile", function(value, element) {
+  return this.optional(element) || /^[6-9]\d{9}$/.test(value);
+}, "Enter a valid mobile number");
 
 $(document).ready(function ($) {
     $("#signin").validate({
       rules: {
-        email: {
+        mob: {
           required: true,
-          emailOrUid: true,
+          indianMobile: true,
         },
         password: {
           required: true,
@@ -40,9 +38,9 @@ $(document).ready(function ($) {
         }
       },
       messages: {
-        email: {
-          required: "Please enter your userid/email",
-          emailOrUid: "Enter a valid email or userid"
+        mob: {
+          required: "Please enter registered mobile no",
+          indianMobile: "Enter a valid mobile no"
         },
         password: {
           required: "Please enter your password",
