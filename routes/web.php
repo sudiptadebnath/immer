@@ -42,6 +42,7 @@ Route::middleware('check.user.session')->prefix('user')->group(function () {
         Route::post('/settings', [UserController::class, 'save_settings'])->name('user.save_settings');
         Route::get('/{id}', [UserController::class, 'get']);
         Route::put('/{id}', [UserController::class, 'update']);
+        Route::put('/min/{id}', [UserController::class, 'update2']);
         Route::delete('/{id}', [UserController::class, 'delete']);
     });
 });

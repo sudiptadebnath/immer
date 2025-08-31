@@ -18,23 +18,57 @@
             <img src="{{ $file }}" width="200" alt="QR Code">
         </div>
 
-        <table>
-            <tr>
-                <td><strong>User ID</strong></td>
-                <td>{{ $user->id }}</td>
-            </tr>
-            <tr>
-                <td><strong>UID</strong></td>
-                <td>{{ $user->uid }}</td>
-            </tr>
-            <tr>
-                <td><strong>Email</strong></td>
-                <td>{{ $user->email }}</td>
-            </tr>
-            <tr>
-                <td><strong>Generated At</strong></td>
-                <td>{{ now()->format('d M Y H:i') }}</td>
-            </tr>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th colspan="2">Puja Committee Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td>{{ $user->puja_committee_name }}</td>
+                </tr>
+                @if($user->action_area)
+                <tr>
+                    <td><strong>Location</strong></td>
+                    <td>{{ $user->action_area }}, {{ $user->category }}</td>
+                </tr>
+                @endif
+                @if($user->puja_committee_address)
+                <tr>
+                    <td><strong>Address</strong></td>
+                    <td>{{ $user->puja_committee_address }}</td>
+                </tr>
+                @endif
+                <tr>
+                    <td><strong>Secretary</strong></td>
+                    <td>{{ $user->secretary_name }} ({{ $user->secretary_mobile }})</td>
+                </tr>
+                <tr>
+                    <td><strong>Chairman</strong></td>
+                    <td>{{ $user->chairman_name }} ({{ $user->chairman_mobile }})</td>
+                </tr>
+                <tr>
+                    <td><strong>Proposed Immersion</strong></td>
+                    <td>
+                        {{ $user->proposed_immersion_date ? \Carbon\Carbon::parse($user->proposed_immersion_date)->format('d M Y') : '' }}
+                        {{ $user->proposed_immersion_time }}
+                    </td>
+                </tr>
+                @if($user->vehicle_no)
+                <tr>
+                    <td><strong>Vehicle No</strong></td>
+                    <td>{{ $user->vehicle_no }}</td>
+                </tr>
+                @endif
+                @if(1>2 && $user->team_members)
+                <tr>
+                    <td><strong>Team Members</strong></td>
+                    <td>{{ $user->team_members }}</td>
+                </tr>
+                @endif
+            </tbody>
         </table>
     </div>
 </body>

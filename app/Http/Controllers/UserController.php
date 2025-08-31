@@ -72,15 +72,21 @@ class UserController extends Controller
             'password'              => 'required|string|min:6',
             'password2'             => 'required|same:password',
         ];
+        $nm = $request->input('puja_committee_name') 
+            ?? $request->input('puja_committee_name_other') 
+            ?? $request->input('puja_committee_name_text');
+        $request->merge([
+            'puja_committee_name' => $nm
+        ]);
 
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
 
         $userData = [
-            'action_area'           => $request->action_area,
-            'category'              => $request->category,
+            'action_area'           => $request->in_newtown ? $request->action_area : null,
+            'category'              => $request->in_newtown ? $request->category : null,
             'puja_committee_name'   => $request->puja_committee_name,
-            'puja_committee_address' => $request->puja_committee_address,
+            'puja_committee_address' => $request->in_newtown ? null : $request->puja_committee_address,
             'secretary_name'        => $request->secretary_name,
             'secretary_mobile'      => $request->secretary_mobile,
             'chairman_name'         => $request->chairman_name,
@@ -88,7 +94,7 @@ class UserController extends Controller
             'proposed_immersion_date' => $request->proposed_immersion_date,
             'proposed_immersion_time' => $request->proposed_immersion_time,
             'vehicle_no'            => $request->vehicle_no,
-            'team_members'          => $request->team_members,
+            'team_members'          => $request->dhunuchi ? $request->team_members : null,
             'password'              => $request->password,
             'logged_at'             => now(),
             'role'                  => $request->role ?? 'u', 
@@ -96,6 +102,7 @@ class UserController extends Controller
         ];
 
         $user = User::create($userData);
+        if(!userLogged()) $this->setUser($user);
 
         return $this->ok('Registration Successful');
     }
@@ -104,7 +111,12 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if (!$user) return $this->err("No Such User");
-
+        $nm = $request->input('puja_committee_name') 
+            ?? $request->input('puja_committee_name_other') 
+            ?? $request->input('puja_committee_name_text');
+        $request->merge([
+            'puja_committee_name' => $nm
+        ]);
         $err = $this->validate($request->all(), [
             'puja_committee_name'   => 'required|string|min:3|max:100|unique:users,puja_committee_name,' . $id,
             'puja_committee_address' => 'nullable|string|min:3|max:200',
@@ -119,10 +131,10 @@ class UserController extends Controller
         ]);
         if ($err) return $err;
 
-        $user->action_area            = $request->action_area;
-        $user->category               = $request->category;
+        $user->action_area            = $request->in_newtown ? $request->action_area : null;
+        $user->category               = $request->in_newtown ? $request->category : null;
         $user->puja_committee_name    = $request->puja_committee_name;
-        $user->puja_committee_address = $request->puja_committee_address;
+        $user->puja_committee_address = $request->in_newtown ? null : $request->puja_committee_address;
         $user->secretary_name         = $request->secretary_name;
         $user->secretary_mobile       = $request->secretary_mobile;
         $user->chairman_name          = $request->chairman_name;
@@ -130,7 +142,7 @@ class UserController extends Controller
         $user->proposed_immersion_date = $request->proposed_immersion_date;
         $user->proposed_immersion_time = $request->proposed_immersion_time;
         $user->vehicle_no             = $request->vehicle_no;
-        $user->team_members           = $request->team_members;
+        $user->team_members           = $request->dhunuchi ? $request->team_members : null;
 
         if (!empty($request->password)) {
             $user->password = $request->password; // auto-hashed by model
@@ -140,6 +152,27 @@ class UserController extends Controller
         }
         if (!empty($request->stat)) {
             $user->stat = $request->stat;
+        }
+
+        $user->save();
+        return $this->ok('User Saved Successfully');
+    }
+
+    public function update2(Request $request, $id)
+    {
+        $user = User::find($id);
+        if (!$user) return $this->err("No Such User");
+        $err = $this->validate($request->all(), [
+            'secretary_name'        => 'required|string|min:3|max:100',
+            'secretary_mobile'      => 'required|string|min:8|max:20|unique:users,secretary_mobile,' . $id,
+        ]);
+        if ($err) return $err;
+
+        $user->secretary_name         = $request->secretary_name;
+        $user->secretary_mobile       = $request->secretary_mobile;
+
+        if (!empty($request->password)) {
+            $user->password = $request->password; // auto-hashed by model
         }
 
         $user->save();
