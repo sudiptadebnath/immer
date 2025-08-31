@@ -17,7 +17,7 @@
 	  <i class="bi bi-person-circle me-2"></i> {{ getUsrProp("secretary_mobile") ?? 'User' }}
 	</a>
 	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-	  <li><a class="dropdown-item" href="{{ url('/user/profile') }}">
+	  <li><a class="dropdown-item" href="{{ url('/user/users/profile') }}">
 		<i class="bi bi-gear me-2"></i>Profile</a></li>
 	  <li><hr class="dropdown-divider"></li>
 	  <li><a class="dropdown-item" href="{{ url('/user/logout') }}">

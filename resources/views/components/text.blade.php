@@ -2,8 +2,9 @@
     'size' => 12,
     'name' => 'txt',
     'title' => 'Enter content',
-    'icon' => 'info-circle',
+    'icon' => '',
     'value' => '',
+    'typ' => 'text',
     'required' => false,
 ])
 @php
@@ -12,6 +13,7 @@
 
 <div class="col-md-{{ $size }}">
     <div class="input-group">
+        @if($icon != "!")
         <span class="input-group-text">
             @if(!empty($icon))
             <i class="bi bi-{{ $icon }}"></i>
@@ -19,7 +21,8 @@
             {{ ucfirst($title) }}
             @endif
         </span>
-        <input type="text"
+        @endif
+        <input type="{{ $typ }}"
             id="{{ $name }}"
             name="{{ $name }}"
             value="{{ old($name, $value) }}"

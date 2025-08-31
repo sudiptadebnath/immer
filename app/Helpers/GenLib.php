@@ -144,3 +144,12 @@ if (!function_exists('set_setting')) {
         );
     }
 }
+
+if (!function_exists('stoa')) {
+    function stoa(string $s, $del="~~")
+    {
+        $out=[];
+        foreach(explode($del, $s) as $itm) $out[$itm] = $itm;
+        return $out;
+    }
+}

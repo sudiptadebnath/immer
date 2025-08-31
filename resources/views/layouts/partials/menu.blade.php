@@ -24,7 +24,7 @@
   </li>
 @endif
 
-@if (hasRole('aosu'))
+@if (hasRole('u'))
   <li class="nav-item">
     <a class="nav-link" href="{{ route('user.gpass', ['id' => getUsrProp('id')]) }}">
     <i class="bi bi-ticket-perforated me-2"></i>GatePass</a>

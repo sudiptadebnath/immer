@@ -41,13 +41,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h4 class="d-flex mb-4">
-        <span>Ghat Status : &nbsp;</span>
-        <x-select size="4" icon="door-closed" name="post" title="Gate" :value="postDict()" sel="1" />
-    </h4>
-
     <div id="stats-cards" class="row g-3"></div>
-
 </div>
 @endsection
 
@@ -55,9 +49,7 @@
 <script>
 
 function loadStats() {
-    let gateId = $("#post").val();
-    if (!gateId) return;
-    webserv("GET", "{{ route('user.scanstat') }}", { gate_id: gateId }, function ok(resp) {
+    webserv("GET", "{{ route('user.scanstat') }}", { gate_id: 1 }, function ok(resp) {
         let html = "";
         if (resp && resp.data) {
             resp.data.forEach(stat => {
@@ -79,8 +71,7 @@ function loadStats() {
 }    
 $(function () {
     loadStats();
-    $('#post').on('change', loadStats);
-    //setInterval(loadStats, 10000);
+    setInterval(loadStats, 10000);
 });
 </script>
 @endpush

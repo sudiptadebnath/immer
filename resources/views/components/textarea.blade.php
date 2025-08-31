@@ -2,7 +2,7 @@
 'size' => 12,
 'name' => 'txt',
 'title' => 'Enter content',
-'icon' => 'info-circle',
+'icon' => '',
 'value' => '',
 'required' => false,
 ])

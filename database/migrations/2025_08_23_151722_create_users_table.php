@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
 
-            $table->boolean('newtown')->default(true);
             $table->string('action_area', 10)->nullable();
             $table->string('category', 10)->nullable();
             $table->string('puja_committee_name', 100)->nullable();

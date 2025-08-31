@@ -13,7 +13,6 @@ class User extends Model
 
     protected $fillable = [
         // Puja Committee fields
-        'newtown',
         'action_area',
         'category',
         'puja_committee_name',

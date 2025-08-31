@@ -42,9 +42,8 @@
     extract($opts);
     $act = ($add || $edit || $delete || $actions);
     $efnm = str_replace(" ","_",$title);
-    $autoWidth = true;
+    $autoWidth = $responsive;
 @endphp
-
 
 <div class="container vw-100 mb-3">
     <h3 class="d-flex border-1 border-bottom pb-2">
@@ -65,7 +64,7 @@
         @endif
     </h3>
 
-    <table id="{{ $name }}" class="table table-bordered table-hover table-striped w-100">
+    <table id="{{ $name }}" class="table table-bordered table-hover table-striped {{$responsive ?  '' : 'w-100'}}">
         <thead class="table-{{ $style }}">
             <tr>
             @foreach($data as $opt)

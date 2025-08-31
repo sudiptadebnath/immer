@@ -3,17 +3,22 @@
 @section('content')
 
 <div class="container mt-3">
-<div class="row g-2">
-    <x-select size="4" icon="door-closed" name="post" title="Gate" :value="postDict()" sel="1" />
-    <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="in" />
+<div class="row g-2 justify-content-center">
+    <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="queue" />
 
-    <div class="col-md-4">
-        <button id="toggle-scan" class="btn btn-primary mb-3" onclick="toggleScan()">
-            <i class="bi bi-qr-code-scan me-2"></i><span>QR</span>
-        </button>
-        <button id="toggle-scan" class="btn btn-info mb-3" onclick="byOTP()">
-            <i class="bi bi-key me-2"></i><span>OTP</span>
-        </button>
+    <div class="col-md-2">
+        <x-button name="toggle-scan" icon="qr-code-scan" size="" title="QR" onclick="toggleScan()" />
+        <x-button name="toggle-scan-otp" icon="key" size="" style="info" title="OTP" onclick="showOtpInput()" />
+    </div>
+
+    <!-- OTP Input -->
+    <div id="otp-section" class="col-md-8 d-flex gap-2 justify-content-center d-none">
+        <x-number size="6" name="mobile" title="Mobile Number" icon="telephone">
+            <x-button size="" icon="send" title="Send" style="warning" onclick="sendOTP()" />
+        </x-number>
+        <x-number size="6" name="otp" title="OTP" icon="hash">
+            <x-button size="" icon="save" title="Submit" style="success" onclick="submitOTP()" />
+        </x-number>
     </div>
 
     <div class="col-md-12 d-flex flex-column align-items-center justify-content-center">
@@ -32,11 +37,29 @@
 let html5QrCode;
 let isScanning = false;
 
+function showOtpInput() {
+    $('#otp-section').removeClass('d-none');
+}
+
+function toggle_scan_otp() {
+    const val = $('#typ').val();
+    if (val === 'queue') {
+        $('#toggle-scan-otp').removeClass('d-none');
+    } else {
+        $('#toggle-scan-otp').addClass('d-none');
+        $('#otp-section').addClass('d-none');
+    }
+}
+
+$(function() {
+    $('#typ').change(toggle_scan_otp);
+    toggle_scan_otp();
+});
+
 function validate() {
-    const post = $('#post').val();
     const typ  = $('#typ').val();
-    if (!post || !typ) {
-        myAlert("Please select Post and Type before scanning.", "danger");
+    if (!typ) {
+        myAlert("Please select Type before proceed.", "danger");
         return false;
     }
     return true;
@@ -90,10 +113,9 @@ function stopScan() {
 
 function onScanSuccess(decodedText, decodedResult) {
     stopScan();
-    const post = $('#post').val();
     const typ  = $('#typ').val();
     webserv("POST", "{{ route('user.attendance') }}", { 
-        token: decodedText, post, typ 
+        token: decodedText, post: 1, typ 
     }, function ok(resp) {
         $('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
@@ -108,6 +130,49 @@ function onScanSuccess(decodedText, decodedResult) {
         .show();
     });
 }
+
+function sendOTP() {
+    const mobile = $('#mobile').val();
+    if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
+        myAlert("Please enter a valid mobile number.", "danger");
+        return;
+    }
+    webserv("POST", "{{ route('user.send_otp') }}", { mobile }, function ok(resp) {
+        myAlert(resp.msg || ("OTP sent to " + mobile), "success");
+        $('#otp').val('');
+    }, function fail(resp) {
+        myAlert(resp.msg || "Failed to send OTP", "danger");
+    });
+}
+
+function submitOTP() {
+    const enteredOTP = $('#otp').val();
+    if (!enteredOTP) {
+        myAlert("Please enter OTP.", "danger");
+        return;
+    }
+
+    webserv("POST", "{{ route('user.verify_otp') }}", 
+    { mobile: $('#mobile').val(), typ: $('#typ').val(), otp: enteredOTP }, 
+    function ok(resp) {
+        $('#qr-result')
+            .removeClass('d-none alert-danger alert-success alert-primary')
+            .addClass('alert-success')
+            .html(resp.msg)
+            .show();
+    }, function fail(resp) {
+        $('#qr-result')
+            .removeClass('d-none alert-danger alert-success alert-primary')
+            .addClass('alert-danger')
+            .html(resp.msg)
+            .show();
+    });
+
+}
+
+
+
+
 
 </script>
 @endpush

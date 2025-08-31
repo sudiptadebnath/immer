@@ -1,64 +1,71 @@
 @extends('layouts.app')
 @section('styles')
 <style>
-
+tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
+    display: none;
+}
 </style>
 @endsection
 @section('content')
 
 @php
     $opts = [
-        "imp"=>[0,1,2,3,4,5,6],
+        "imp"=>[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
         "add"=>"addUser",
         "edit"=>"editUser",
-        "delete"=>"delUser",
         "actions"=>'
-            <a href="'. route('user.gpass', ['id' => '__']) .'" target="_blank" class="btn btn-link text-secondary px-1">
+            <a href="'. route('user.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-secondary px-1">
                 <i class="bi bi-ticket-perforated"></i>
             </a>
         ',
     ];
+    if(hasRole("a")) {
+       $opts["delete"] = "delUser";
+    }
+
     $tbldata = [
-        [ 'data'=>'uid', ], 
-        [ 'data'=>'name', ], 
-        [ 'data'=>'...address', ], 
-        [ 'data'=>'email', ], 
-        [ 'data'=>'role','className'=>'text-center', ], 
+        [ 'data'=>'action_area', ], 
+        [ 'data'=>'category', ], 
+        [ 'data'=>'puja_committee_name', ], 
+        [ 'data'=>'puja_committee_address', ], 
+        [ 'data'=>'secretary_name', ], 
+        [ 'data'=>'secretary_mobile', ], 
+        [ 'data'=>'chairman_name', ], 
+        [ 'data'=>'chairman_mobile', ], 
+        [ 'data'=>'proposed_immersion_date', ], 
+        [ 'data'=>'vehicle_no', ], 
+        [ 'data'=>'team_members', ], 
+        [ 'data'=>'*role','className'=>'text-center', ], 
         [ 'data'=>'stat','className'=>'text-center', ], 
         [ 'data'=>'logged_at', ], 
     ];
 @endphp
+<div class="container m-0 p-2">
+
 <x-table name="userTable" title="Users" :url="route('users.data')" :data=$tbldata :opts=$opts />
 
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="userForm">
+      <form id="register" onsubmit="return __register_submt()" novalidate="novalidate">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary text-white py-1">
           <h5 class="modal-title" id="userModalLabel">Add User</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
         <div class="row gy-2">
-            <input type="hidden" id="id" name="id" />
-            <x-text icon="person" name="uid" title="UserID" required=true />
-            <x-password size="6" name="password" title="Password" required=true />
-            <x-password size="6" name="password2" title="Repeat Password" required=true />
-            <x-text icon="person" name="name" title="Name" required=true />
-            <x-textarea icon="clipboard-data" name="address" title="Address" required=true />
-            <x-text  size="6" icon="envelope" name="email" title="Mail" required=true />
-            <x-number  size="6" icon="phone" name="mob" title="Mobile" required=true />
-            <x-select  size="6" icon="people" name="role" title="Role" :value="roleDict()" />
-            <x-select  size="6" icon="check" name="stat" title="Status" :value="statDict()" />
+            <x-register_compo :btns="false" cb="saveUser" />
         </div>
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Save</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <div class="modal-footer py-1">
+          <button type="submit" class="btn btn-sm btn-primary">Save</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
       </div>
-    </form>
+      </form>
   </div>
+</div>
+
 </div>
 
 @endsection
@@ -67,118 +74,22 @@
 
 <script>
 
-$(document).ready(function () {
-    
-    $("#userForm").validate({
-        rules: {
-            uid: {
-                required: true,
-                minlength: 4,
-                maxlength: 20,
-                pattern: /^[a-zA-Z0-9._-]+$/
-            },
-            email: {
-                required: true,
-                email: true
-            },
-            password: {
-                required: function () {
-                    return $('#id').val() === "";
-                },
-                minlength: 6
-            },
-            password2: {
-                required: function () {
-                    return $('#password').val();
-                },
-                equalTo: "#password"
-            },
-            name: {
-                required: true,
-                minlength: 10, // optional, at least 2 chars
-                maxlength: 150 // optional, at least 2 chars
-            },
-            phone: {
-                required: true,
-                digits: true,        // only digits allowed
-                minlength: 10, // optional, at least 2 chars
-                maxlength: 10, // optional, at least 2 chars
-            },
-            address: {
-                required: true,
-                minlength: 10, // optional, at least 2 chars
-                maxlength: 200 // optional, at least 2 chars
-            },
-            stat: {
-                required: true,
-            },
-        },
-        messages: {
-            uid: {
-                required: "User ID is required",
-                minlength: "User ID must be at least 4 characters",
-                maxlength: "User ID cannot exceed 20 characters",
-                pattern: "Only letters, numbers, dots, underscores, and hyphens are allowed"
-            },
-            email: {
-                required: "Email is required",
-                email: "Enter a valid email"
-            },
-            password: {
-                required: "Password is required",
-                minlength: "Password must be at least 6 characters"
-            },
-            password2: {
-                required: "Please confirm your password",
-                equalTo: "Passwords do not match"
-            },
-            name: {
-                required: "Please enter name",
-                minlength: "Please enter name at least 10 char",
-                maxlength: "Please enter name at most 150 char"
-            },
-            phone: {
-                required: "Please enter mobile",
-                digits: "Please enter mobile digits only",
-                minlength: "Please enter mobile exact 10 char",
-                maxlength: "Please enter mobile exact 10 char"
-            },
-            address: {
-                required: "Please enter address",
-                minlength: "Please enter address at least 10 char",
-                maxlength: "Please enter address at most 200 char"
-            },
-            role: {
-                required: "Please select role",
-            },
-            stat: {
-                required: "Please select status",
-            },
-        }
+
+function saveUser () {
+    const id = $('#id').val();
+    const isEdit = id !== "";
+    const url = isEdit ? `{{ url('user/users') }}/${id}` : `{{ url('register') }}`;
+    const method = isEdit ? 'PUT' : 'POST';
+    webserv(method, url, "register", function ok(d) {
+        toastr.success(d["msg"]);
+        $('#userModal').modal('hide');
+        $('#userTable').DataTable().ajax.reload();
     });
-    $('#userForm').on('submit', function (e) {
-        e.preventDefault();
-        if (!$(this).valid()) return; 
-
-        const id = $('#id').val();
-        const isEdit = id !== "";
-
-        // Prepare URL and method
-        const url = isEdit ? `users/${id}` : `/register`;
-        const method = isEdit ? 'PUT' : 'POST';
-
-        // Now call webserv
-        webserv(method, url, "userForm", function ok(d) {
-            toastr.success(d["msg"]);
-            $('#userModal').modal('hide');
-            $('#userTable').DataTable().ajax.reload();
-        });
-    });
-
-});
+}
 
 function addUser() {
-    $('#userForm')[0].reset();
+    $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
+    //$('#register').find("input[type=checkbox], input[type=radio]").prop('checked', false);
     $('#id').val(''); 
     $('#userModalLabel').text("Add User");
     $('.error').text('');
@@ -189,13 +100,20 @@ function editUser(id) {
     webserv("GET",`users/${id}`, {}, function (d) {
         let user = d["data"];
         $('#id').val(user.id);
-        $('#uid').val(user.uid);
-        $('#name').val(user.name);
-        $('#address').val(user.address);
-        $('#email').val(user.email);
-        $('#mob').val(user.mob);
-        $('#role').val(user.role);
+        $('#action_area').val(user.action_area);
+        $('#category').val(user.category);
+        $('#puja_committee_name').val(user.puja_committee_name);
+        $('#puja_committee_address').val(user.puja_committee_address);
+        $('#secretary_name').val(user.secretary_name);
+        $('#secretary_mobile').val(user.secretary_mobile);
+        $('#chairman_name').val(user.chairman_name);
+        $('#chairman_mobile').val(user.chairman_mobile);
+        $('#proposed_immersion_date').val(user.proposed_immersion_date);
+        $('#proposed_immersion_time').val(user.proposed_immersion_time);
+        $('#vehicle_no').val(user.vehicle_no);
+        $('#team_members').val(user.team_members);
         $('#stat').val(user.stat);
+        $('#role').val(user.role);
         $('#password').val('');
         $('#password2').val('');
         $('#userModalLabel').text('Edit User');
@@ -204,7 +122,7 @@ function editUser(id) {
 }
 
 function delUser(id) {
-    myAlert("Are you sure you want to delete this user ?","primary","Yes", function() {
+    myAlert("Are you sure you want to delete this user ?","danger","Yes", function() {
         webserv("DELETE", `users/${id}`, {}, function (d) {
             toastr.success(d["msg"]);
             $('#userTable').DataTable().ajax.reload();

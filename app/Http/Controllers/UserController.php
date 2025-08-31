@@ -11,20 +11,22 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
     public function data(Request $request)
     {
-        $query = User::orderBy('created_at', 'desc')->get()
-            ->map(function ($row) {
-                $row['stat'] = statDict()[$row->stat] ?? $row->stat;
-                $row['role'] = roleDict()[$row->role] ?? $row->role;
-                return $row;
-            });
-
-        return DataTables::of($query)->make(true);
+        $query = User::orderBy('created_at', 'desc');
+        if (!hasRole("a")) $query->where('role', 'u');
+        $data = $query->get()->map(function ($row) {
+            $row['stat'] = statDict()[$row->stat] ?? $row->stat;
+            $row['role'] = roleDict()[$row->role] ?? $row->role;
+            return $row;
+        });
+        return DataTables::of($data)->make(true);
     }
 
     public function get($id)
@@ -56,8 +58,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        $isAdminAdd = $request->filled('role');
-
         $rules = [
             'puja_committee_name'   => 'required|string|min:3|max:100|unique:users,puja_committee_name',
             'puja_committee_address' => 'nullable|string|min:3|max:200',
@@ -73,15 +73,10 @@ class UserController extends Controller
             'password2'             => 'required|same:password',
         ];
 
-        if ($isAdminAdd) {
-            $rules['role'] = 'required|string';
-        }
-
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
 
         $userData = [
-            'newtown'               => $request->in_newtown,
             'action_area'           => $request->action_area,
             'category'              => $request->category,
             'puja_committee_name'   => $request->puja_committee_name,
@@ -94,21 +89,15 @@ class UserController extends Controller
             'proposed_immersion_time' => $request->proposed_immersion_time,
             'vehicle_no'            => $request->vehicle_no,
             'team_members'          => $request->team_members,
-            'password'              => $request->password, // auto-hashed in model
+            'password'              => $request->password,
             'logged_at'             => now(),
+            'role'                  => $request->role ?? 'u', 
+            'stat'                  => $request->stat ?? 'a', 
         ];
-
-        if ($isAdminAdd) {
-            $userData['role'] = $request->role;
-        }
 
         $user = User::create($userData);
 
-        if (!$isAdminAdd) {
-            $this->setUser($user);
-        }
-
-        return $this->ok($isAdminAdd ? 'Registration Successful' : 'Registration Successful');
+        return $this->ok('Registration Successful');
     }
 
     public function update(Request $request, $id)
@@ -127,12 +116,9 @@ class UserController extends Controller
             'proposed_immersion_time' => 'required|string',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
-            'role'                  => 'required|string',
-            'stat'                  => 'required|string',
         ]);
         if ($err) return $err;
 
-        $user->newtown                = $request->in_newtown;
         $user->action_area            = $request->action_area;
         $user->category               = $request->category;
         $user->puja_committee_name    = $request->puja_committee_name;
@@ -145,11 +131,15 @@ class UserController extends Controller
         $user->proposed_immersion_time = $request->proposed_immersion_time;
         $user->vehicle_no             = $request->vehicle_no;
         $user->team_members           = $request->team_members;
-        $user->role                   = $request->role;
-        $user->stat                   = $request->stat;
 
         if (!empty($request->password)) {
             $user->password = $request->password; // auto-hashed by model
+        }
+        if (!empty($request->role)) {
+            $user->role = $request->role; 
+        }
+        if (!empty($request->stat)) {
+            $user->stat = $request->stat;
         }
 
         $user->save();
@@ -238,7 +228,7 @@ class UserController extends Controller
             'location'      => $request->location,
         ]);
 
-        return $this->ok("Marked <b>" . $typNm . "</b> for " . $user->uid);
+        return $this->ok("Marked <b>" . $typNm . "</b> for " . $user->secretary_mobile);
     }
 
     public function scanStat(Request $request)
@@ -267,4 +257,73 @@ class UserController extends Controller
         }
         return $this->ok("Saved Successfully");
     }
+
+    public function send_otp(Request $request)
+    {
+        $err = $this->validate($request->all(), [
+            'mobile'      => 'required|string|min:8|max:20|unique:users,secretary_mobile',
+        ]);
+        if ($err) return $err;
+        $mob = $request->mobile;
+        $otpData = Session::get('otp_sessions', []);
+        if (isset($otpData[$mob])) {
+            $data = $otpData[$mob];
+            if ($data['attempts'] >= 3 && Carbon::now()->diffInMinutes($data['created_at']) < 3) {
+                return $this->err('Maximum OTP attempts reached. Try after some time');
+            }
+        }
+        $otp = rand(100000, 999999);
+        $otpData[$mob] = [
+            'otp' => $otp,
+            'created_at' => Carbon::now(),
+            'attempts' => isset($otpData[$mob]) ? $otpData[$mob]['attempts'] + 1 : 1
+        ];
+        Session::put('otp_sessions', $otpData);
+        // Example: SmsService::send($mobile, "Your OTP is $otp");
+        return $this->ok("OTP : $otp sent to $mob");
+    }
+
+    public function verify_otp(Request $request)
+    {
+        $cuser = $this->getUserObj();
+        $mob = $request->input('mobile');
+        $otp = $request->input('otp');
+        $otpData = Session::get('otp_sessions', []);
+        if (!isset($otpData[$mob])) {
+            return $this->err('Invalid mobile.');
+        }
+        $data = $otpData[$mob];
+        if (Carbon::now()->diffInMinutes($data['created_at']) > 5) {
+            unset($otpData[$mob]);
+            Session::put('otp_sessions', $otpData);
+            return $this->err('OTP expired. Please request again.');
+        }
+        if ($otp != $data['otp']) {
+            return $this->err('Invalid OTP.');
+        }
+        unset($otpData[$mob]);
+        Session::put('otp_sessions', $otpData);
+
+        $pass = Str::random(6);
+        $userData = [
+            'secretary_mobile'      => $mob,
+            'password'              => $pass,
+            'role'                  => $request->role ?? 'u', 
+            'stat'                  => $request->stat ?? 'a', 
+        ];
+        $user = User::create($userData);
+        // Example: SmsService::send($mob, "Your password is $pass");
+        $typNm = attDict()[$request->typ];
+        Attendance::create([
+            'scan_datetime' => now(),
+            'scan_by'       => $cuser->id,
+            'user_id'       => $user->id,
+            'post'          => $request->post ?? 'post1',
+            'typ'           => $request->typ ?? 'att',
+            'location'      => $request->location,
+        ]);
+
+        return $this->ok("OTP verified successfully and <br>Marked <b>" . $typNm . "</b> for " . $user->secretary_mobile);
+    }
+
 }
