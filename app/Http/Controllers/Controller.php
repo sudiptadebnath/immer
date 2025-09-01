@@ -17,7 +17,7 @@ abstract class Controller
 
     protected function err($msg, $opt = [], $status = 200)
     {
-        $ans = ["success" => false, "msg" => "SERVER: $msg"];
+        $ans = ["success" => false, "msg" => "$msg !!"];
         if ($opt) $ans = array_merge($ans, $opt);
         return response()->json($ans, $status);
     }
@@ -32,9 +32,9 @@ abstract class Controller
         return $this->ok("hello");
     }
 
-    protected function validate($itms, $ruls)
+    protected function validate($itms, $ruls, $msgs=[])
     {
-        $validator = Validator::make($itms, $ruls);
+        $validator = Validator::make($itms, $ruls, $msgs);
 
         if ($validator->fails()) {
             return $this->err(implode("<br>", $validator->errors()->all()));

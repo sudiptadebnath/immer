@@ -20,6 +20,26 @@ function myLoad() {
 }
 
 function addValidators() {
+
+    // Validation messages override
+    $.validator.messages.required = function(param, input) {
+        let label = $("label[for='" + input.id + "']").text().replace("?", "").trim();
+        if (!label) {
+            label = input.name.replace(/_/g, " "); // fallback: use input name
+        }
+        return label + " is required";
+    };
+
+    // Custom rule for Indian mobile
+    $.validator.addMethod("indianMobile", function(value, element) {
+        return this.optional(element) || /^[6-9]\d{9}$/.test(value);
+    }, "Enter a valid mobile number");
+    
+    $.validator.addMethod("strongPassword", function(value, element) {
+        return this.optional(element) || 
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(value);
+    }, "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character.");    
+
     $.validator.methods.mydate = function (value, element) {
         return (
             this.optional(element) ||

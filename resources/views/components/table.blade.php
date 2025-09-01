@@ -6,6 +6,17 @@
     'opts' => [],
 ])
 
+@once
+@push("styles")
+<style>
+.fullwidth { width: calc(100vw - 16rem) !important; }
+@media (max-width: 576px) {
+    .fullwidth { width: calc(100vw - 1rem) !important; }
+}
+</style>
+@endpush
+@endonce
+
 @php
 
     function getTH($nm,$st) {
@@ -45,7 +56,7 @@
     $autoWidth = $responsive;
 @endphp
 
-<div class="container vw-100 mb-3">
+<div class="container-fluid m-0 p-3 fullwidth">
     <h3 class="d-flex border-1 border-bottom pb-2">
         {{ $title }}
         @if($imp)
@@ -76,11 +87,18 @@
             @if($act)
                 <th>
                     Action
-                    @if($add)
-                    <button class="btn btn-sm btn-outline-{{$style}}" title="Add"
-                        onclick="{{ $add }}()">
-                        <i class="bi bi-plus"></i>
-                    </button>
+                    @if(is_array($add))
+                        @foreach($add as $btn)
+                            <button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
+                                onclick="{{$btn[2]}}()">
+                                <i class="bi bi-{{$btn[1]}}"></i>
+                            </button>
+                        @endforeach
+                    @else
+                        <button class="btn btn-sm btn-outline-{{ $style }}" title="Add"
+                            onclick="{{ $add }}()">
+                            <i class="bi bi-plus"></i>
+                        </button>
                     @endif
                 </th>
             @endif           

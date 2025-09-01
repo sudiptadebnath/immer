@@ -8,14 +8,60 @@ $puja_comm["Other"] = "Other";
 $immer_dts = dbVals("puja_immersion_dates",["idate","name"]);
 @endphp
 
+
+@section('styles')
+<style>
+tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
+    display: none;
+}
+</style>
+@endsection
 @section('content')
-<div class="container d-flex align-items-center justify-content-center login-container h-100">
-<div class="col-md-10 col-lg-8 p-2">
-<x-card icon="person-plus" title="Puja Committee Registration">
 
-    <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
+@php
+    $opts = [
+        //"imp"=>[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+        "add"=> "addPuja",
+        "edit"=>"editPuja",
+        "actions"=>'
+            <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-secondary px-1">
+                <i class="bi bi-ticket-perforated"></i>
+            </a>
+        ',
+    ];
+    if(hasRole("a")) {
+       $opts["delete"] = "delPuja";
+    }
 
-    <div class="row g-2">
+    $tbldata = [
+        [ 'data'=>'action_area', ], 
+        [ 'data'=>'category', ], 
+        [ 'data'=>'puja_committee_name', ], 
+        [ 'data'=>'puja_committee_address', ], 
+        [ 'data'=>'secretary_name', ], 
+        [ 'data'=>'secretary_mobile', ], 
+        [ 'data'=>'chairman_name', ], 
+        [ 'data'=>'chairman_mobile', ], 
+        [ 'data'=>'proposed_immersion_date', ], 
+        [ 'data'=>'proposed_immersion_time', ], 
+        [ 'data'=>'vehicle_no', ], 
+        [ 'data'=>'team_members', ], 
+    ];
+@endphp
+<div class="container-fluid m-0 p-2">
+
+<x-table name="pujaTable" title="Pujas" :url="route('puja.data')" :data=$tbldata :opts=$opts />
+
+<div class="modal fade" id="pujaModal" tabindex="-1" aria-labelledby="pujaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white py-1">
+          <h5 class="modal-title" id="pujaModalLabel">Add Puja</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <div class="row gy-2">
 
         {{-- Puja in New Town --}}
         <div class="col-md-12">
@@ -55,10 +101,10 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"]);
 
         {{-- Common fields --}}
         <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
-        <x-text size="8" name="secretary_name" icon="person" title="Secretary Name" required="true" />
-        <x-number size="4" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
-        <x-text size="8" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
-        <x-number size="4" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
+        <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
+        <x-number size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
+        <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
+        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
 
         {{-- Immersion --}}
         <x-select size="4" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
@@ -86,16 +132,23 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"]);
             <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" required="true" />
         </div>
 
-        <x-button type="submit" title="Submit Registration" icon="send" />
+        </div>
+        </div>
+        <div class="modal-footer py-1">
+          <button type="submit" class="btn btn-sm btn-primary">Save</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      </form>
+  </div>
+</div>
 
-    </div>
-    </form>
-</x-card>
 </div>
-</div>
+
 @endsection
 
 @section('scripts')
+
 <script>
 $(function () {
     // Toggle Yes/No section
@@ -130,11 +183,11 @@ $(function () {
     $("#register").validate({
         rules:{
             password: {
-                required: true,
+                required: function() { return $("#id").val() == ""; },
                 minlength: 6
             },
             password2: {
-                required: true,
+                required: function() { return $("#id").val() == ""; },
                 equalTo: "#password"
             },
             team_members: {
@@ -149,19 +202,62 @@ $(function () {
             team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
         },
     });
+
 });
 
-function register_submt(e) {
+function register_submt (e) {
     e.preventDefault(); // stop default form submission
     if($("#register").valid()) {
-        webserv("POST","{{ url('/register') }}","register",
-        function ok(d){
-            myAlert(d["msg"],"success","Ok",function() {
-                location.reload(); 
-            });            
+        const id = $('#id').val();
+        const isEdit = id !== "";
+        const url = isEdit ? `{{ url('user/puja') }}/${id}` : `{{ url('user/puja/add') }}`;
+        const method = isEdit ? 'PUT' : 'POST';
+        webserv(method, url, "register", function ok(d) {
+            toastr.success(d["msg"]);
+            $('#pujaModal').modal('hide');
+            $('#pujaTable').DataTable().ajax.reload();
         });
     }
-    return false;
 }
+
+function addPuja() {
+    $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
+    $('#id').val(''); 
+    $('#pujaModalLabel').text("Add Puja");
+    $('.error').text('');
+    $('#pujaModal').modal('show');
+}
+
+function editPuja(id) {
+    webserv("GET",`puja/${id}`, {}, function (d) {
+        let puja = d["data"];
+        $('#id').val(puja.id);
+        $('#action_area').val(puja.action_area);
+        $('#category').val(puja.category);
+        $('#puja_committee_name').val(puja.puja_committee_name);
+        $('#puja_committee_address').val(puja.puja_committee_address);
+        $('#secretary_name').val(puja.secretary_name);
+        $('#secretary_mobile').val(puja.secretary_mobile);
+        $('#chairman_name').val(puja.chairman_name);
+        $('#chairman_mobile').val(puja.chairman_mobile);
+        $('#proposed_immersion_date').val(puja.proposed_immersion_date);
+        $('#proposed_immersion_time').val(puja.proposed_immersion_time);
+        $('#vehicle_no').val(puja.vehicle_no);
+        $('#team_members').val(puja.team_members);
+        $('#pujaModalLabel').text('Edit Puja');
+        $('.error').text('');
+        $('#pujaModal').modal('show');
+    });    
+}
+
+function delPuja(id) {
+    myAlert("Are you sure you want to delete this puja ?","danger","Yes", function() {
+        webserv("DELETE", `puja/${id}`, {}, function (d) {
+            toastr.success(d["msg"]);
+            $('#pujaTable').DataTable().ajax.reload();
+        });        
+    },"No");
+}
+
 </script>
 @endsection

@@ -2,6 +2,7 @@
 
 use App\Models\Setting;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 if (!function_exists('hasRole')) {
     function hasRole($roles)
@@ -150,6 +151,31 @@ if (!function_exists('stoa')) {
     {
         $out=[];
         foreach(explode($del, $s) as $itm) $out[$itm] = $itm;
+        return $out;
+    }
+}
+
+
+if (!function_exists('dbVals')) {
+    function dbVals(string $tbl, string|array $fld = "name"): array
+    {
+        $out = [];
+        if (is_array($fld)) {
+            $rows = DB::table($tbl)->get($fld);
+            foreach ($rows as $row) {
+                $key = $row->{$fld[0]};
+                $vals = [];
+                foreach (array_slice($fld, 1) as $f) {
+                    $vals[] = $row->$f;
+                }
+                $out[$key] = implode(" - ", $vals);
+            }
+        } else {
+            $rows = DB::table($tbl)->pluck($fld)->toArray();
+            foreach ($rows as $val) {
+                $out[$val] = $val;
+            }
+        }
         return $out;
     }
 }

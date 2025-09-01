@@ -8,16 +8,13 @@
 
     <div class="col-md-2">
         <x-button name="toggle-scan" icon="qr-code-scan" size="" title="QR" onclick="toggleScan()" />
-        <x-button name="toggle-scan-otp" icon="key" size="" style="info" title="OTP" onclick="showOtpInput()" />
+        <x-button name="toggle-scan-otp" icon="key" size="" style="info" title="Mobile" onclick="showMarkByMob()" />
     </div>
 
     <!-- OTP Input -->
-    <div id="otp-section" class="col-md-8 d-flex gap-2 justify-content-center d-none">
+    <div id="mark-by-mob" class="col-md-12 d-flex justify-content-center d-none">
         <x-number size="6" name="mobile" title="Mobile Number" icon="telephone">
-            <x-button size="" icon="send" title="Send" style="warning" onclick="sendOTP()" />
-        </x-number>
-        <x-number size="6" name="otp" title="OTP" icon="hash">
-            <x-button size="" icon="save" title="Submit" style="success" onclick="submitOTP()" />
+            <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
         </x-number>
     </div>
 
@@ -37,8 +34,8 @@
 let html5QrCode;
 let isScanning = false;
 
-function showOtpInput() {
-    $('#otp-section').removeClass('d-none');
+function showMarkByMob() {
+    $('#mark-by-mob').removeClass('d-none');
 }
 
 function toggle_scan_otp() {
@@ -47,7 +44,7 @@ function toggle_scan_otp() {
         $('#toggle-scan-otp').removeClass('d-none');
     } else {
         $('#toggle-scan-otp').addClass('d-none');
-        $('#otp-section').addClass('d-none');
+        $('#mark-by-mob').addClass('d-none');
     }
 }
 
@@ -114,7 +111,7 @@ function stopScan() {
 function onScanSuccess(decodedText, decodedResult) {
     stopScan();
     const typ  = $('#typ').val();
-    webserv("POST", "{{ route('user.attendance') }}", { 
+    webserv("POST", "{{ route('att.mark_by_qr') }}", { 
         token: decodedText, post: 1, typ 
     }, function ok(resp) {
         $('#qr-result')
@@ -131,29 +128,14 @@ function onScanSuccess(decodedText, decodedResult) {
     });
 }
 
-function sendOTP() {
+function markByMob() {
     const mobile = $('#mobile').val();
     if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
         myAlert("Please enter a valid mobile number.", "danger");
         return;
     }
-    webserv("POST", "{{ route('user.send_otp') }}", { mobile }, function ok(resp) {
-        myAlert(resp.msg || ("OTP sent to " + mobile), "success");
-        $('#otp').val('');
-    }, function fail(resp) {
-        myAlert(resp.msg || "Failed to send OTP", "danger");
-    });
-}
-
-function submitOTP() {
-    const enteredOTP = $('#otp').val();
-    if (!enteredOTP) {
-        myAlert("Please enter OTP.", "danger");
-        return;
-    }
-
-    webserv("POST", "{{ route('user.verify_otp') }}", 
-    { mobile: $('#mobile').val(), typ: $('#typ').val(), otp: enteredOTP }, 
+    webserv("POST", "{{ route('att.mark_by_mob') }}", 
+    { mobile: $('#mobile').val(), typ: $('#typ').val() }, 
     function ok(resp) {
         $('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
@@ -167,12 +149,7 @@ function submitOTP() {
             .html(resp.msg)
             .show();
     });
-
 }
-
-
-
-
 
 </script>
 @endpush

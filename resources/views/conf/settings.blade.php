@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container m-0 p-3">
+<div class="container-fluid m-0 p-3">
 <div class="row g-2">
     <x-card title="Settings" icon="gear">
         <form id="settings" onsubmit="return settings_submt()" novalidate="novalidate">
@@ -51,7 +51,7 @@ $(function () {
 });
 function settings_submt(e) {
     if($("#settings").valid()) {
-        webserv("POST","{{ route('user.save_settings') }}", "settings", 
+        webserv("POST","{{ route('conf.save_settings') }}", "settings", 
         function ok(d) { 
             myAlert(d["msg"]);
         }, function ok(d) {

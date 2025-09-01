@@ -8,7 +8,19 @@
   <!-- Settings (Always open) -->
 @if (hasRole('a'))
   <li class="nav-item">
-    <a class="nav-link" href="{{ route('user.settings') }}"><i class="bi bi-gear me-2"></i>Settings</a>
+    <a class="nav-link" href="{{ route('conf.settings') }}"><i class="bi bi-gear me-2"></i>Settings</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('conf.action') }}"><i class="bi bi-gear me-2"></i>Action Area</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('conf.category') }}"><i class="bi bi-gear me-2"></i>Category</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('conf.commitee') }}"><i class="bi bi-gear me-2"></i>Puja Committee</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('conf.immerdt') }}"><i class="bi bi-gear me-2"></i>Immersion Dates</a>
   </li>
 @endif
 
@@ -16,11 +28,14 @@
   <li class="nav-item">
     <a class="nav-link" href="{{ route('user.users') }}"><i class="bi bi-person-lines-fill me-2"></i>Users</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('user/puja') }}"><i class="bi bi-brightness-high me-2"></i>Pujas</a>
+  </li>
 @endif
 
 @if (hasRole('aos'))
   <li class="nav-item">
-    <a class="nav-link" href="{{ route('user.scan') }}"><i class="bi bi-qr-code-scan me-2"></i>Scan</a>
+    <a class="nav-link" href="{{ route('att.scan') }}"><i class="bi bi-qr-code-scan me-2"></i>Scan</a>
   </li>
 @endif
 

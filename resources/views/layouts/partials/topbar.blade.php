@@ -14,7 +14,7 @@
 @if (userLogged())
 	<div class="ms-auto dropdown d-flex align-items-center gap-2">
 	<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-	  <i class="bi bi-person-circle me-2"></i> {{ getUsrProp("secretary_mobile") ?? 'User' }}
+	  <i class="bi bi-person-circle me-2"></i> {{ getUsrProp("name") ?? 'User' }}
 	</a>
 	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
 	  <li><a class="dropdown-item" href="{{ url('/user/users/profile') }}">

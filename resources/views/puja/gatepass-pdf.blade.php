@@ -27,45 +27,45 @@
             <tbody>
                 <tr>
                     <td><strong>Name</strong></td>
-                    <td>{{ $user->puja_committee_name }}</td>
+                    <td>{{ $puja->puja_committee_name }}</td>
                 </tr>
-                @if($user->action_area)
+                @if($puja->action_area)
                 <tr>
                     <td><strong>Location</strong></td>
-                    <td>{{ $user->action_area }}, {{ $user->category }}</td>
+                    <td>{{ $puja->action_area }}, {{ $puja->category }}</td>
                 </tr>
                 @endif
-                @if($user->puja_committee_address)
+                @if($puja->puja_committee_address)
                 <tr>
                     <td><strong>Address</strong></td>
-                    <td>{{ $user->puja_committee_address }}</td>
+                    <td>{{ $puja->puja_committee_address }}</td>
                 </tr>
                 @endif
                 <tr>
                     <td><strong>Secretary</strong></td>
-                    <td>{{ $user->secretary_name }} ({{ $user->secretary_mobile }})</td>
+                    <td>{{ $puja->secretary_name }} ({{ $puja->secretary_mobile }})</td>
                 </tr>
                 <tr>
                     <td><strong>Chairman</strong></td>
-                    <td>{{ $user->chairman_name }} ({{ $user->chairman_mobile }})</td>
+                    <td>{{ $puja->chairman_name }} ({{ $puja->chairman_mobile }})</td>
                 </tr>
                 <tr>
                     <td><strong>Proposed Immersion</strong></td>
                     <td>
-                        {{ $user->proposed_immersion_date ? \Carbon\Carbon::parse($user->proposed_immersion_date)->format('d M Y') : '' }}
-                        {{ $user->proposed_immersion_time }}
+                        {{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
+                        {{ $puja->proposed_immersion_time }}
                     </td>
                 </tr>
-                @if($user->vehicle_no)
+                @if($puja->vehicle_no)
                 <tr>
                     <td><strong>Vehicle No</strong></td>
-                    <td>{{ $user->vehicle_no }}</td>
+                    <td>{{ $puja->vehicle_no }}</td>
                 </tr>
                 @endif
-                @if(1>2 && $user->team_members)
+                @if(1>2 && $puja->team_members)
                 <tr>
                     <td><strong>Team Members</strong></td>
-                    <td>{{ $user->team_members }}</td>
+                    <td>{{ $puja->team_members }}</td>
                 </tr>
                 @endif
             </tbody>

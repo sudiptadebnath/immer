@@ -16,6 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SettingSeeder::class,
+            ActionAreaSeeder::class,
+            CategorySeeder::class,
+            PujaCommitteeRepoSeeder::class,
+            ImmersionDateSeeder::class,
         ]);
     }
 }

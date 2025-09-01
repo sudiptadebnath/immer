@@ -40,7 +40,7 @@
 @endpush
 
 @section('content')
-<div class="container mt-4">
+<div class="container-fluid m-0 p-4">
     <div id="stats-cards" class="row g-3"></div>
 </div>
 @endsection
@@ -49,7 +49,7 @@
 <script>
 
 function loadStats() {
-    webserv("GET", "{{ route('user.scanstat') }}", { gate_id: 1 }, function ok(resp) {
+    webserv("GET", "{{ route('att.scanstat') }}", {  }, function ok(resp) {
         let html = "";
         if (resp && resp.data) {
             resp.data.forEach(stat => {

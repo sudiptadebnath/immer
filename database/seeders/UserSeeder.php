@@ -12,28 +12,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+
         User::create([
-            'secretary_mobile' => '9111111111',
+            'name'     => 'Admin',
+            'email'    => 'admin@mail.com',
+            'phone'    => '9111111111',
             'password' => 'admin',
-            'role' => 'a'
+            'role'     => 'a',
         ]);
 
         User::create([
-            'secretary_mobile' => '9222222222',
+            'name'     => 'Operator1',
+            'email'    => 'operator1@mail.com',
+            'phone'    => '9222222222',
             'password' => 'operator',
-            'role' => 'o',
+            'role'     => 'o',
         ]);
 
         User::create([
-            'secretary_mobile' => '9333333333',
+            'name'     => 'Scanner1',
+            'email'    => 'scanner1@mail.com',
+            'phone'    => '9333333333',
             'password' => 'scanner',
-            'role' => 's'
-        ]);
-
-        User::create([
-            'secretary_mobile' => '944444444',
-            'password' => 'user',
-            'role' => 'u'
+            'role'     => 's',
         ]);
     }
 }
