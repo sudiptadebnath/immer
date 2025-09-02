@@ -11,8 +11,10 @@ class ScanController extends Controller
 {
     public function scanStat()
     {
-        $today = Carbon::today();
-        $scans = Attendance::whereDate('scan_datetime', $today);
+        // $today = Carbon::today();
+        // $scans = Attendance::whereDate('scan_datetime', $today);
+        $scans = Attendance::query();
+
         $qCount  = (clone $scans)->where('typ', 'queue')->count();
         $iCount  = (clone $scans)->where('typ', 'in')->count();
         $oCount  = (clone $scans)->where('typ', 'out')->count();
@@ -38,12 +40,12 @@ class ScanController extends Controller
         if (!$puja) return $this->err("GatePass not found");
         $today = Carbon::today();
         $lastAtt = Attendance::where('puja_committee_id', $puja->id)
-            ->whereDate('scan_datetime', $today)
+            //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
             ->first();
-        if (!$lastAtt)                      $typ = 'queue';
-        elseif ($lastAtt->typ === 'queue')  $typ = 'in';
-        elseif ($lastAtt->typ === 'in')     $typ = 'out';
+        if (!$lastAtt) $typ = 'queue';
+        elseif ($lastAtt->typ === 'queue' && $cuser->role=="o")  $typ = 'in';
+        elseif ($lastAtt->typ === 'in') $typ = 'out';
         else return $this->err("Unaccepted pass");
         Attendance::create([
             'scan_datetime' => now(),

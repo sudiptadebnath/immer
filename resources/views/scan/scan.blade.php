@@ -8,7 +8,7 @@
     <x-number size="4" name="mobile" title="Mobile Number" icon="telephone">
         <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
     </x-number>
-    <div>
+    <div class="d-flex justify-content-center w-100">
         <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
         <div id="qr-result" class="alert alert-primary mt-2 w-100 d-none"></div>
     <div>
@@ -98,8 +98,22 @@ function stopScan() {
     }
 }
 
+
+function startStopScan(stop) {
+    if (html5QrCode && isScanning) {
+        if(stop) html5QrCode.pause(true);
+        else {
+            html5QrCode.resume();
+            $('#qr-result').fadeOut('slow', function () {
+                $(this).addClass('d-none').html('');
+            });
+        } 
+    }
+}
+
 function onScanSuccess(decodedText, decodedResult) {
-    stopScan();
+    //stopScan();
+    startStopScan(true);
     const typ  = $('#typ').val();
     webserv("POST", "{{ route('att.mark_by_qr') }}", { 
         token: decodedText
@@ -109,12 +123,14 @@ function onScanSuccess(decodedText, decodedResult) {
         .addClass('alert-success')
         .html(resp.msg)
         .show();
+        setTimeout(() => { startStopScan(false); }, 3000);        
     }, function fail(resp) {
         $('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
         .addClass('alert-danger')
         .html(resp.msg)
         .show();
+        setTimeout(() => { startStopScan(false); }, 3000);        
     });
 }
 
