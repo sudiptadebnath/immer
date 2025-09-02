@@ -34,7 +34,7 @@ class ScanController extends Controller
     {
         $cuser = $this->getUserObj();
         $request->validate(['token'    => 'required|string',]);
-        $puja = PujaCommittee::where('token', $request->token)->first();
+        $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
         if (!$puja) return $this->err("GatePass not found");
         $today = Carbon::today();
         $lastAtt = Attendance::where('puja_committee_id', $puja->id)
