@@ -249,7 +249,9 @@ ul.nav.flex-column {
 }
 
 .PCRegist_header .logo {
-    width: 50px;
+    width: 100%;
+    min-width: 50px;
+    max-width: 50px;
     height: auto;
 }
 
@@ -292,12 +294,13 @@ ul.nav.flex-column {
     border: 1px solid #177f88;
     color: #fff;
     transition: 0.6s;
-    margin-top: 10px;
-    margin-bottom: 0;
+    display: block;
+    margin: 10px 0 0 auto;
+    max-width: 250px;
 }
 
 .PCRegist_form button[type="submit"]:hover {
-    background-color: #439aa1;
+    background-color: #083438;
     border: 1px solid #177f88;
 }
 
@@ -317,11 +320,11 @@ ul.nav.flex-column {
 
 .PCRegist_form .input-group:focus .input-group-text,
 .PCRegist_form .input-group:focus {
-   border: 1px solid #177f88 !important;
+    border: 1px solid #177f88 !important;
 }
 
 .PCRegist_form .input-group-text {
-  color: #177f88;
+    color: #177f88;
 }
 
 .PCRegist_form input:focus,
@@ -333,4 +336,54 @@ ul.nav.flex-column {
 
 .PCRegist_form select::selection {
     background: #177f88 !important;
+}
+
+
+
+
+/******responsive all******/
+/**************************/
+@media (max-width: 991px) {
+    .PCRegist_sec {
+        height: auto;
+    }
+
+    .PCRegist_header .logo_desc h2 {
+        font-size: 1em;
+    }
+
+    .PCRegist_header .logo_desc p {
+        font-size: .8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .PCRegist_header .logo {
+        margin: 0 auto;
+    }
+
+    .PCRegist_header {
+        flex-wrap: wrap;
+    }
+
+    .PCRegist_header .logo_desc h2 {
+        font-size: .9em;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .PCRegist_header .logo_desc p {
+        font-size: .7em;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .PCRegist_form .form-label {
+        display: block;
+        width: 100%;
+    }
+
+    .PCRegist_form .mb-2-480 {
+        margin-bottom: 10px;
+    }
 }

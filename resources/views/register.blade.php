@@ -31,8 +31,8 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     {{-- Puja in New Town --}}
                     <div class="col-md-12">
                         <input type="hidden" name="id" id="id" />
-                        <div class="d-flex flex-wrap align-items-center">
-                            <label class="me-3 form-label">Puja in New Town Area ?</label><br>
+                        <div class="d-flex flex-wrap align-items-center mb-2-480">
+                            <label class="me-3 form-label">Puja in New Town Area ?</label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio"  required="true"
                                 name="in_newtown" value="1" title="Puja in New Town Area"> Yes
