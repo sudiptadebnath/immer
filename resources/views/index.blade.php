@@ -19,18 +19,28 @@
 <script> 
 
 $(document).ready(function ($) {
-    $("#signin").validate({
-      rules: {
-        email: {
-          required: true,
-          email: true,
-        },
-        password: {
-          required: true,
-          strongPassword: true,
-        }
+  $("#signin").validate({
+    rules: {
+      email: {
+        required: true,
+        email: true,
+      },
+      password: {
+        required: true,
+        strongPassword: true,
       }
-    });
+    },
+    messages: {
+      email: {
+        required: "Please enter your email address",
+        email: "Please enter a valid email address",
+      },
+      password: {
+        required: "Please enter your password",
+        strongPassword: "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character",
+      }
+    }
+  });
 });
 
 function signin_submt() {

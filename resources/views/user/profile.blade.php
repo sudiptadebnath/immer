@@ -20,14 +20,22 @@
 <script>
 $(function () {
     $("#profile").validate({
-        rules:{
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            name: {
+                required: true,
+                minlength: 2
+            },
             phone: {
                 required: false,
-                minlength: 10,
+                indianMobile: true
             },
             password: {
                 required: false,
-                minlength: 6
+                strongPassword: true
             },
             password2: {
                 required: false,
@@ -35,11 +43,30 @@ $(function () {
             }
         },
         messages: {
-            password2: { equalTo: "Passwords do not match" },
-        },
+            email: {
+                required: "Please enter your email address",
+                email: "Please enter a valid email address"
+            },
+            name: {
+                required: "Please enter your name",
+                minlength: "Name must be at least 2 characters long"
+            },
+            phone: {
+                indianMobile: "Please enter a valid 10-digit Indian mobile number"
+            },
+            password: {
+                strongPassword: "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character"
+            },
+            password2: {
+                equalTo: "Passwords do not match"
+            }
+        }
     });
+
     loadVals();
 });
+
+
 
 function profile_submt(e) {
     e.preventDefault(); // stop default form submission
