@@ -1,0 +1,262 @@
+@extends('layouts.app')
+
+@php
+$action_area = dbVals("action_areas","name","view_order","asc");
+$category = dbVals("puja_categories","name","view_order","asc");
+$puja_comm = dbVals("puja_committies_repo","name","view_order","asc");
+$puja_comm["Other"] = "Other";
+$immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
+@endphp
+
+
+@section('styles')
+<style>
+tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
+    display: none;
+}
+</style>
+@endsection
+@section('content')
+
+@php
+    $opts = [
+        //"imp"=>[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+        "add"=> "addPuja",
+        "edit"=>"editPuja",
+        "actions"=>'
+            <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-secondary px-1">
+                <i class="bi bi-ticket-perforated"></i>
+            </a>
+        ',
+    ];
+    if(hasRole("a")) {
+       $opts["delete"] = "delPuja";
+    }
+
+    $tbldata = [
+        [ 'data'=>'action_area', ], 
+        [ 'data'=>'category', ], 
+        [ 'data'=>'puja_committee_name', ], 
+        [ 'data'=>'puja_committee_address', ], 
+        [ 'data'=>'secretary_name', ], 
+        [ 'data'=>'secretary_mobile', ], 
+        [ 'data'=>'chairman_name', ], 
+        [ 'data'=>'chairman_mobile', ], 
+        [ 'data'=>'proposed_immersion_date', ], 
+        [ 'data'=>'proposed_immersion_time', ], 
+        [ 'data'=>'vehicle_no', ], 
+        [ 'data'=>'team_members', ], 
+    ];
+@endphp
+<div class="container-fluid m-0 p-2">
+
+<x-table name="pujaTable" title="Pujas" :url="route('puja.data')" :data=$tbldata :opts=$opts />
+
+<div class="modal fade" id="pujaModal" tabindex="-1" aria-labelledby="pujaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white py-1">
+          <h5 class="modal-title" id="pujaModalLabel">Add Puja</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <div class="row gy-2">
+
+        {{-- Puja in New Town --}}
+        <div class="col-md-12">
+            <input type="hidden" name="id" id="id" />
+            <div class="d-flex flex-wrap align-items-center">
+                <label class="me-3 form-label">Puja in New Town Area ?</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio"  required="true"
+                    name="in_newtown" value="1" title="Puja in New Town Area"> Yes
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" required="true"
+                    name="in_newtown" value="0" title="Puja in New Town Area"> No
+                </div>
+            </div>
+            <label id="in_newtown-error" class="error text-danger" for="in_newtown"></label>
+        </div>
+
+        {{-- If Yes --}}
+        <div id="ifYes" class="d-none col-md-12 row g-2 m-0 p-0">
+            <x-select icon="geo-alt" size="6" name="action_area" title="Action Area"
+             :value="$action_area" required="true" />
+            <x-select icon="tags" size="6" name="category" title="Category" 
+             :value="$category" required="true" />
+            <x-select icon="people" name="puja_committee_name" title="Puja Committee" 
+             :value="$puja_comm" required="true" />
+            <div class="mb-2 d-none" id="otherCommitteeBox">
+                <input type="text" class="form-control" name="puja_committee_name_other"
+                 placeholder="Enter Committee Name" required="true" >
+            </div>
+        </div>
+
+        {{-- If No --}}
+        <div id="ifNo" class="d-none col-md-12 d-flex flex-column gap-2">
+            <x-text name="puja_committee_name_text" icon="person" title="Puja Committee Name" />
+        </div>
+
+        {{-- Common fields --}}
+        <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
+        <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
+        <x-number size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
+        <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
+        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
+
+        {{-- Immersion --}}
+        <x-select size="4" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
+         :value="$immer_dts" required="true" />
+        <x-text size="4" typ="time" name="proposed_immersion_time" title="Immersion Time"  icon="!" required="true" />
+        <x-text size="4" name="vehicle_no" title="Vehicle No (optional)"  icon="truck-front" />
+
+        {{-- Dhunuchi Nach --}}
+        <div class="col-md-12">
+            <div class="d-flex flex-wrap align-items-center">
+                <label class="me-3 form-label">Participating in Dhunuchi Nach Competition ?</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
+                    name="dhunuchi" value="1" required="true"> Yes
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
+                    name="dhunuchi" value="0" required="true"> No
+                </div>
+            </div>
+            <label id="dhunuchi-error" class="error text-danger" for="dhunuchi"></label>
+        </div>
+
+        <div id="ifDhunuchiYes" class="d-none col-md-12">
+            <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" required="true" />
+        </div>
+
+        </div>
+        </div>
+        <div class="modal-footer py-1">
+          <button type="submit" class="btn btn-sm btn-primary">Save</button>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      </form>
+  </div>
+</div>
+
+</div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+$(function () {
+    // Toggle Yes/No section
+    $("input[name='in_newtown']").change(function(){
+        if($(this).val() === "1") {
+            $("#ifYes").removeClass("d-none");
+            $("#ifNo").addClass("d-none");
+        } else {
+            $("#ifNo").removeClass("d-none");
+            $("#ifYes").addClass("d-none");
+        }
+    });
+
+    // Committee "Other" option
+    $("#puja_committee_name").change(function(){
+        if($(this).val() === "Other") {
+            $("#otherCommitteeBox").removeClass("d-none");
+        } else {
+            $("#otherCommitteeBox").addClass("d-none");
+        }
+    });
+
+    // Dhunuchi Nach
+    $("input[name='dhunuchi']").change(function(){
+        if($(this).val() === "1") {
+            $("#ifDhunuchiYes").removeClass("d-none");
+        } else {
+            $("#ifDhunuchiYes").addClass("d-none");
+        }
+    });
+
+    $("#register").validate({
+        rules:{
+            secretary_mobile: {
+                required: true,
+                indianMobile: true,
+            },
+            chairman_mobile: {
+                required: true,
+                indianMobile: true,
+            },
+            team_members: {
+                required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
+                digits: true,
+                min: 1,
+                max: {{ setting('DHUNUCHI_TEAM',20) }}
+            }
+        },
+        messages: {
+            team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
+        },
+    });
+
+});
+
+function register_submt (e) {
+    e.preventDefault(); // stop default form submission
+    if($("#register").valid()) {
+        const id = $('#id').val();
+        const isEdit = id !== "";
+        const url = isEdit ? `{{ url('user/puja') }}/${id}` : `{{ url('user/puja/add') }}`;
+        const method = isEdit ? 'PUT' : 'POST';
+        webserv(method, url, "register", function ok(d) {
+            toastr.success(d["msg"]);
+            $('#pujaModal').modal('hide');
+            $('#pujaTable').DataTable().ajax.reload();
+        });
+    }
+}
+
+function addPuja() {
+    $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
+    $('#id').val(''); 
+    $('#pujaModalLabel').text("Add Puja");
+    $('.error').text('');
+    $('#pujaModal').modal('show');
+}
+
+function editPuja(id) {
+    webserv("GET",`puja/${id}`, {}, function (d) {
+        let puja = d["data"];
+        $('#id').val(puja.id);
+        $('#action_area').val(puja.action_area);
+        $('#category').val(puja.category);
+        $('#puja_committee_name').val(puja.puja_committee_name);
+        $('#puja_committee_address').val(puja.puja_committee_address);
+        $('#secretary_name').val(puja.secretary_name);
+        $('#secretary_mobile').val(puja.secretary_mobile);
+        $('#chairman_name').val(puja.chairman_name);
+        $('#chairman_mobile').val(puja.chairman_mobile);
+        $('#proposed_immersion_date').val(puja.proposed_immersion_date);
+        $('#proposed_immersion_time').val(puja.proposed_immersion_time);
+        $('#vehicle_no').val(puja.vehicle_no);
+        $('#team_members').val(puja.team_members);
+        $('#pujaModalLabel').text('Edit Puja');
+        $('.error').text('');
+        $('#pujaModal').modal('show');
+    });    
+}
+
+function delPuja(id) {
+    myAlert("Are you sure you want to delete this puja ?","danger","Yes", function() {
+        webserv("DELETE", `puja/${id}`, {}, function (d) {
+            toastr.success(d["msg"]);
+            $('#pujaTable').DataTable().ajax.reload();
+        });        
+    },"No");
+}
+
+</script>
+@endsection
