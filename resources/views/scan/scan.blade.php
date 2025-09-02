@@ -4,24 +4,14 @@
 
 <div class="container mt-3">
 <div class="row g-2 justify-content-center">
-    {{-- <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="queue" /> --}}
-
-    <div class="col-md-2">
-        <x-button name="toggle-scan" icon="qr-code-scan" size="" title="QR" onclick="toggleScan()" />
-        <x-button name="toggle-scan-otp" icon="key" size="" style="info" title="Mobile" onclick="showMarkByMob()" />
-    </div>
-
-    <!-- OTP Input -->
-    <div id="mark-by-mob" class="col-md-12 d-flex justify-content-center d-none">
-        <x-number size="6" name="mobile" title="Mobile Number" icon="telephone">
-            <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
-        </x-number>
-    </div>
-
-    <div class="col-md-12 d-flex flex-column align-items-center justify-content-center">
+    <x-button size="4" name="toggle-scan" icon="qr-code-scan" title="QR" onclick="toggleScan()" />
+    <x-number size="4" name="mobile" title="Mobile Number" icon="telephone">
+        <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
+    </x-number>
+    <div class="d-flex justify-content-center w-100">
         <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
         <div id="qr-result" class="alert alert-primary mt-2 w-100 d-none"></div>
-    </div>
+    <div>
 </div>
 </div>
 
@@ -34,10 +24,10 @@
 let html5QrCode;
 let isScanning = false;
 
-function showMarkByMob() {
-    $('#mark-by-mob').removeClass('d-none');
-}
 
+$(document).ready(function () {
+    toggleScan(); // auto-start QR scanning
+});
 // function toggle_scan_otp() {
 //     const val = $('#typ').val();
 //     if (val === 'queue') {
@@ -63,7 +53,6 @@ function showMarkByMob() {
 // }
 
 function toggleScan() {
-    $('#mark-by-mob').addClass('d-none');
     const btn = $('#toggle-scan span'); // span holds Start/Stop text
 
     if (!isScanning) {
@@ -109,8 +98,22 @@ function stopScan() {
     }
 }
 
+
+function startStopScan(stop) {
+    if (html5QrCode && isScanning) {
+        if(stop) html5QrCode.pause(true);
+        else {
+            html5QrCode.resume();
+            $('#qr-result').fadeOut('slow', function () {
+                $(this).addClass('d-none').html('');
+            });
+        } 
+    }
+}
+
 function onScanSuccess(decodedText, decodedResult) {
-    stopScan();
+    //stopScan();
+    startStopScan(true);
     const typ  = $('#typ').val();
     webserv("POST", "{{ route('att.mark_by_qr') }}", { 
         token: decodedText
@@ -120,12 +123,14 @@ function onScanSuccess(decodedText, decodedResult) {
         .addClass('alert-success')
         .html(resp.msg)
         .show();
+        setTimeout(() => { startStopScan(false); }, 3000);        
     }, function fail(resp) {
         $('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
         .addClass('alert-danger')
         .html(resp.msg)
         .show();
+        setTimeout(() => { startStopScan(false); }, 3000);        
     });
 }
 

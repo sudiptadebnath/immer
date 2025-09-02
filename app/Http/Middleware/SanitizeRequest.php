@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckUserSession extends Controller
+class SanitizeRequest extends Controller
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,13 @@ class CheckUserSession extends Controller
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!userLogged()) {
-            if ($request->expectsJson()) {
-                return $this->err('Unauthorized Access', [], 401);
-            } else {
-                return redirect('/');
+        $sanitized = collect($request->all())->map(function ($value) {
+            if (is_string($value)) {
+                return strip_tags($value);
             }
-        }
+            return $value;
+        })->toArray();
+        $request->merge($sanitized);
         return $next($request);
     }
 }

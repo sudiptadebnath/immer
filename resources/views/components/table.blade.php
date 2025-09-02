@@ -9,7 +9,7 @@
 @once
 @push("styles")
 <style>
-.fullwidth { width: 100% !important; }
+.fullwidth { width: calc(100vw - 15rem) !important; }
 @media (max-width: 576px) {
     .fullwidth { width: calc(100vw - 1rem) !important; }
 }
@@ -78,7 +78,7 @@
         @endif
     </h3>
 
-    <table id="{{ $name }}" class="table table-bordered table-hover table-striped {{$responsive ?  '' : 'w-100'}}">
+    <table id="{{ $name }}" class="table table-bordered table-hover table-striped {{$responsive ?  'w-100' : ''}}">
         <thead class="table-{{ $style }}">
             <tr>
             @foreach($data as $opt)

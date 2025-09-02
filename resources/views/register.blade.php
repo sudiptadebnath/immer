@@ -140,14 +140,50 @@ $(function () {
     });
 
     $("#register").validate({
-        rules:{
+        rules: {
+            in_newtown: {
+                required: true,
+            },
+            action_area: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            category: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            puja_committee_name: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            puja_committee_name_other: {
+                required: function() { return $("#puja_committee_name").val() === "Other"; }
+            },
+            puja_committee_name_text: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "0"; }
+            },
+            puja_committee_address: {
+                required: true,
+            },
+            secretary_name: {
+                required: true,
+            },
             secretary_mobile: {
                 required: true,
                 indianMobile: true,
             },
+            chairman_name: {
+                required: true,
+            },
             chairman_mobile: {
                 required: true,
                 indianMobile: true,
+            },
+            proposed_immersion_date: {
+                required: true,
+            },
+            proposed_immersion_time: {
+                required: true,
+            },
+            dhunuchi: {
+                required: true,
             },
             team_members: {
                 required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
@@ -157,9 +193,30 @@ $(function () {
             }
         },
         messages: {
-            team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
-        },
+            in_newtown: "Please select whether the puja is in New Town area",
+            action_area: "Please select an action area",
+            category: "Please select a category",
+            puja_committee_name: "Please select a puja committee",
+            puja_committee_name_other: "Please enter the committee name",
+            puja_committee_name_text: "Please enter the puja committee name",
+            puja_committee_address: "Please enter the committee address",
+            secretary_name: "Please enter the secretary's name",
+            secretary_mobile: {
+                required: "Please enter the secretary's mobile number",
+                indianMobile: "Please enter a valid Indian mobile number"
+            },
+            chairman_name: "Please enter the chairman/president's name",
+            chairman_mobile: {
+                required: "Please enter the chairman's mobile number",
+                indianMobile: "Please enter a valid Indian mobile number"
+            },
+            proposed_immersion_date: "Please select a proposed immersion date",
+            proposed_immersion_time: "Please select a proposed immersion time",
+            dhunuchi: "Please select Yes or No for Dhunuchi Nach participation",
+            team_members: "Please enter number of team members (1–{{ setting('DHUNUCHI_TEAM',20) }})"
+        }
     });
+
 });
 
 function register_submt(e) {
