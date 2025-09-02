@@ -34,18 +34,46 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
     }
 
     $tbldata = [
-        [ 'data'=>'action_area', ], 
-        [ 'data'=>'category', ], 
-        [ 'data'=>'puja_committee_name', ], 
-        [ 'data'=>'puja_committee_address', ], 
-        [ 'data'=>'secretary_name', ], 
-        [ 'data'=>'secretary_mobile', ], 
-        [ 'data'=>'chairman_name', ], 
-        [ 'data'=>'chairman_mobile', ], 
-        [ 'data'=>'proposed_immersion_date', ], 
-        [ 'data'=>'proposed_immersion_time', ], 
-        [ 'data'=>'vehicle_no', ], 
-        [ 'data'=>'team_members', ], 
+        [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
+            let aa = row.action_area ? row.action_area : "";
+            let cat = row.category ? row.category : "";
+            if (aa && cat) return "Action Area - "+ aa + "<br>Category - " + cat ;
+            else if (aa) return "Action Area - "+ aa;
+            else if (cat) return "Category - " + cat;
+            return "";
+        }', ], 
+        [ 'data'=>'puja_committee_name',"th"=>"Puja Committee", 'render' => 'function (data, type, row) {
+            let name = row.puja_committee_name ? row.puja_committee_name : "";
+            let add = row.puja_committee_address ? row.puja_committee_address : "";
+            if (name && add) return name + "<hr><b>Address - </b>" + add ;
+            else if (name) return name;
+            else if (add) return "<b>Address - </b>"+add;
+            return "";
+        }', ], 
+        [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
+            let name = row.secretary_name ? row.secretary_name : "";
+            let mobile = row.secretary_mobile ? row.secretary_mobile : "";
+            if (name && mobile) return name + " (" + mobile + ")";
+            else if (name) return name;
+            else if (mobile) return mobile;
+            return "";
+        }', ], 
+        [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
+            let name = row.chairman_name ? row.chairman_name : "";
+            let mobile = row.chairman_mobile ? row.chairman_mobile : "";
+            if (name && mobile) return name + " (" + mobile + ")";
+            else if (name) return name;
+            else if (mobile) return mobile;
+            return "";
+        }', ], 
+        [ 'data'=>'proposed_immersion_date',"th"=>"Immersion Date", 'render' => 'function (data, type, row) {
+            let dt = row.proposed_immersion_date ? row.proposed_immersion_date : "";
+            let tm = row.proposed_immersion_time ? row.proposed_immersion_time : "";
+            if (dt && tm) return dt + "<br>" + tm;
+            else if (dt) return dt;
+            else if (tm) return tm;
+            return "";
+        }', ], 
     ];
 @endphp
 <div class="container-fluid m-0 p-2">
@@ -181,14 +209,50 @@ $(function () {
     });
 
     $("#register").validate({
-        rules:{
+        rules: {
+            in_newtown: {
+                required: true,
+            },
+            action_area: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            category: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            puja_committee_name: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            },
+            puja_committee_name_other: {
+                required: function() { return $("#puja_committee_name").val() === "Other"; }
+            },
+            puja_committee_name_text: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "0"; }
+            },
+            puja_committee_address: {
+                required: true,
+            },
+            secretary_name: {
+                required: true,
+            },
             secretary_mobile: {
                 required: true,
                 indianMobile: true,
             },
+            chairman_name: {
+                required: true,
+            },
             chairman_mobile: {
                 required: true,
                 indianMobile: true,
+            },
+            proposed_immersion_date: {
+                required: true,
+            },
+            proposed_immersion_time: {
+                required: true,
+            },
+            dhunuchi: {
+                required: true,
             },
             team_members: {
                 required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
@@ -198,9 +262,30 @@ $(function () {
             }
         },
         messages: {
-            team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
-        },
+            in_newtown: "Please select whether the puja is in New Town area",
+            action_area: "Please select an action area",
+            category: "Please select a category",
+            puja_committee_name: "Please select a puja committee",
+            puja_committee_name_other: "Please enter the committee name",
+            puja_committee_name_text: "Please enter the puja committee name",
+            puja_committee_address: "Please enter the committee address",
+            secretary_name: "Please enter the secretary's name",
+            secretary_mobile: {
+                required: "Please enter the secretary's mobile number",
+                indianMobile: "Please enter a valid Indian mobile number"
+            },
+            chairman_name: "Please enter the chairman/president's name",
+            chairman_mobile: {
+                required: "Please enter the chairman's mobile number",
+                indianMobile: "Please enter a valid Indian mobile number"
+            },
+            proposed_immersion_date: "Please select a proposed immersion date",
+            proposed_immersion_time: "Please select a proposed immersion time",
+            dhunuchi: "Please select Yes or No for Dhunuchi Nach participation",
+            team_members: "Please enter number of team members (1–{{ setting('DHUNUCHI_TEAM',20) }})"
+        }
     });
+
 
 });
 
@@ -243,6 +328,18 @@ function editPuja(id) {
         $('#proposed_immersion_time').val(puja.proposed_immersion_time);
         $('#vehicle_no').val(puja.vehicle_no);
         $('#team_members').val(puja.team_members);
+
+        if (puja.action_area) {
+            $("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
+        } else {
+            $("input[name='in_newtown'][value='0']").prop("checked", true).trigger("change");
+        }
+        if (puja.team_members) {
+            $("input[name='dhunuchi'][value='1']").prop("checked", true).trigger("change");
+        } else {
+            $("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
+        }
+
         $('#pujaModalLabel').text('Edit Puja');
         $('.error').text('');
         $('#pujaModal').modal('show');
