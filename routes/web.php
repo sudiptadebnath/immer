@@ -29,7 +29,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
 
     Route::get("/dashboard", fn() => view('user.dashboard'))->name('user.dashboard');
 
-    Route::prefix('users')->group(function () {
+    Route::middleware('role:a')->prefix('users')->group(function () {
         Route::get('/', fn() => view("user.users"))->name('user.users');
         Route::post('/add', [UserController::class, 'add']);
         Route::get('/data', [UserController::class, 'data'])->name('users.data');
@@ -39,7 +39,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::delete('/{id}', [UserController::class, 'delete']);
     });
 
-    Route::prefix('puja')->group(function () {
+    Route::middleware('role:ao')->prefix('puja')->group(function () {
         Route::view('/','puja.index');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
         Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
@@ -50,14 +50,14 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::delete('/{id}', [PujaController::class, 'delete']);
     });
 
-    Route::prefix('att')->group(function () {
+    Route::middleware('role:aos')->prefix('att')->group(function () {
         Route::get('/scan', [ScanController::class, 'scanview'])->name('att.scan');
         Route::post('/mark_by_mob', [ScanController::class, 'mark_by_mob'])->name('att.mark_by_mob');
         Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
         Route::post('/mark_by_qr', [ScanController::class, 'mark_by_qr'])->name('att.mark_by_qr');
     });
 
-    Route::prefix('conf')->group(function () {
+    Route::middleware('role:ao')->prefix('conf')->group(function () {
         //Route::get('/settings', fn() => view("conf.settings"))->name('conf.settings');
 
         Route::get('/action', fn() => view("conf.actions"))->name('conf.action');

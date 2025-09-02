@@ -6,7 +6,7 @@
   </li>
 
   <!-- Settings (Always open) -->
-@if (hasRole('a'))
+@if (hasRole('ao'))
   <li class="nav-item">
     <span class="nav-link"><i class="bi bi-gear me-2"></i>Settings</span>
     <ul class="nav flex-column ms-4">
@@ -18,10 +18,12 @@
   </li>
 @endif
 
-@if (hasRole('ao'))
+@if (hasRole('a'))
   <li class="nav-item">
     <a class="nav-link" href="{{ route('user.users') }}"><i class="bi bi-person-lines-fill me-2"></i>Users</a>
   </li>
+@endif
+@if (hasRole('o'))
   <li class="nav-item">
     <a class="nav-link" href="{{ url('user/puja') }}"><i class="bi bi-brightness-high me-2"></i>Pujas</a>
   </li>

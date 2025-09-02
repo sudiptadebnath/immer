@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\PujaCommittee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ScanController extends Controller
 {
@@ -13,8 +14,17 @@ class ScanController extends Controller
     {
         // $today = Carbon::today();
         // $scans = Attendance::whereDate('scan_datetime', $today);
-        $scans = Attendance::query();
-
+        // $scans = Attendance::query();
+        $scans = DB::table('attendance as s')
+            ->select('s.puja_committee_id', 's.typ')
+            ->join(DB::raw('(SELECT puja_committee_id, MAX(scan_datetime) as max_dt 
+                            FROM attendance 
+                            GROUP BY puja_committee_id) as latest'),
+                function ($join) {
+                    $join->on('s.puja_committee_id', '=', 'latest.puja_committee_id')
+                        ->on('s.scan_datetime', '=', 'latest.max_dt');
+                })
+            ->get();
         $qCount  = (clone $scans)->where('typ', 'queue')->count();
         $iCount  = (clone $scans)->where('typ', 'in')->count();
         $oCount  = (clone $scans)->where('typ', 'out')->count();
@@ -43,9 +53,9 @@ class ScanController extends Controller
             //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
             ->first();
-        if (!$lastAtt) $typ = 'queue';
+        if (!$lastAtt && $cuser->role=="s") $typ = 'queue';
         elseif ($lastAtt->typ === 'queue' && $cuser->role=="o")  $typ = 'in';
-        elseif ($lastAtt->typ === 'in') $typ = 'out';
+        elseif ($lastAtt->typ === 'in' && $cuser->role=="s") $typ = 'out';
         else return $this->err("Unaccepted pass");
         Attendance::create([
             'scan_datetime' => now(),

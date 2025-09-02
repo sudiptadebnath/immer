@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.user.session' => \App\Http\Middleware\CheckUserSession::class,
             'check.allowsignup' => \App\Http\Middleware\AllowSignUp::class,
             'request.sanitize' => \App\Http\Middleware\SanitizeRequest::class,
+            'role' => \App\Http\Middleware\CheckUserRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
