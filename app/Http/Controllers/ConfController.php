@@ -37,7 +37,7 @@ class ConfController extends Controller
         ]);
         if ($err) return $err;
         ActionArea::create([
-            'name' => strip_tags($request->name),
+            'name' => $request->name,
         ]);
         return $this->ok('Record Added Successfully');
     } 
@@ -49,7 +49,7 @@ class ConfController extends Controller
             'name' => 'required|string|max:50|unique:action_areas,name,'.$id,
         ]);
         if ($err) return $err;
-        $rec->name = strip_tags($request->name);
+        $rec->name = $request->name;
         $rec->save();
         return $this->ok('Record Saved Successfully');
     } 
@@ -86,7 +86,7 @@ class ConfController extends Controller
         ]);
         if ($err) return $err;
         PujaCategorie::create([
-            'name' => strip_tags($request->name),
+            'name' => $request->name,
         ]);
         return $this->ok('Record Added Successfully');
     } 
@@ -98,7 +98,7 @@ class ConfController extends Controller
             'name' => 'required|string|max:50|unique:puja_categories,name,'.$id,
         ]);
         if ($err) return $err;
-        $rec->name = strip_tags($request->name);
+        $rec->name = $request->name;
         $rec->save();
         return $this->ok('Record Saved Successfully');
     } 
@@ -135,7 +135,7 @@ class ConfController extends Controller
         ]);
         if ($err) return $err;
         PujaCommitteeRepo::create([
-            'name' => strip_tags($request->name),
+            'name' => $request->name,
         ]);
         return $this->ok('Record Added Successfully');
     } 
@@ -147,7 +147,7 @@ class ConfController extends Controller
             'name' => 'required|string|max:50|unique:puja_committies_repo,name,'.$id,
         ]);
         if ($err) return $err;
-        $rec->name = strip_tags($request->name);
+        $rec->name = $request->name;
         $rec->save();
         return $this->ok('Record Saved Successfully');
     } 
@@ -190,7 +190,7 @@ class ConfController extends Controller
         ]);
         if ($err) return $err;
         ImmersionDate::create([
-            'name' => strip_tags($request->name),
+            'name' => $request->name,
             'idate' => $request->idate,
         ]);
         return $this->ok('Record Added Successfully');
@@ -204,7 +204,7 @@ class ConfController extends Controller
             'idate' => 'required|date|unique:puja_immersion_dates,idate,'.$id,
         ]);
         if ($err) return $err;
-        $rec->name = strip_tags($request->name);
+        $rec->name = $request->name;
         $rec->idate = $request->idate;
         $rec->save();
         return $this->ok('Record Saved Successfully');

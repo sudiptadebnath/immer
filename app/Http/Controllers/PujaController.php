@@ -128,8 +128,7 @@ class PujaController extends Controller
 
     private function qrGen($file, $tok)
     {
-        Log::info($file, ["tok" => $tok]);
-        if (file_exists($file)) return;
+        //if (file_exists($file)) return;
         $qrCode = new QrCode($tok);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
@@ -143,7 +142,7 @@ class PujaController extends Controller
         $path = public_path('qrs');
         if (!file_exists($path)) mkdir($path, 0755, true);
         $file = $path . '/' . $puja->id . '.png';
-        $this->qrGen($file, $puja->token);
+        $this->qrGen($file, $puja->secretary_mobile);
         return view('puja.gatepass', compact('puja'));
     }
 
@@ -152,9 +151,9 @@ class PujaController extends Controller
         $puja = PujaCommittee::find($id);
         if (!$puja) abort(404, 'Puja not found');
         $file = public_path("qrs/{$puja->id}.png");
-        $this->qrGen($file, $puja->token);
+        $this->qrGen($file, $puja->secretary_mobile);
         $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'));
-        return $pdf->download("GatePass-{$puja->id}.pdf");
+        return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 
     public function scan()

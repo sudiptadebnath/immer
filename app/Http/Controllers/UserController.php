@@ -2,24 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    public function data(Request $request)
+    public function data()
     {
-        $query = User::orderBy('created_at', 'desc');
+        $cuser = $this->getUserObj();
+        $query = User::where('id', '!=', $cuser->id)
+            ->where('role','!=','a')
+            ->orderBy('created_at', 'desc');
         $data = $query->get()->map(function ($row) {
             $row['stat'] = statDict()[$row->stat] ?? $row->stat;
             $row['role'] = roleDict()[$row->role] ?? $row->role;

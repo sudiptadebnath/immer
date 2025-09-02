@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // register aliases here
             'check.user.session' => \App\Http\Middleware\CheckUserSession::class,
             'check.allowsignup' => \App\Http\Middleware\AllowSignUp::class,
+            'request.sanitize' => \App\Http\Middleware\SanitizeRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

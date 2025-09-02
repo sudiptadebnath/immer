@@ -20,7 +20,7 @@ Route::get('/register', fn() => view("register"));
 Route::post('/register', [PujaController::class, 'add']);
 
 
-Route::middleware('check.user.session')->prefix('user')->group(function () {
+Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
 
     Route::get("/logout", function () {
         Session::flush();
