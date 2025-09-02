@@ -67,11 +67,11 @@ $(function () {
         rules:{
             phone: {
                 required: false,
-                minlength: 10,
+                indianMobile: true,
             },
             password: {
                 required: function() { return $("#id").val() == ""; },
-                minlength: 6
+                strongPassword: true,
             },
             password2: {
                 required: function() { return $("#id").val() == ""; },

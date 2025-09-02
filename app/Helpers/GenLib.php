@@ -157,11 +157,19 @@ if (!function_exists('stoa')) {
 
 
 if (!function_exists('dbVals')) {
-    function dbVals(string $tbl, string|array $fld = "name"): array
+    function dbVals(string $tbl, string|array $fld = "name", string $orderBy = "", string $direction = "asc"): array
     {
         $out = [];
+
         if (is_array($fld)) {
-            $rows = DB::table($tbl)->get($fld);
+            $query = DB::table($tbl)->select($fld);
+
+            if ($orderBy) {
+                $query->orderBy($orderBy, $direction);
+            }
+
+            $rows = $query->get();
+
             foreach ($rows as $row) {
                 $key = $row->{$fld[0]};
                 $vals = [];
@@ -171,11 +179,19 @@ if (!function_exists('dbVals')) {
                 $out[$key] = implode(" - ", $vals);
             }
         } else {
-            $rows = DB::table($tbl)->pluck($fld)->toArray();
+            $query = DB::table($tbl)->select($fld);
+
+            if ($orderBy) {
+                $query->orderBy($orderBy, $direction);
+            }
+
+            $rows = $query->pluck($fld)->toArray();
+
             foreach ($rows as $val) {
                 $out[$val] = $val;
             }
         }
+
         return $out;
     }
 }

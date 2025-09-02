@@ -14,5 +14,6 @@ class PujaCategorie extends Model
 
     protected $fillable = [
         'name',
+        'view_order',
     ];
 }

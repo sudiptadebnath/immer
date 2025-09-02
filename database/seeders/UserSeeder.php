@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
             'name'     => 'Admin',
             'email'    => 'admin@mail.com',
             'phone'    => '9111111111',
-            'password' => 'admin',
+            'password' => 'abc123&',
             'role'     => 'a',
         ]);
 
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'name'     => 'Operator1',
             'email'    => 'operator1@mail.com',
             'phone'    => '9222222222',
-            'password' => 'operator',
+            'password' => 'abc123&',
             'role'     => 'o',
         ]);
 
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
             'name'     => 'Scanner1',
             'email'    => 'scanner1@mail.com',
             'phone'    => '9333333333',
-            'password' => 'scanner',
+            'password' => 'abc123&',
             'role'     => 's',
         ]);
     }

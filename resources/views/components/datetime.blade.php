@@ -36,7 +36,7 @@
 
 @push('scripts')
 <script>
-    new tempusDominus.TempusDominus(document.getElementById('datetimepicker-{{ $name }}'), {
+    var dtp_{{ $name}} =  new tempusDominus.TempusDominus(document.getElementById('datetimepicker-{{ $name }}'), {
         defaultDate: '{{ old($name, $value) }}' || new Date(),
         display: {
             components: {
@@ -59,5 +59,10 @@
     document.getElementById('{{ $name }}').addEventListener('change', function () {
         $(this).valid(); 
     });
+    function set_dtp_{{ $name }}(vl) {
+        let [day, month, year] = vl.split('-').map(Number);
+        let tdDate = new tempusDominus.DateTime(year, month-1, day);
+        dtp_{{ $name}}.dates.setValue(tdDate);
+    }
 </script>
 @endpush

@@ -44,33 +44,13 @@
 	</div>
 
 	
-    @include('layouts.partials.topbar')
 
 	<!-- ============================ MAIN LAYOUT ==================================== -->
 	<div class="d-flex flex-grow-1">
-	
-@if (userLogged())
-	<nav class="sidebar-wrapper overflow-auto h-100 bg-light border-end p-3 d-none d-sm-block">
-		@include('layouts.partials.menu')
-	</nav>
-
-	<div class="offcanvas offcanvas-start bg-light" tabindex="-1"
-	id="sidebarOffcanvas" data-bs-backdrop="true" aria-labelledby="sidebarLabel">
-		<div class="offcanvas-header">
-		  <h5 class="offcanvas-title" id="sidebarLabel">{{ env('APP_TITLE', 'pms') }}</h5>
-		  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-		</div>
-		<div class="sidebar-wrapper offcanvas-body p-3">
-		    @include('layouts.partials.menu')
-		</div>
-	</div>
-@endif
-
 	  <div class="flex-grow-1 d-flex flex-column">
 		<main class="flex-grow-1 p-0 p-sm-2 bg-white">
 		  @yield('content')
 		</main>
-		@include('layouts.partials.footer')
 	  </div>
 	</div>
 
@@ -85,6 +65,8 @@
 
 	<script> let appsettings = { dtfmt: @json(dtfmt(1)), dttmfmt: @json(dttmfmt(1)) } </script>
 	
+	<script src={{asset("resources/js/scripts.js")}}></script>
+
 	<!-- DataTables JS + Bootstrap 5 styling -->
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -126,7 +108,6 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-	<script src={{asset("resources/js/scripts.js")}}></script>
 	@yield("scripts")
 	@stack('scripts')
 	

@@ -15,17 +15,13 @@ class Attendance extends Model
     protected $fillable = [
         'scan_datetime',
         'scan_by',
-        'user_id',
-        'post',
+        'puja_committee_id',
         'typ',
-        'location',
     ];
 
-
-    // The user who was scanned
-    public function user()
+    public function pujaCommittee()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(PujaCommittee::class, 'puja_committee_id');
     }
 
     public function scannedBy()

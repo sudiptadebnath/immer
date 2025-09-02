@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('attendance', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('scan_datetime'); // full timestamp of scan
-            $table->foreignId('scan_by')->constrained('users')->onDelete('cascade'); // who scanned
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // user whose QR is scanned
-            $table->string('post', 30)->default('post1'); // optional location
+            $table->dateTime('scan_datetime');
+            $table->foreignId('scan_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('puja_committee_id')->constrained('puja_committees')->onDelete('cascade');
             $table->string('typ', 10)->default('queue');
-            $table->string('location')->nullable(); // optional location
-            $table->unique(['scan_by', 'user_id', 'post', 'typ']); // prevent duplicate scans at exact same time
         });
     }
 

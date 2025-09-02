@@ -8,19 +8,13 @@
   <!-- Settings (Always open) -->
 @if (hasRole('a'))
   <li class="nav-item">
-    <a class="nav-link" href="{{ route('conf.settings') }}"><i class="bi bi-gear me-2"></i>Settings</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('conf.action') }}"><i class="bi bi-gear me-2"></i>Action Area</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('conf.category') }}"><i class="bi bi-gear me-2"></i>Category</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('conf.commitee') }}"><i class="bi bi-gear me-2"></i>Puja Committee</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('conf.immerdt') }}"><i class="bi bi-gear me-2"></i>Immersion Dates</a>
+    <span class="nav-link"><i class="bi bi-gear me-2"></i>Settings</span>
+    <ul class="nav flex-column ms-4">
+      <li class="nav-item"><a class="nav-link" href="{{ route('conf.action') }}">Action Area</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('conf.category') }}">Category</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('conf.committee') }}">Puja Committee</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('conf.immerdt') }}">Immersion Date</a></li>
+    </ul>
   </li>
 @endif
 

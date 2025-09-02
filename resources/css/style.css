@@ -121,7 +121,8 @@ ul.nav.flex-column {
 .table th,
 .table td {
     vertical-align: middle !important;
-    padding: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 .bigtxt {

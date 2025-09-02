@@ -4,7 +4,7 @@
 
 <div class="container mt-3">
 <div class="row g-2 justify-content-center">
-    <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="queue" />
+    {{-- <x-select size="4" icon="box-arrow-in-right" name="typ" title="Type" :value="attDict()" sel="queue" /> --}}
 
     <div class="col-md-2">
         <x-button name="toggle-scan" icon="qr-code-scan" size="" title="QR" onclick="toggleScan()" />
@@ -38,35 +38,36 @@ function showMarkByMob() {
     $('#mark-by-mob').removeClass('d-none');
 }
 
-function toggle_scan_otp() {
-    const val = $('#typ').val();
-    if (val === 'queue') {
-        $('#toggle-scan-otp').removeClass('d-none');
-    } else {
-        $('#toggle-scan-otp').addClass('d-none');
-        $('#mark-by-mob').addClass('d-none');
-    }
-}
+// function toggle_scan_otp() {
+//     const val = $('#typ').val();
+//     if (val === 'queue') {
+//         $('#toggle-scan-otp').removeClass('d-none');
+//     } else {
+//         $('#toggle-scan-otp').addClass('d-none');
+//         $('#mark-by-mob').addClass('d-none');
+//     }
+// }
 
-$(function() {
-    $('#typ').change(toggle_scan_otp);
-    toggle_scan_otp();
-});
+// $(function() {
+//     $('#typ').change(toggle_scan_otp);
+//     toggle_scan_otp();
+// });
 
-function validate() {
-    const typ  = $('#typ').val();
-    if (!typ) {
-        myAlert("Please select Type before proceed.", "danger");
-        return false;
-    }
-    return true;
-}
+// function validate() {
+//     const typ  = $('#typ').val();
+//     if (!typ) {
+//         myAlert("Please select Type before proceed.", "danger");
+//         return false;
+//     }
+//     return true;
+// }
 
 function toggleScan() {
+    $('#mark-by-mob').addClass('d-none');
     const btn = $('#toggle-scan span'); // span holds Start/Stop text
 
     if (!isScanning) {
-        if (!validate()) return;
+        //if (!validate()) return;
 
         btn.text("Stop");
         $('#qr-result').html('');
@@ -112,7 +113,7 @@ function onScanSuccess(decodedText, decodedResult) {
     stopScan();
     const typ  = $('#typ').val();
     webserv("POST", "{{ route('att.mark_by_qr') }}", { 
-        token: decodedText, post: 1, typ 
+        token: decodedText
     }, function ok(resp) {
         $('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
@@ -135,7 +136,7 @@ function markByMob() {
         return;
     }
     webserv("POST", "{{ route('att.mark_by_mob') }}", 
-    { mobile: $('#mobile').val(), typ: $('#typ').val() }, 
+    { mobile: $('#mobile').val() }, 
     function ok(resp) {
         $('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')

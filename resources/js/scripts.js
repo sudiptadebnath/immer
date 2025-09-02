@@ -20,14 +20,11 @@ function myLoad() {
 }
 
 function addValidators() {
-
     // Validation messages override
     $.validator.messages.required = function(param, input) {
-        let label = $("label[for='" + input.id + "']").text().replace("?", "").trim();
-        if (!label) {
-            label = input.name.replace(/_/g, " "); // fallback: use input name
-        }
-        return label + " is required";
+        let $input = $(input);
+        let title = $input.attr("title") || input.name.replace(/_/g, " ");
+        return title + " is required";
     };
 
     // Custom rule for Indian mobile

@@ -27,8 +27,7 @@ $(document).ready(function ($) {
         },
         password: {
           required: true,
-          //strongPassword: true,
-          minlength: 2,
+          strongPassword: true,
         }
       }
     });

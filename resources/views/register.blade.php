@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.blank')
 
 @php
-$action_area = dbVals("action_areas","name");
-$category = dbVals("puja_categories","name");
-$puja_comm = dbVals("puja_committies_repo","name");
+$action_area = dbVals("action_areas","name","view_order","asc");
+$category = dbVals("puja_categories","name","view_order","asc");
+$puja_comm = dbVals("puja_committies_repo","name","view_order","asc");
 $puja_comm["Other"] = "Other";
-$immer_dts = dbVals("puja_immersion_dates",["idate","name"]);
+$immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 @endphp
 
 @section('content')
@@ -129,13 +129,13 @@ $(function () {
 
     $("#register").validate({
         rules:{
-            password: {
+            secretary_mobile: {
                 required: true,
-                minlength: 6
+                indianMobile: true,
             },
-            password2: {
+            chairman_mobile: {
                 required: true,
-                equalTo: "#password"
+                indianMobile: true,
             },
             team_members: {
                 required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
@@ -145,7 +145,6 @@ $(function () {
             }
         },
         messages: {
-            password2: { equalTo: "Passwords do not match" },
             team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
         },
     });

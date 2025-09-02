@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @php
-$action_area = dbVals("action_areas","name");
-$category = dbVals("puja_categories","name");
-$puja_comm = dbVals("puja_committies_repo","name");
+$action_area = dbVals("action_areas","name","view_order","asc");
+$category = dbVals("puja_categories","name","view_order","asc");
+$puja_comm = dbVals("puja_committies_repo","name","view_order","asc");
 $puja_comm["Other"] = "Other";
-$immer_dts = dbVals("puja_immersion_dates",["idate","name"]);
+$immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 @endphp
 
 
@@ -182,13 +182,13 @@ $(function () {
 
     $("#register").validate({
         rules:{
-            password: {
-                required: function() { return $("#id").val() == ""; },
-                minlength: 6
+            secretary_mobile: {
+                required: true,
+                indianMobile: true,
             },
-            password2: {
-                required: function() { return $("#id").val() == ""; },
-                equalTo: "#password"
+            chairman_mobile: {
+                required: true,
+                indianMobile: true,
             },
             team_members: {
                 required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
@@ -198,7 +198,6 @@ $(function () {
             }
         },
         messages: {
-            password2: { equalTo: "Passwords do not match" },
             team_members: "Please enter number of team members (1-{{ setting('DHUNUCHI_TEAM',20) }})"
         },
     });

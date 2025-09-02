@@ -14,5 +14,6 @@ class ActionArea extends Model
 
     protected $fillable = [
         'name',
+        'view_order',
     ];
 }
