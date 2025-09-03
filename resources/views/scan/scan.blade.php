@@ -8,9 +8,9 @@
     <x-number size="4" name="mobile" title="Mobile Number" icon="telephone">
         <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
     </x-number>
-    <div class="d-flex justify-content-center w-100">
+    <div class="d-flex flex-column justify-content-center w-100">
         <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
-        <div id="qr-result" class="alert alert-primary mt-2 w-100 d-none"></div>
+        <div id="qr-result" class="alert alert-primary mt-2 w-100"></div>
     <div>
 </div>
 </div>
