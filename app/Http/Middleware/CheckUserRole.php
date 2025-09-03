@@ -10,14 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckUserRole extends Controller
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, $roles = null): Response
     {
-        if (!userLogged() || strpos(implode("",$roles), getUsrProp('role')) == false) {
+        $userRole = getUsrProp('role');
+        if (!userLogged() || ($roles && strpos($roles, $userRole) === false)) {
             if ($request->expectsJson()) {
                 return $this->err('Unauthorized Access', [], 401);
             }

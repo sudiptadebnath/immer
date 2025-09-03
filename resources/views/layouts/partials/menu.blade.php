@@ -23,7 +23,7 @@
     <a class="nav-link" href="{{ route('user.users') }}"><i class="bi bi-person-lines-fill me-2"></i>Users</a>
   </li>
 @endif
-@if (hasRole('o'))
+@if (hasRole('ao'))
   <li class="nav-item">
     <a class="nav-link" href="{{ url('user/puja') }}"><i class="bi bi-brightness-high me-2"></i>Pujas</a>
   </li>
