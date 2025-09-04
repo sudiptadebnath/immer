@@ -9,8 +9,8 @@
         <x-button size="" icon="send" title="Go" style="warning" onclick="markByMob()" />
     </x-number>
     <div class="d-flex flex-column justify-content-center w-100">
-        <div id="qr-reader" style="width:100%; max-width:500px; display:none;"></div>
-        <div id="qr-result" class="alert alert-primary mt-2 w-100"></div>
+        <div id="qr-reader" style="width:100%; max-width:500px; display:none; margin: 0 auto;"></div>
+        <div id="qr-result" class="alert alert-primary mt-2 w-100 d-none"></div>
     <div>
 </div>
 </div>
@@ -59,8 +59,8 @@ function toggleScan() {
         //if (!validate()) return;
 
         btn.text("Stop");
-        $('#qr-result').html('');
-        $('#qr-result').hide();
+        //$('#qr-result').html('');
+        //$('#qr-result').hide();
         $('#qr-reader').show();
 
         if (!html5QrCode) {
@@ -74,10 +74,12 @@ function toggleScan() {
         ).then(() => {
             isScanning = true;
         }).catch(err => {
-            $('#qr-result').html("Camera error: " + err);
+			toastr.error("Camera error: " + err);
+
+            //$('#qr-result').html("Camera error: " + err);
             btn.text("Start");
-            $('#qr-result').hide();
-            $('#qr-reader').hide();
+            //$('#qr-result').hide();
+            //$('#qr-reader').hide();
         });
 
     } else {
@@ -90,8 +92,8 @@ function stopScan() {
         html5QrCode.stop().then(() => {
             isScanning = false;
             $('#toggle-scan span').text("Start");
-            $('#qr-result').hide();
-            $('#qr-reader').hide();
+            //$('#qr-result').hide();
+            //$('#qr-reader').hide();
         }).catch(err => {
             console.error("Stop failed", err);
         });
@@ -104,9 +106,9 @@ function startStopScan(stop) {
         if(stop) html5QrCode.pause(true);
         else {
             html5QrCode.resume();
-            $('#qr-result').fadeOut('slow', function () {
+            /*$('#qr-result').fadeOut('slow', function () {
                 $(this).addClass('d-none').html('');
-            });
+            });*/
         } 
     }
 }
@@ -118,19 +120,21 @@ function onScanSuccess(decodedText, decodedResult) {
     webserv("POST", "{{ route('att.mark_by_qr') }}", { 
         token: decodedText
     }, function ok(resp) {
-        $('#qr-result')
+		toastr.success(resp.msg);
+        /*$('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
         .addClass('alert-success')
         .html(resp.msg)
-        .show();
-        setTimeout(() => { startStopScan(false); }, 3000);        
+        .show();*/
+        setTimeout(() => { startStopScan(false); }, 3000);
     }, function fail(resp) {
-        $('#qr-result')
+		toastr.error(resp.msg);
+        /*$('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
         .addClass('alert-danger')
         .html(resp.msg)
-        .show();
-        setTimeout(() => { startStopScan(false); }, 3000);        
+        .show(); */
+        setTimeout(() => { startStopScan(false); }, 3000);  
     });
 }
 
@@ -143,17 +147,19 @@ function markByMob() {
     webserv("POST", "{{ route('att.mark_by_mob') }}", 
     { mobile: $('#mobile').val() }, 
     function ok(resp) {
-        $('#qr-result')
+		toastr.success(resp.msg);
+        /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
             .addClass('alert-success')
             .html(resp.msg)
-            .show();
+            .show();*/
     }, function fail(resp) {
-        $('#qr-result')
+		toastr.error(resp.msg);
+        /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
             .addClass('alert-danger')
             .html(resp.msg)
-            .show();
+            .show();*/
     });
 }
 

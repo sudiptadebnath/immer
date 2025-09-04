@@ -21,6 +21,12 @@ class PujaController extends Controller
     {
         $query = PujaCommittee::orderBy('created_at', 'desc');
         $data = $query->get()->map(function ($row) {
+            $row['proposed_immersion_date'] = $row->proposed_immersion_date 
+                ? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y') 
+                : null;
+            $row['proposed_immersion_time'] = $row->proposed_immersion_time 
+                ? Carbon::parse($row->proposed_immersion_time)->format('h:i A') 
+                : null;
             $row['stat'] = statDict()[$row->stat] ?? $row->stat;
             return $row;
         });
@@ -48,12 +54,18 @@ class PujaController extends Controller
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
         ];
-        $nm = $request->input('puja_committee_name') 
-            ?? $request->input('puja_committee_name_other') 
-            ?? $request->input('puja_committee_name_text');
-        $request->merge([
-            'puja_committee_name' => $nm
-        ]);
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+				$nm = $request->input('puja_committee_name_other');
+			} else {
+				$nm = $request->input('puja_committee_name');
+			}
+		} else {
+			$nm = $request->input('puja_committee_name_text');
+		}
+		$request->merge([
+			'puja_committee_name' => $nm
+		]);
 
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
@@ -62,7 +74,7 @@ class PujaController extends Controller
             'action_area'           => $request->in_newtown ? $request->action_area : null,
             'category'              => $request->in_newtown ? $request->category : null,
             'puja_committee_name'   => $request->puja_committee_name,
-            'puja_committee_address' => $request->in_newtown ? null : $request->puja_committee_address,
+            'puja_committee_address' => $request->puja_committee_address,
             'secretary_name'        => $request->secretary_name,
             'secretary_mobile'      => $request->secretary_mobile,
             'chairman_name'         => $request->chairman_name,
@@ -82,12 +94,20 @@ class PujaController extends Controller
     {
         $puja = PujaCommittee::find($id);
         if (!$puja) return $this->err("No Such Puja");
-        $nm = $request->input('puja_committee_name') 
-            ?? $request->input('puja_committee_name_other') 
-            ?? $request->input('puja_committee_name_text');
-        $request->merge([
-            'puja_committee_name' => $nm
-        ]);
+		
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+				$nm = $request->input('puja_committee_name_other');
+			} else {
+				$nm = $request->input('puja_committee_name');
+			}
+		} else {
+			$nm = $request->input('puja_committee_name_text');
+		}
+		$request->merge([
+			'puja_committee_name' => $nm
+		]);
+
         $err = $this->validate($request->all(), [
             'puja_committee_name'   => 'required|string|min:3|max:100|unique:puja_committees,puja_committee_name,' . $id,
             'puja_committee_address' => 'nullable|string|min:3|max:200',
@@ -105,7 +125,7 @@ class PujaController extends Controller
         $puja->action_area            = $request->in_newtown ? $request->action_area : null;
         $puja->category               = $request->in_newtown ? $request->category : null;
         $puja->puja_committee_name    = $request->puja_committee_name;
-        $puja->puja_committee_address = $request->in_newtown ? null : $request->puja_committee_address;
+        $puja->puja_committee_address = $request->puja_committee_address;
         $puja->secretary_name         = $request->secretary_name;
         $puja->secretary_mobile       = $request->secretary_mobile;
         $puja->chairman_name          = $request->chairman_name;

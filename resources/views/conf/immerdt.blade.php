@@ -14,7 +14,8 @@
     ];
 @endphp
 <x-table name="table_immerdt" title="Immertion Dates" :url="route('conf.data.immerdt')" :data=$data_immerdt :opts=$opts_immerdt />
-<div class="modal fade" id="modal_immerdt" tabindex="-1" aria-labelledby="modal_immerdtLabel" aria-hidden="true">
+<div class="modal fade" id="modal_immerdt" tabindex="-1" aria-labelledby="modal_immerdtLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="form_immerdt" onsubmit="return form_immerdt_submt(event)" novalidate="novalidate">
       <div class="modal-content">

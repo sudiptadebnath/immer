@@ -26,7 +26,8 @@
 
 <x-table name="userTable" title="Users" :url="route('users.data')" :data=$tbldata :opts=$opts />
 
-<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="adduser" onsubmit="return adduser_submt(event)" novalidate="novalidate">
       <div class="modal-content">
@@ -65,6 +66,14 @@
 $(function () {
     $("#adduser").validate({
         rules:{
+            email: {
+                required: true,
+                email: true
+            },
+            name: {
+                required: true,
+                minlength: 2
+            },
             phone: {
                 required: false,
                 indianMobile: true,
@@ -72,17 +81,50 @@ $(function () {
             password: {
                 required: function() { return $("#id").val() == ""; },
                 strongPassword: true,
+                minlength: 6
             },
             password2: {
                 required: function() { return $("#id").val() == ""; },
                 equalTo: "#password"
+            },
+            role: {
+                required: true
+            },
+            stat: {
+                required: true
             }
         },
         messages: {
-            password2: { equalTo: "Passwords do not match" },
-        },
+            email: {
+                required: "Email is required",
+                email: "Enter a valid email address"
+            },
+            name: {
+                required: "Name is required",
+                minlength: "Name must be at least 2 characters long"
+            },
+            phone: {
+                indianMobile: "Enter a valid Indian mobile number (10 digits starting with 6–9)"
+            },
+            password: {
+                required: "Password is required for new users",
+                strongPassword: "Password must contain a letter, a number, and a special character",
+                minlength: "Password must be at least 6 characters"
+            },
+            password2: {
+                required: "Please confirm your password",
+                equalTo: "Passwords do not match"
+            },
+            role: {
+                required: "Please select a role"
+            },
+            stat: {
+                required: "Please select a status"
+            }
+        }
     });
 });
+
 
 function adduser_submt (e) {
     e.preventDefault(); 

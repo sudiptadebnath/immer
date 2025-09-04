@@ -49,6 +49,9 @@ class ScanController extends Controller
         $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
         if (!$puja) return $this->err("GatePass not found");
         $today = Carbon::today();
+		if (!$puja->proposed_immersion_date || !\Carbon\Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
+			return $this->err("GatePass not valid for today");
+		}
         $lastAtt = Attendance::where('puja_committee_id', $puja->id)
             //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
@@ -69,26 +72,42 @@ class ScanController extends Controller
 
     public function mark_by_mob(Request $request)
     {
-        $err = $this->validate($request->all(), [
-            'mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile',
-        ],[
-            'mobile.unique' => "Duplicate mobile",
-            'mobile.*' => "Duplicate mobile",
-        ]);
-        if ($err) return $err;
         $cuser = $this->getUserObj();
-        $mob = $request->mobile;
-        $pujaData = [
-            'secretary_mobile'      => $mob,
-        ];
-        $puja = PujaCommittee::create($pujaData);
+		if($cuser->role != "s") return $this->err("Not a scanner post");
+		$request->validate([
+			'mobile' => [
+				'required',
+				'regex:/^[6-9]\d{9}$/',
+			],
+		], [
+			'mobile.regex' => 'Enter a valid 10-digit Indian mobile number starting with 6–9',
+		]);
+        $puja = PujaCommittee::where('secretary_mobile', $request->mobile)->first();
+        if (!$puja) {
+			$mob = $request->mobile;
+			$pujaData = [
+				'secretary_mobile'      => $mob,
+			];
+			$puja = PujaCommittee::create($pujaData);
+		} else {
+			if (!$puja->proposed_immersion_date || !\Carbon\Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
+				return $this->err("GatePass not valid for today");
+			}
+		}
+        $today = Carbon::today();
+        $lastAtt = Attendance::where('puja_committee_id', $puja->id)
+            //->whereDate('scan_datetime', $today)
+            ->orderBy('scan_datetime', 'desc')
+            ->first();
+        if (!$lastAtt && $cuser->role=="s") $typ = 'queue';
+        else return $this->err("Unaccepted pass");
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,
             'puja_committee_id'       => $puja->id,
-            'typ'           => 'queue',
-            'location'      => $request->location,
+            'typ'           => $typ,
         ]);
+        $typNm = attDict()[$typ];
         return $this->ok("Mobile verified and <br>Marked <b>Reported</b> for " . $mob);
     }
 

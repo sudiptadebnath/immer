@@ -15,7 +15,8 @@
     ];
 @endphp
 <x-table name="table_action" title="Action Areas" :url="route('conf.data.action')" :data=$data_action :opts=$opts_action />
-<div class="modal fade" id="modal_action" tabindex="-1" aria-labelledby="modal_actionLabel" aria-hidden="true">
+<div class="modal fade" id="modal_action" tabindex="-1" aria-labelledby="modal_actionLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="form_action" onsubmit="return form_action_submt(event)" novalidate="novalidate">
       <div class="modal-content">
@@ -37,7 +38,6 @@
       </form>
   </div>
 </div>
-
 @endsection
 
 @push('scripts')

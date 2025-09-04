@@ -15,7 +15,8 @@
     ];
 @endphp
 <x-table name="table_category" title="Categories" :url="route('conf.data.category')" :data=$data_category :opts=$opts_category />
-<div class="modal fade" id="modal_category" tabindex="-1" aria-labelledby="modal_categoryLabel" aria-hidden="true">
+<div class="modal fade" id="modal_category" tabindex="-1" aria-labelledby="modal_categoryLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="form_category" onsubmit="return form_category_submt(event)" novalidate="novalidate">
       <div class="modal-content">

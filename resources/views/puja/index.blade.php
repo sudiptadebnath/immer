@@ -80,7 +80,8 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
 
 <x-table name="pujaTable" title="Pujas" :url="route('puja.data')" :data=$tbldata :opts=$opts />
 
-<div class="modal fade" id="pujaModal" tabindex="-1" aria-labelledby="pujaModalLabel" aria-hidden="true">
+<div class="modal fade" id="pujaModal" tabindex="-1" aria-labelledby="pujaModalLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
       <div class="modal-content">

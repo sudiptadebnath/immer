@@ -67,7 +67,7 @@
 @endif
 
 	  <div class="flex-grow-1 d-flex flex-column">
-		<main class="flex-grow-1 p-0 p-sm-2 bg-white">
+		<main class="flex-grow-1 p-0 bg-white">
 		  @yield('content')
 		</main>
 		@include('layouts.partials.footer')

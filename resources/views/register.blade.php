@@ -14,7 +14,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
         <div class="PCRegist_form">
             <div class="PCRegist_header">
                 <div class="logo">
-                    <img src="/resources/img/logo-nkda.png" alt="Logo">
+                    <img src="{{asset("resources/img/logo-nkda.png")}}" alt="Logo">
                 </div>
                 <div class="logo_desc">
                     <h2>NEW TOWN KOLKATA DEVELOPMENT AUTHORITY</h2>

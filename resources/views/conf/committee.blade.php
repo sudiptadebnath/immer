@@ -15,7 +15,8 @@
     ];
 @endphp
 <x-table name="table_committee" title="Puja Committees" :url="route('conf.data.committee')" :data=$data_committee :opts=$opts_committee />
-<div class="modal fade" id="modal_committee" tabindex="-1" aria-labelledby="modal_committeeLabel" aria-hidden="true">
+<div class="modal fade" id="modal_committee" tabindex="-1" aria-labelledby="modal_committeeLabel" aria-hidden="true"
+data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <form id="form_committee" onsubmit="return form_committee_submt(event)" novalidate="novalidate">
       <div class="modal-content">
