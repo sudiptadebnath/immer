@@ -181,20 +181,26 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 @section('scripts')
 
 <script>
+
+function loadCommittees(actionArea, category, selected = '') {
+    webserv("GET", `{{ url('user/conf/get/committees') }}`, {action_area: actionArea, category: category}, function (resp) {
+        let list = resp.data || [];
+        let $ddl = $("#puja_committee_name");
+        $ddl.empty().append('<option value="">Select Puja Committee</option>');
+        list.forEach(function (item) {
+            let sel = (item.name === selected) ? 'selected' : '';
+            $ddl.append(`<option value="${item.name}" ${sel} data-address="${item.puja_address ?? ''}">${item.name}</option>`);
+        });
+        $ddl.append('<option value="Other">Other</option>');
+    });
+}
+
 $(function () {
 
     $("#action_area, #category").change(function () {
         let actionArea = $("#action_area").val();
         let category = $("#category").val();
-        webserv("GET", `{{ url('user/conf/get/committees') }}`, {action_area: actionArea, category: category}, function (resp) {
-            let list = resp.data || [];
-            let $ddl = $("#puja_committee_name");
-            $ddl.empty().append('<option value="">Select Puja Committee</option>');
-            list.forEach(function (item) {
-                $ddl.append(`<option value="${item.name}" data-address="${item.puja_address ?? ''}">${item.name}</option>`);
-            });
-            $ddl.append('<option value="Other">Other</option>');
-        });
+        loadCommittees(actionArea, category);
     });
 
     // on select committee → place address
@@ -337,6 +343,7 @@ function register_submt (e) {
 
 function addPuja() {
     $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
+    $('#register').find("select").prop('selectedIndex', 0); // reset all dropdowns
     $('#id').val(''); 
     $('#pujaModalLabel').text("Add Puja");
     $('.error').text('');
@@ -349,7 +356,7 @@ function editPuja(id) {
         $('#id').val(puja.id);
         $('#action_area').val(puja.action_area);
         $('#category').val(puja.category);
-        $('#puja_committee_name').val(puja.puja_committee_name);
+        loadCommittees(puja.action_area, puja.category, puja.puja_committee_name);
         $('#puja_committee_address').val(puja.puja_committee_address);
         $('#secretary_name').val(puja.secretary_name);
         $('#secretary_mobile').val(puja.secretary_mobile);

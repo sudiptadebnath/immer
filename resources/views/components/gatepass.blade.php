@@ -96,7 +96,7 @@
 </head>
 <body>
     <div class="card">
-        <h2>GatePass</h2>
+        <h2>Registration Slip</h2>
         <div class="content">
             <!-- QR Code -->
             <div class="qr-cell">

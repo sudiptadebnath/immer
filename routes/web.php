@@ -46,6 +46,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::view('/','puja.index');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
         Route::post('/add', [PujaController::class, 'add']);
+        Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
         Route::get('/{id}', [PujaController::class, 'get']);
         Route::put('/{id}', [PujaController::class, 'update']);
         Route::delete('/{id}', [PujaController::class, 'delete']);

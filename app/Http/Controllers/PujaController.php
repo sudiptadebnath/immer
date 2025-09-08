@@ -181,6 +181,14 @@ class PujaController extends Controller
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 
+    public function entryslip($id) {
+        $puja = PujaCommittee::find($id);
+        if (!$puja) abort(404, 'Puja not found');
+        $file = public_path("qrs/{$puja->id}.png");
+        $this->qrGen($file, $puja->secretary_mobile);
+        return view("puja.gatepass", compact('puja', 'file'));
+    }
+
     public function scan()
     {
         $puja = $this->getUserObj();

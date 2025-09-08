@@ -126,6 +126,13 @@ function onScanSuccess(decodedText, decodedResult) {
         .addClass('alert-success')
         .html(resp.msg)
         .show();*/
+
+        @if(hasRole("ao")) 
+        const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', decodedText);
+        const w = window.open(printUrl, '_blank');
+        w.onload = function() { w.print(); };
+        @endif
+
         setTimeout(() => { startStopScan(false); }, 3000);
     }, function fail(resp) {
 		toastr.error(resp.msg);
