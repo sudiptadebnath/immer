@@ -52,6 +52,7 @@
         "delete"=>"",
         "actions"=>"",
         "imp"=>[],
+		"ajaxdata"=>"",
     ], $opts);
     extract($opts);
     $act = ($add || $edit || $delete || $actions);
@@ -60,8 +61,9 @@
 @endphp
 
 <div class="container-fluid m-0 p-3 fullwidth">
-    <h3 class="d-flex border-1 border-bottom pb-2">
+    <h3 class="d-flex flex-wrap gap-1 border-1 border-bottom pb-2">
         {{ $title }}
+		{{ $slot }}
         @if($imp)
         <div class="dropdown mb-0 ms-auto exportmenu">
             <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
@@ -152,7 +154,12 @@ $(document).ready(function () {
     @endif
         processing: true,
         serverSide: true,
-        ajax: "{{ $url }}",
+        ajax: {
+			url: "{{ $url }}",
+    @if($ajaxdata)
+            data: {{ $ajaxdata }},
+    @endif
+		},
     @if($imp)
         buttons: [
 			{ extend: 'copy', filename: '{{ $efnm }}', title: '{{ $title }}', 

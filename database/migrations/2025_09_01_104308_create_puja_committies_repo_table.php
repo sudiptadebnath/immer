@@ -13,8 +13,23 @@ return new class extends Migration
     {
         Schema::create('puja_committies_repo', function (Blueprint $table) {
             $table->id();
+            // Foreign keys
+            $table->unsignedBigInteger('action_area_id')->nullable()->index();
+            $table->unsignedBigInteger('puja_category_id')->nullable()->index();
+
+            // Main fields
             $table->string('name', 200)->unique();
+            $table->text('puja_address')->nullable();
             $table->unsignedInteger('view_order')->default(0)->index();
+
+            // Constraints
+            $table->foreign('action_area_id')
+                  ->references('id')->on('action_areas')
+                  ->onDelete('set null');
+
+            $table->foreign('puja_category_id')
+                  ->references('id')->on('puja_categories')
+                  ->onDelete('set null');
         });
     }
 

@@ -114,11 +114,38 @@ class ConfController extends Controller
     /* ==================== SERVICES FOR committee ====================================*/
     public function data_committee()
     {
-        return DataTables::of(PujaCommitteeRepo::query()->orderBy('view_order', 'asc'))->make(true);
+		return DataTables::of(
+			PujaCommitteeRepo::with(['actionArea', 'pujaCategory'])
+				->orderBy('view_order', 'asc')
+		)
+		->addColumn('action_area', function ($row) {
+			return $row->actionArea?->name ?? '-';
+		})
+		->addColumn('category', function ($row) {
+			return $row->pujaCategory?->name ?? '-';
+		})
+		->make(true);
     }
     public function get_committee($id)
     {
-        return $this->ok("Record",["data"=>PujaCommitteeRepo::find($id)]);
+        return $this->ok("Record",["data"=>
+		PujaCommitteeRepo::with(['actionArea', 'pujaCategory'])->find($id)]);
+    }
+    public function get_committees(Request $request)
+    {
+		$q = PujaCommitteeRepo::query();
+		if ($request->action_area) {
+			$q->whereHas('actionArea', function ($sub) use ($request) {
+				$sub->where('name', $request->action_area);
+			});
+		}
+		if ($request->category) {
+			$q->whereHas('pujaCategory', function ($sub) use ($request) {
+				$sub->where('name', $request->category);
+			});
+		}
+		$committees = $q->orderBy('view_order', 'asc')->get();
+		return $this->ok("Records",["data"=>$committees]);
     }
     public function updateorder_committee(Request $request)
     {
@@ -131,11 +158,28 @@ class ConfController extends Controller
     public function add_committee(Request $request)
     {
         $err = $this->validate($request->all(), [
-            'name' => 'required|string|max:50|unique:puja_committies_repo,name',
-        ]);
+			'action_area' => 'required|exists:action_areas,id',
+			'category' => 'required|exists:puja_categories,id',
+			'name' => 'required|string|max:200|unique:puja_committies_repo,name',
+			'puja_committee_address' => 'nullable|string|max:300',
+        ], [
+			'action_area.required' => 'Please select an Action Area.',
+			'action_area.exists' => 'Selected Action Area is invalid.',
+			'category.required' => 'Please select a Category.',
+			'category.exists' => 'Selected Category is invalid.',
+			'name.required' => 'Committee name is required.',
+			'name.string' => 'Committee name must be text.',
+			'name.max' => 'Committee name may not exceed 200 characters.',
+			'name.unique' => 'This committee name already exists.',
+			'puja_committee_address.string' => 'Address must be text.',
+			'puja_committee_address.max' => 'Address may not exceed 300 characters.',
+		]);
         if ($err) return $err;
         PujaCommitteeRepo::create([
-            'name' => $request->name,
+			'action_area_id' => $request->action_area,
+			'puja_category_id' => $request->category,
+			'name' => $request->name,
+			'puja_address' => $request->puja_committee_address,
         ]);
         return $this->ok('Record Added Successfully');
     } 
@@ -143,12 +187,36 @@ class ConfController extends Controller
     {
         $rec = PujaCommitteeRepo::find($id);
         if (!$rec) return $this->err("No Such Record");
-        $err = $this->validate($request->all(), [
-            'name' => 'required|string|max:50|unique:puja_committies_repo,name,'.$id,
-        ]);
+        $err = $this->validate($request->all(),[
+			'action_area' => 'required|exists:action_areas,id',
+			'category' => 'required|exists:puja_categories,id',
+			'name' => 'required|string|max:200|unique:puja_committies_repo,name,' . $id,
+			'puja_committee_address' => 'nullable|string|max:300',
+			'view_order' => 'nullable|integer|min:0',
+		], [
+			'action_area.required' => 'Please select an Action Area.',
+			'action_area.exists' => 'Selected Action Area is invalid.',
+
+			'category.required' => 'Please select a Category.',
+			'category.exists' => 'Selected Category is invalid.',
+
+			'name.required' => 'Committee name is required.',
+			'name.string' => 'Committee name must be text.',
+			'name.max' => 'Committee name may not exceed 200 characters.',
+			'name.unique' => 'This committee name already exists.',
+
+			'puja_committee_address.string' => 'Address must be text.',
+			'puja_committee_address.max' => 'Address may not exceed 300 characters.',
+
+			'view_order.integer' => 'View order must be a number.',
+			'view_order.min' => 'View order cannot be negative.',
+		]);
         if ($err) return $err;
-        $rec->name = $request->name;
-        $rec->save();
+		$rec->action_area_id = $request->action_area;
+		$rec->puja_category_id = $request->category;
+		$rec->name = $request->name;
+		$rec->puja_address = $request->puja_committee_address;
+		$rec->save();
         return $this->ok('Record Saved Successfully');
     } 
     public function del_committee($id)

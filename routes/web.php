@@ -4,6 +4,8 @@ use App\Http\Controllers\ConfController;
 use App\Http\Controllers\PujaController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RepoController;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -18,7 +20,8 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/register', fn() => view("register"));
 Route::post('/register', [PujaController::class, 'add']);
-
+Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
+Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 
 Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
 
@@ -42,12 +45,19 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
     Route::middleware('role:ao')->prefix('puja')->group(function () {
         Route::view('/','puja.index');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
-        Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
-        Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
         Route::post('/add', [PujaController::class, 'add']);
         Route::get('/{id}', [PujaController::class, 'get']);
         Route::put('/{id}', [PujaController::class, 'update']);
         Route::delete('/{id}', [PujaController::class, 'delete']);
+    });
+
+    Route::middleware('role:ao')->prefix('repo')->group(function () {
+        Route::view('/regs', 'repo.reg')->name('repo.regs');
+        Route::get('/regsdata', [RepoController::class, 'regsdata'])->name('repo.regsdata');
+        Route::view('/immer', 'repo.immer')->name('repo.immer');
+        Route::get('/immerdata', [RepoController::class, 'immerdata'])->name('repo.immerdata');
+        Route::view('/dhun', 'repo.dhun')->name('repo.dhun');
+        Route::get('/dhundata', [RepoController::class, 'dhundata'])->name('repo.dhundata');
     });
 
     Route::middleware('role:aos')->prefix('att')->group(function () {
@@ -79,6 +89,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::get('/committee', fn() => view("conf.committee"))->name('conf.committee');
         Route::get('/data/committee', [ConfController::class, 'data_committee'])->name('conf.data.committee');
         Route::post('/data/committee/updateorder', [ConfController::class, 'updateorder_committee'])->name('conf.updateorder.committee');
+        Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
         Route::get('/get/committee/{id}', [ConfController::class, 'get_committee'])->name('conf.get.committee');
         Route::post('/add/committee', [ConfController::class, 'add_committee'])->name('conf.add.committee');
         Route::put('/edit/committee/{id}', [ConfController::class, 'edit_committee'])->name('conf.edit.committee');

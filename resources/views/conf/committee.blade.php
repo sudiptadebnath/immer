@@ -2,6 +2,9 @@
 
 @section('content')
 @php
+	$action_area = dbVals("action_areas",["id","name"],"view_order","asc");
+	$category = dbVals("puja_categories",["id","name"],"view_order","asc");
+
     $opts_committee = [
         "rowreorder"=>["view_order",route('conf.updateorder.committee')],
         "add"=>"addData_committee",
@@ -10,7 +13,10 @@
 
     ];
     $data_committee = [
+        [ 'data'=>'action_area', ], 
+        [ 'data'=>'category', ], 
         [ 'data'=>'name', ], 
+        [ 'data'=>'puja_address','th'=>'Address' ], 
         [ 'data'=>'view_order','visible'=>false ], 
     ];
 @endphp
@@ -26,8 +32,13 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         </div>
         <div class="modal-body">
         <div class="row gy-2">
-        <input type="hidden" name="id" id="id" />
-        <x-text name="name" icon="info-circle" title="Name" required="true" />
+			<input type="hidden" name="id" id="id" />
+			<x-select icon="geo-alt" size="6" name="action_area" title="Action Area"
+			:value="$action_area" required="true" />
+			<x-select icon="tags" size="6" name="category" title="Category" 
+			:value="$category" required="true" />
+			<x-text name="name" icon="info-circle" title="Name" required="true" />
+			<x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
         </div>
         </div>
         <div class="modal-footer py-1">
@@ -42,6 +53,42 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
 @push('scripts')
 <script>
+$(document).ready(function () {
+    $("#form_committee").validate({
+        rules: {
+            action_area: {
+                required: true
+            },
+            category: {
+                required: true
+            },
+            name: {
+                required: true,
+                maxlength: 200
+            },
+            puja_committee_address: {
+                maxlength: 300
+            }
+        },
+        messages: {
+            action_area: {
+                required: "Please select an Action Area."
+            },
+            category: {
+                required: "Please select a Category."
+            },
+            name: {
+                required: "Committee name is required.",
+                maxlength: "Committee name may not exceed 200 characters."
+            },
+            puja_committee_address: {
+                maxlength: "Address may not exceed 300 characters."
+            }
+        },
+    });
+});
+
+
 function form_committee_submt (e) {
     e.preventDefault(); 
     if($("#form_committee").valid()) {
@@ -65,8 +112,13 @@ function addData_committee() {
 function editData_committee(id) {
     webserv("GET", `{{ url('user/conf/get/committee') }}/${id}`, {}, function (d) {
         let data = d["data"];
+		
         $('#id').val(data.id);
         $('#name').val(data.name);
+        $('#action_area').val(data.action_area_id).trigger('change'); 
+        $('#category').val(data.puja_category_id).trigger('change'); 
+        $('#puja_committee_address').val(data.puja_address ?? '');
+
         $('#form_committee').find(".modal-title").text("Edit");
         $('#form_committee').find('.error').text('');
         $('#modal_committee').modal('show');

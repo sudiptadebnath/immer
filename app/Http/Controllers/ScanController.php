@@ -12,28 +12,47 @@ class ScanController extends Controller
 {
     public function scanStat()
     {
-        // $today = Carbon::today();
-        // $scans = Attendance::whereDate('scan_datetime', $today);
-        // $scans = Attendance::query();
-        $scans = DB::table('attendance as s')
-            ->select('s.puja_committee_id', 's.typ')
-            ->join(DB::raw('(SELECT puja_committee_id, MAX(scan_datetime) as max_dt 
-                            FROM attendance 
-                            GROUP BY puja_committee_id) as latest'),
-                function ($join) {
-                    $join->on('s.puja_committee_id', '=', 'latest.puja_committee_id')
-                        ->on('s.scan_datetime', '=', 'latest.max_dt');
-                })
-            ->get();
-        $qCount  = (clone $scans)->where('typ', 'queue')->count();
-        $iCount  = (clone $scans)->where('typ', 'in')->count();
-        $oCount  = (clone $scans)->where('typ', 'out')->count();
-        $stats = [
-            ['name' => 'Reported', 'count' => $qCount, 'color' => 'danger'],
-            ['name' => 'In',    'count' => $iCount, 'color' => 'success'],
-            ['name' => 'Immersion Done',   'count' => $oCount, 'color' => 'primary'],
-        ];
-        return $this->ok("ok", ["data" => $stats]);
+		$start = Carbon::today()->addHours(3);      // 03:00 today
+		$end   = Carbon::tomorrow()->addHours(3);   // 03:00 tomorrow
+
+		if (now()->lt($start)) {
+			$start = Carbon::yesterday()->addHours(3);
+			$end   = Carbon::today()->addHours(3);
+		}
+
+		$scans = DB::table('attendance as s')
+			->select('s.puja_committee_id', 's.typ')
+			->join(
+				DB::raw('(SELECT puja_committee_id, MAX(scan_datetime) as max_dt 
+						  FROM attendance 
+						  WHERE scan_datetime >= "'.$start.'" 
+							AND scan_datetime < "'.$end.'" 
+						  GROUP BY puja_committee_id) as latest'),
+				function ($join) {
+					$join->on('s.puja_committee_id', '=', 'latest.puja_committee_id')
+						 ->on('s.scan_datetime', '=', 'latest.max_dt');
+				}
+			)
+			->whereBetween('s.scan_datetime', [$start, $end])
+			->get();
+
+		$qCount = (clone $scans)->where('typ', 'queue')->count();
+		$iCount = (clone $scans)->where('typ', 'in')->count();
+		$oCount = (clone $scans)->where('typ', 'out')->count();
+		
+		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
+
+		$stats = [
+			['name' => 'Reported',       'count' => $qCount, 'color' => 'danger'],
+			['name' => 'In',             'count' => $iCount, 'color' => 'success'],
+			['name' => 'Immersion Done', 'count' => $oCount, 'color' => 'primary'],
+		];
+
+		return $this->ok("ok", [
+			"tot" => $totalOut, 
+			"data" => $stats, 
+			"dt"=>$start->format('d-M-Y')
+		]);
     }
 
     public function scanview()

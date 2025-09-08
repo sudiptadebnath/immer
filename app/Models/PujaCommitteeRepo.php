@@ -13,7 +13,25 @@ class PujaCommitteeRepo extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'action_area_id',
+        'puja_category_id',
         'name',
+        'puja_address',
         'view_order',
     ];
+    /**
+     * Each PujaCommitteeRepo belongs to one ActionArea.
+     */
+    public function actionArea()
+    {
+        return $this->belongsTo(ActionArea::class, 'action_area_id');
+    }
+
+    /**
+     * Each PujaCommitteeRepo belongs to one PujaCategorie.
+     */
+    public function pujaCategory()
+    {
+        return $this->belongsTo(PujaCategorie::class, 'puja_category_id');
+    }	
 }

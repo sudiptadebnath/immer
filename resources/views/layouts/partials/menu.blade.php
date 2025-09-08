@@ -15,6 +15,11 @@
       'conf.committee',
       'conf.immerdt',
     ]);
+    $repoActive = in_array(Route::currentRouteName(), [
+      'repo.regs',
+      'repo.immer',
+      'repo.dhun',
+    ]);
   @endphp
 
   @if (hasRole('ao'))
@@ -74,27 +79,26 @@
   </li>
   @endif
 
-
   @if (hasRole('ao'))
-  <!-- <li class="nav-item">
-    <a class="nav-link d-flex justify-content-between align-items-center {{ $settingsActive ? 'active' : 'collapsed' }}"
-       data-bs-toggle="collapse" href="#settingsMenu" role="button"
-       aria-expanded="{{ $settingsActive ? 'true' : 'false' }}" aria-controls="settingsMenu">
+  <li class="nav-item">
+    <a class="nav-link d-flex justify-content-between align-items-center {{ $repoActive ? 'active' : 'collapsed' }}"
+    data-bs-toggle="collapse" href="#reportsMenu" role="button"
+    aria-expanded="{{ $repoActive ? 'true' : 'false' }}" aria-controls="reportsMenu">
       <span><i class="bi bi-clipboard-data me-2"></i>MIS Reports</span>
       <i class="bi bi-chevron-down small transition-arrow"></i>
     </a>
-    <ul class="collapse nav flex-column ms-3 {{ $settingsActive ? 'show' : '' }}" id="settingsMenu">
+    <ul class="collapse nav flex-column ms-3 {{ $repoActive ? 'show' : '' }}" id="reportsMenu">
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('conf.action') ? 'active' : '' }}" href="{{ route('conf.action') }}">Registration List</a>
+        <a class="nav-link {{ request()->routeIs('repo.regs') ? 'active' : '' }}" href="{{ route('repo.regs') }}">Registration List</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('conf.category') ? 'active' : '' }}" href="{{ route('conf.category') }}">Immersion By Date</a>
+        <a class="nav-link {{ request()->routeIs('repo.immer') ? 'active' : '' }}" href="{{ route('repo.immer') }}">Immersion By Date</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('conf.committee') ? 'active' : '' }}" href="{{ route('conf.committee') }}">Dhunuchi Nach By Date</a>
+        <a class="nav-link {{ request()->routeIs('repo.dhun') ? 'active' : '' }}" href="{{ route('repo.dhun') }}">Dhunuchi Nach By Date</a>
       </li>
     </ul>
-  </li> -->
+  </li>
   @endif
 
 

@@ -3,8 +3,6 @@
 @php
 $action_area = dbVals("action_areas","name","view_order","asc");
 $category = dbVals("puja_categories","name","view_order","asc");
-$puja_comm = dbVals("puja_committies_repo","name","view_order","asc");
-$puja_comm["Other"] = "Other";
 $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 @endphp
 
@@ -51,8 +49,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                         :value="$action_area" required="true" />
                         <x-select icon="tags" size="6" name="category" title="Category" 
                         :value="$category" required="true" />
-                        <x-select icon="people" name="puja_committee_name" title="Puja Committee" 
-                        :value="$puja_comm" required="true" />
+						<x-select icon="people" name="puja_committee_name" title="Puja Committee" required="true" />
                         <div class="mb-2 d-none" id="otherCommitteeBox">
                             <input type="text" class="form-control" name="puja_committee_name_other"
                             placeholder="Enter Committee Name" required="true" >
@@ -110,6 +107,34 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 @section('scripts')
 <script>
 $(function () {
+
+    $("#action_area, #category").change(function () {
+        let actionArea = $("#action_area").val();
+        let category = $("#category").val();
+        webserv("GET", `{{ url('user/conf/get/committees') }}`, {action_area: actionArea, category: category}, function (resp) {
+            let list = resp.data || [];
+            let $ddl = $("#puja_committee_name");
+            $ddl.empty().append('<option value="">Select Puja Committee</option>');
+            list.forEach(function (item) {
+                $ddl.append(`<option value="${item.name}" data-address="${item.puja_address ?? ''}">${item.name}</option>`);
+            });
+            $ddl.append('<option value="Other">Other</option>');
+        });
+    });
+
+    // on select committee → place address
+    $("#puja_committee_name").change(function () {
+        let $sel = $(this).find("option:selected");
+        let addr = $sel.data("address") || "";
+        if ($(this).val() !== "Other") {
+            $("#puja_committee_address").val(addr);
+            $("#otherCommitteeBox").addClass("d-none");
+        } else {
+            $("#otherCommitteeBox").removeClass("d-none");
+            $("#puja_committee_address").val("");
+        }
+    });
+
     // Toggle Yes/No section
     $("input[name='in_newtown']").change(function(){
         if($(this).val() === "1") {
