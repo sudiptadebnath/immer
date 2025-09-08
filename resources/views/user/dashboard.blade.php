@@ -98,28 +98,64 @@
 @section('content')
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
-		<div class="text-success border rounded p-3 py-1 mb-3 text-center shadow h4">
-			<span>This Year</span>
-		</div>
-        <div class="row g-3 mb-5">
-			<div class="col-md-3 col-xs-4">
-				<div class="statcard card primary">
-					<div class="card-body">
-						<p class="nm">TOTAL</p>
-						<div class="d-flex align-items-center justify-content-between">
-						   <h4 id="tot" class="cnt">20</h4>
-						   <div class="card-icon d-flex align-items-center justify-content-center">
-								<i class="bi bi-clipboard2-check"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="text-success border rounded p-3 py-1 mb-3 text-center shadow h4">
-			<span id="dt">10-sep-2029</span>
-		</div>
-        <div id="stats-cards" class="row g-3"></div>
+        <div id="today" class="h4 mb-3 border-bottom p-3">25-sep-2026</div>
+        <div id="stats-cards" class="row gap-3 m-0">
+            <div class="statcard card primary col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="card-body">
+                    <p class="nm">Queued</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 id="cnt1" class="cnt">0</h4>
+                        <div class="card-icon d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="statcard card warning col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="card-body">
+                    <p class="nm">Reported</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 id="cnt2" class="cnt">0</h4>
+                        <div class="card-icon d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="statcard card danger col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="card-body">
+                    <p class="nm">Immersion Completed</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 id="cnt3" class="cnt">0</h4>
+                        <div class="card-icon d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="statcard card secondary col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="card-body">
+                    <p class="nm">Totay Total</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 id="cnt4" class="cnt">0</h4>
+                        <div class="card-icon d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="statcard card primary col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="card-body">
+                    <p class="nm">All Total</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 id="cnt5" class="cnt">0</h4>
+                        <div class="card-icon d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clipboard2-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -128,30 +164,16 @@
 <script>
     function loadStats() {
         webserv("GET", "{{ route('att.scanstat') }}", {}, function ok(resp) {
-            let html = "";
 			if(!resp) return;
-			if(resp.tot !== null ) $("#tot").html(resp.tot);
             if (resp.data) {
-                resp.data.forEach(stat => {
-                    html += `
-                    <div class="col-md-3 col-xs-4">
-                        <div class="statcard card ${stat.color}">
-                            <div class="card-body">
-                                <p class="nm">${stat.name}</p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                   <h4 class="cnt">${stat.count}</h4>
-                                   <div class="card-icon d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-clipboard2-check"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                });
+                $("#cnt1").html(resp.data[0]);
+                $("#cnt2").html(resp.data[1]);
+                $("#cnt3").html(resp.data[2]);
+                $("#cnt4").html(resp.data[3]);
+                $("#cnt5").html(resp.data[4]);                
             }
-            $("#stats-cards").html(html);
-			if(resp.dt) $("#dt").html(resp.dt);
+            if(resp.dt) $("#today").html(resp.dt);
+
         }, function fail() {});
 
     }

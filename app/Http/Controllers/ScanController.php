@@ -42,16 +42,11 @@ class ScanController extends Controller
 		
 		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
 
-		$stats = [
-			['name' => 'Reported',       'count' => $qCount, 'color' => 'danger'],
-			['name' => 'In',             'count' => $iCount, 'color' => 'success'],
-			['name' => 'Immersion Done', 'count' => $oCount, 'color' => 'primary'],
-		];
+		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $totalOut ];
 
 		return $this->ok("ok", [
-			"tot" => $totalOut, 
 			"data" => $stats, 
-			"dt"=>$start->format('d-M-Y')
+			"dt" => $start->format('d-M-Y')
 		]);
     }
 

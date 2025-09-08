@@ -13,6 +13,9 @@
 @media (max-width: 576px) {
     .fullwidth { width: calc(100vw - 1rem) !important; }
 }
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 5px !important;
+}
 </style>
 @endpush
 @endonce
@@ -160,7 +163,13 @@ $(document).ready(function () {
             data: {{ $ajaxdata }},
     @endif
 		},
-    @if($imp)
+        language: {
+            paginate: {
+                previous: '<<',
+                next: '>>'
+            }
+        },
+        @if($imp)
         buttons: [
 			{ extend: 'copy', filename: '{{ $efnm }}', title: '{{ $title }}', 
             className: 'btn-copy d-none', exportOptions: skipExport{{ $name }} },
