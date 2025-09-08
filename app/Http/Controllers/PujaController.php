@@ -176,7 +176,8 @@ class PujaController extends Controller
         if (!$puja) abort(404, 'Puja not found');
         $file = public_path("qrs/{$puja->id}.png");
         $this->qrGen($file, $puja->secretary_mobile);
-        $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'));
+        $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'))
+            ->setPaper([0,0,297,420],'landscape');// A4 quarter = A6
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 

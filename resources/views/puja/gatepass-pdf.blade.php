@@ -1,4 +1,1 @@
-@extends('layouts.blank')
-@section('content')
-<x-gatepass :file="$file" :puja="$puja" />
-@endsection
+<x-gatepass :file="$file" :puja="$puja" :pdf="true" />
