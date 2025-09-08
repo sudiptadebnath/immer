@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActionArea;
 use App\Models\Attendance;
+use App\Models\PujaCategorie;
 use App\Models\PujaCommittee;
+use App\Models\PujaCommitteeRepo;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -61,6 +64,23 @@ class PujaController extends Controller
 		if ($request->in_newtown) {
 			if (strtolower($request->input('puja_committee_name')) === 'other') {
 				$nm = $request->input('puja_committee_name_other');
+
+                // ✅ Insert into Repo if not exists already
+                $actionArea = ActionArea::where('name', $request->action_area)->first();
+                $category   = PujaCategorie::where('name', $request->category)->first();
+                if ($actionArea && $category) {
+                    // Insert into Repo if not exists
+                    $exists = PujaCommitteeRepo::where('name', $nm)->first();
+                    if (!$exists) {
+                        PujaCommitteeRepo::create([
+                            'action_area_id'   => $actionArea->id,
+                            'puja_category_id' => $category->id,
+                            'name'             => $nm,
+                            'puja_address'     => $request->puja_committee_address,
+                        ]);
+                    }
+                }
+
 			} else {
 				$nm = $request->input('puja_committee_name');
 			}
@@ -139,6 +159,28 @@ class PujaController extends Controller
         $puja->vehicle_no             = $request->vehicle_no;
         $puja->team_members           = $request->dhunuchi ? $request->team_members : null;
         $puja->save();
+
+        $actionArea = $request->in_newtown
+            ? ActionArea::where('name', $request->action_area)->first()
+            : null;
+
+        $category = $request->in_newtown
+            ? PujaCategorie::where('name', $request->category)->first()
+            : null;
+            
+        if ($request->in_newtown && $actionArea && $category) {
+            $repo = PujaCommitteeRepo::firstOrNew([
+                'name'             => $nm,
+                'action_area_id'   => $actionArea->id,
+                'puja_category_id' => $category->id,
+            ]);
+            // always update address if given
+            if ($request->filled('puja_committee_address')) {
+                $repo->puja_address = $request->puja_committee_address;
+            }
+            $repo->save();
+        }
+
         return $this->ok('Puja Saved Successfully');
     }
 
