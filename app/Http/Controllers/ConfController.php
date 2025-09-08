@@ -112,20 +112,19 @@ class ConfController extends Controller
 
 
     /* ==================== SERVICES FOR committee ====================================*/
-    public function data_committee()
+    public function data_committee(Request $request)
     {
-		return DataTables::of(
-			PujaCommitteeRepo::with(['actionArea', 'pujaCategory'])
-				->orderBy('view_order', 'asc')
-		)
-		->addColumn('action_area', function ($row) {
-			return $row->actionArea?->name ?? '-';
-		})
-		->addColumn('category', function ($row) {
-			return $row->pujaCategory?->name ?? '-';
-		})
-		->make(true);
+        $query = PujaCommitteeRepo::select(
+                'puja_committies_repo.*',
+                'action_areas.name as action_area',
+                'puja_categories.name as category'
+            )
+            ->leftJoin('action_areas', 'action_areas.id', '=', 'puja_committies_repo.action_area_id')
+            ->leftJoin('puja_categories', 'puja_categories.id', '=', 'puja_committies_repo.puja_category_id');
+        if(!$request->has('order')) $query->orderBy("view_order");
+        return DataTables::of($query)->make(true);
     }
+
     public function get_committee($id)
     {
         return $this->ok("Record",["data"=>
@@ -284,11 +283,6 @@ class ConfController extends Controller
         $rec->delete();
         return $this->ok('Record Deleted Successfully');
     } 
-
-
-
-
-
 
 
     public function save_settings(Request $request)

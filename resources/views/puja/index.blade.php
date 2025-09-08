@@ -40,6 +40,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             else if (cat) return "Category - " + cat;
             return "";
         }', ], 
+        [ 'data'=>'category','visible'=>false ], 
         [ 'data'=>'puja_committee_name',"th"=>"Puja Committee", 'render' => 'function (data, type, row) {
             let name = row.puja_committee_name ? row.puja_committee_name : "";
             let add = row.puja_committee_address ? row.puja_committee_address : "";
@@ -48,6 +49,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             else if (add) return "<b>Address - </b>"+add;
             return "";
         }', ], 
+        [ 'data'=>'puja_committee_address','visible'=>false ], 
         [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
             let name = row.secretary_name ? row.secretary_name : "";
             let mobile = row.secretary_mobile ? row.secretary_mobile : "";
@@ -56,6 +58,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             else if (mobile) return mobile;
             return "";
         }', ], 
+        [ 'data'=>'secretary_mobile','visible'=>false ], 
         [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
             let name = row.chairman_name ? row.chairman_name : "";
             let mobile = row.chairman_mobile ? row.chairman_mobile : "";
@@ -64,6 +67,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             else if (mobile) return mobile;
             return "";
         }', ], 
+        [ 'data'=>'chairman_mobile','visible'=>false ], 
         [ 'data'=>'proposed_immersion_date',"th"=>"Immersion Date", 'render' => 'function (data, type, row) {
             let dt = row.proposed_immersion_date ? row.proposed_immersion_date : "";
             let tm = row.proposed_immersion_time ? row.proposed_immersion_time : "";
@@ -72,6 +76,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             else if (tm) return tm;
             return "";
         }', ], 
+        [ 'data'=>'proposed_immersion_time','visible'=>false ], 
     ];
 @endphp
 <div class="container-fluid m-0 p-2">

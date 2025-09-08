@@ -13,10 +13,10 @@
 
     ];
     $data_committee = [
-        [ 'data'=>'action_area', ], 
-        [ 'data'=>'category', ], 
-        [ 'data'=>'name', ], 
-        [ 'data'=>'puja_address','th'=>'Address' ], 
+        [ 'data'=>'action_area', 'name'=>'action_areas.name' ], 
+        [ 'data'=>'category', 'name'=>'puja_categories.name' ], 
+        [ 'data'=>'name'  ], 
+        [ 'data'=>'puja_address','th'=>'Address'], 
         [ 'data'=>'view_order','visible'=>false ], 
     ];
 @endphp
