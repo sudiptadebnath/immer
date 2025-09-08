@@ -7,9 +7,115 @@ use App\Models\PujaCommittee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\DataTables;
 
 class ScanController extends Controller
 {
+
+    
+    public function getcomm_bydt(Request $request) {
+        $date = $request->input('dt');
+        $typ  = $request->input('typ', "0");
+        Log::info("xxx",["data"=>$request->all()]);
+
+        if (!$date) {
+            return DataTables::of(collect([]))->make(true); // empty table
+        }
+
+
+        try {
+            // immersion window = 3 AM → next day 3 AM
+            $start = Carbon::parse($date)->addHours(3);
+            $end   = Carbon::parse($date)->addDay()->addHours(3);
+
+            // adjust if date is today but before 3 AM
+            if (now()->lt($start)) {
+                $start = Carbon::parse($date)->subDay()->addHours(3);
+                $end   = Carbon::parse($date)->addHours(3);
+            }
+
+            if ($typ == "0") {
+                // all committees registered that day
+                $query = PujaCommittee::whereBetween('proposed_immersion_date', [$start->toDateString(), $end->toDateString()])
+                    ->orderBy('proposed_immersion_date');
+            } elseif ($typ == "1") {
+                // only immersed committees (attendance out)
+                $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
+                    ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
+                    ->where('a.typ', 'out')
+                    ->whereBetween('a.scan_datetime', [$start, $end])
+                    ->distinct()
+                    ->orderBy('a.scan_datetime');
+            } else {
+                return DataTables::of(collect([]))->make(true); // empty table
+            }
+
+            $data = $query->get()->map(function ($row) {
+                $row['proposed_immersion_date'] = $row->proposed_immersion_date
+                    ? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y')
+                    : null;
+
+                $row['proposed_immersion_time'] = $row->proposed_immersion_time
+                    ? Carbon::parse($row->proposed_immersion_time)->format('h:i A')
+                    : null;
+
+                if (isset($row['immersion_time'])) {
+                    $row['immersion_time'] = Carbon::parse($row['immersion_time'])->format('d/m/Y h:i A');
+                }
+
+                $row['stat'] = statDict()[$row->stat] ?? $row->stat;
+                return $row;
+            });
+
+            return DataTables::of($data)->make(true);
+
+        } catch (\Exception $e) {
+            return DataTables::of(collect([]))->make(true); // empty table
+        }
+
+    }
+
+    public function scanstat_bydt(Request $request) {
+        $date = $request->input('date');
+        if (!$date) {
+            return $this->err("Date is required");
+        }
+
+        try {
+            // Start of the immersion day = selected date at 3 AM
+            $start = Carbon::parse($date)->addHours(3);
+            $end   = Carbon::parse($date)->addDay()->addHours(3);
+
+            // if selected date is today and now < 3 AM, shift to yesterday
+            if (now()->lt($start)) {
+                $start = Carbon::parse($date)->subDay()->addHours(3);
+                $end   = Carbon::parse($date)->addHours(3);
+            }
+
+            // Registered committees (by proposed immersion date falling in this day-window)
+            $registered = DB::table('puja_committees')
+                ->whereBetween('proposed_immersion_date', [$start, $end])
+                ->count();
+
+            // Immersed committees (attendance "out" between 3AM→3AM)
+            $immersed = DB::table('attendance')
+                ->where('typ', 'out')
+                ->whereBetween('scan_datetime', [$start, $end])
+                ->distinct('puja_committee_id')
+                ->count('puja_committee_id');
+
+            return $this->ok("ok", [
+                'registered' => $registered,
+                'immersed'   => $immersed,
+                'date'       => $start->format('d-M-Y') . " to " . $end->format('d-M-Y'),
+            ]);
+        } catch (\Exception $e) {
+            return $this->err("Error fetching stats: " . $e->getMessage());
+        }
+        
+    }
+
     public function scanStat()
     {
 		$start = Carbon::today()->addHours(3);      // 03:00 today

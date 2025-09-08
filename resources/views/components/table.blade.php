@@ -54,6 +54,7 @@
         "edit"=>"",
         "delete"=>"",
         "actions"=>"",
+        "plain"=>false,
         "imp"=>[],
 		"ajaxdata"=>"",
     ], $opts);
@@ -63,6 +64,7 @@
     $autoWidth = $responsive;
 @endphp
 
+@if(!$plain)
 <div class="container-fluid m-0 p-3 fullwidth">
     <h3 class="d-flex flex-wrap gap-1 border-1 border-bottom pb-2">
         {{ $title }}
@@ -82,6 +84,7 @@
         </div>
         @endif
     </h3>
+@endif
 
     <table id="{{ $name }}" class="table table-bordered table-hover table-striped {{$responsive ?  'w-100' : ''}}">
         <thead class="table-{{ $style }}">
@@ -113,7 +116,9 @@
             </tr>
         </thead>
     </table>
+@if(!$plain)
 </div>
+@endif
 
 
 @push('scripts')

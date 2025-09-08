@@ -53,6 +53,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
     });
 
     Route::middleware('role:ao')->prefix('repo')->group(function () {
+        Route::view('/istat', 'repo.istat')->name('repo.istat');
         Route::view('/regs', 'repo.reg')->name('repo.regs');
         Route::get('/regsdata', [RepoController::class, 'regsdata'])->name('repo.regsdata');
         Route::view('/immer', 'repo.immer')->name('repo.immer');
@@ -65,6 +66,8 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::get('/scan', [ScanController::class, 'scanview'])->name('att.scan');
         Route::post('/mark_by_mob', [ScanController::class, 'mark_by_mob'])->name('att.mark_by_mob');
         Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
+        Route::get('/scanstat_bydt', [ScanController::class, 'scanstat_bydt'])->name('att.scanstat_bydt');
+        Route::get('/getcomm_bydt', [ScanController::class, 'getcomm_bydt'])->name('att.getcomm_bydt');
         Route::post('/mark_by_qr', [ScanController::class, 'mark_by_qr'])->name('att.mark_by_qr');
     });
 

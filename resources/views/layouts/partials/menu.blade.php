@@ -89,6 +89,9 @@
     </a>
     <ul class="collapse nav flex-column ms-3 {{ $repoActive ? 'show' : '' }}" id="reportsMenu">
       <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('repo.istat') ? 'active' : '' }}" href="{{ route('repo.istat') }}">Immersion Status</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('repo.regs') ? 'active' : '' }}" href="{{ route('repo.regs') }}">Registration List</a>
       </li>
       <li class="nav-item">
