@@ -37,7 +37,7 @@ class ScanController extends Controller
 
             if ($typ == "0") {
                 // all committees registered that day
-                $query = PujaCommittee::whereBetween('proposed_immersion_date', [$start->toDateString(), $end->toDateString()])
+                $query = PujaCommittee::whereDate('proposed_immersion_date', $date)
                     ->orderBy('proposed_immersion_date');
             } elseif ($typ == "1") {
                 // only immersed committees (attendance out)
@@ -94,9 +94,9 @@ class ScanController extends Controller
             }
 
             // Registered committees (by proposed immersion date falling in this day-window)
-            $registered = DB::table('puja_committees')
-                ->whereBetween('proposed_immersion_date', [$start, $end])
-                ->count();
+			$registered = DB::table('puja_committees')
+				->whereDate('proposed_immersion_date', $date)
+				->count();
 
             // Immersed committees (attendance "out" between 3AM→3AM)
             $immersed = DB::table('attendance')
