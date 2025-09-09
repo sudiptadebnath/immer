@@ -97,6 +97,7 @@ function showRecs(typ) {
         });
 
         $("#pujasItems").html(html || "<p class='text-muted'>No records found.</p>");
+        $("#commModal2Label").text((typ==1 ? "Registered" : "Immersed")+" Pujas");
         $("#commModal2").modal("show");
     }, function (err) {
         toastr.error(err.msg || "Failed to fetch stats");
