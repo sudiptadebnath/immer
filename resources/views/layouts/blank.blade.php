@@ -48,7 +48,7 @@
 	<!-- ============================ MAIN LAYOUT ==================================== -->
 	<div class="d-flex flex-grow-1">
 	  <div class="flex-grow-1 d-flex flex-column">
-		<main class="flex-grow-1 p-0 p-sm-2 bg-white">
+		<main class="flex-grow-1 p-0 bg-white">
 		  @yield('content')
 		</main>
 	  </div>

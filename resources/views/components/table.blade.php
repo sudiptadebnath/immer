@@ -66,24 +66,40 @@
 
 @if(!$plain)
 <div class="container-fluid m-0 p-3 fullwidth">
-    <h3 class="d-flex flex-wrap gap-1 border-1 border-bottom pb-2">
-        {{ $title }}
-		{{ $slot }}
-        @if($imp)
-        <div class="dropdown mb-0 ms-auto exportmenu">
-            <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
-                Export
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="exportMenu-{{ $name }}">
-                <li><a class="dropdown-item export-btn-{{ $name }}" data-type="copy"><i class="bi bi-clipboard me-2"></i>Copy</a></li>
-                <li><a class="dropdown-item export-btn-{{ $name }}" data-type="csv"><i class="bi bi-file-earmark-text me-2"></i>CSV</a></li>
-                <li><a class="dropdown-item export-btn-{{ $name }}" data-type="excel"><i class="bi bi-file-earmark-excel me-2"></i>Excel</a></li>
-                <li><a class="dropdown-item export-btn-{{ $name }}" data-type="pdf"><i class="bi bi-file-earmark-pdf me-2"></i>PDF</a></li>
-                <li><a class="dropdown-item export-btn-{{ $name }}" data-type="print"><i class="bi bi-printer me-2"></i>Print</a></li>
-            </ul>
-        </div>
-        @endif
-    </h3>
+    <div class="d-flex align-items-center justify-content-between border-1 border-bottom pb-1 mb-2">
+        <h3 class="d-flex flex-wrap gap-1">
+            {{ $title }}
+            {{ $slot }}
+            @if($imp)
+            <div class="dropdown mb-0 ms-auto exportmenu">
+                <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="exportMenu-{{ $name }}">
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="copy"><i class="bi bi-clipboard me-2"></i>Copy</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="csv"><i class="bi bi-file-earmark-text me-2"></i>CSV</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="excel"><i class="bi bi-file-earmark-excel me-2"></i>Excel</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="pdf"><i class="bi bi-file-earmark-pdf me-2"></i>PDF</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="print"><i class="bi bi-printer me-2"></i>Print</a></li>
+                </ul>
+            </div>
+            @endif
+        </h3>
+        @if(is_array($add))
+                            @foreach($add as $btn)
+                                <button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
+                                    onclick="{{$btn[2]}}()">
+                                    <i class="bi bi-{{$btn[1]}}"></i>
+                                </button>
+                            @endforeach
+                        @else
+                            <button class="addmore_btn btn btn-sm btn-outline-{{ $style }}" title="Add"
+                                onclick="{{ $add }}()">
+                                <i class="bi bi-plus"></i>
+                                Add
+                            </button>
+                        @endif
+    </div>
 @endif
 
     <table id="{{ $name }}" class="table table-bordered table-hover table-striped {{$responsive ?  'w-100' : ''}}">
@@ -98,7 +114,7 @@
             @if($act)
                 <th>
                     Action
-                    @if(is_array($add))
+                    <!-- @if(is_array($add))
                         @foreach($add as $btn)
                             <button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
                                 onclick="{{$btn[2]}}()">
@@ -110,7 +126,7 @@
                             onclick="{{ $add }}()">
                             <i class="bi bi-plus"></i>
                         </button>
-                    @endif
+                    @endif -->
                 </th>
             @endif           
             </tr>

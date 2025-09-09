@@ -22,6 +22,7 @@ Route::get('/register', fn() => view("register"));
 Route::post('/register', [PujaController::class, 'add']);
 Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
 Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
+Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
 
@@ -93,7 +94,6 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::get('/committee', fn() => view("conf.committee"))->name('conf.committee');
         Route::get('/data/committee', [ConfController::class, 'data_committee'])->name('conf.data.committee');
         Route::post('/data/committee/updateorder', [ConfController::class, 'updateorder_committee'])->name('conf.updateorder.committee');
-        Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
         Route::get('/get/committee/{id}', [ConfController::class, 'get_committee'])->name('conf.get.committee');
         Route::post('/add/committee', [ConfController::class, 'add_committee'])->name('conf.add.committee');
         Route::put('/edit/committee/{id}', [ConfController::class, 'edit_committee'])->name('conf.edit.committee');

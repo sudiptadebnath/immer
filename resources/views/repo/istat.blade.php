@@ -207,14 +207,14 @@ function getajaxdata2(d){
 }
 
 function showRecsFor(t) {
-    if(t=="0") {
+    /*if(t=="0") {
         $('#commTable1').DataTable().ajax.reload();
         $('#commModal1').modal('show');
     }
     else if(t=="1") {
         $('#commTable2').DataTable().ajax.reload();
         $('#commModal2').modal('show');
-    }
+    }*/
 }
 
 $(function () {

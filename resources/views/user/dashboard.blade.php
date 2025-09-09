@@ -89,7 +89,7 @@
     }
 
     .statcard.secondary .card-icon {
-        background:rgb(238, 218, 252);
+        background: rgb(238, 218, 252);
         color: #5a287d;
     }
 </style>
@@ -99,58 +99,68 @@
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
         <div id="today" class="h4 mb-3 border-bottom p-3">25-sep-2026</div>
-        <div id="stats-cards" class="row gap-3 m-0">
-            <div class="statcard card primary col-12 col-sm-6 col-md-4 col-lg-2">
-                <div class="card-body">
-                    <p class="nm">Queued</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 id="cnt1" class="cnt">0</h4>
-                        <div class="card-icon d-flex align-items-center justify-content-center">
-                            <i class="bi bi-clipboard2-check"></i>
+        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+            <div class="col mb-3">
+                <div class="statcard card primary">
+                    <div class="card-body">
+                        <p class="nm">Queued</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt1" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clipboard2-check"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="statcard card warning col-12 col-sm-6 col-md-4 col-lg-2">
-                <div class="card-body">
-                    <p class="nm">Reported</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 id="cnt2" class="cnt">0</h4>
-                        <div class="card-icon d-flex align-items-center justify-content-center">
-                            <i class="bi bi-clipboard2-check"></i>
+            <div class="col mb-3">
+                <div class="statcard card warning">
+                    <div class="card-body">
+                        <p class="nm">Reported</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt2" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clipboard2-check"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="statcard card danger col-12 col-sm-6 col-md-4 col-lg-2">
-                <div class="card-body">
-                    <p class="nm">Immersion Completed</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 id="cnt3" class="cnt">0</h4>
-                        <div class="card-icon d-flex align-items-center justify-content-center">
-                            <i class="bi bi-clipboard2-check"></i>
+            <div class="col mb-3">
+                <div class="statcard card danger">
+                    <div class="card-body">
+                        <p class="nm">Immersion Completed</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt3" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clipboard2-check"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="statcard card secondary col-12 col-sm-6 col-md-4 col-lg-2">
-                <div class="card-body">
-                    <p class="nm">Totay Total</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 id="cnt4" class="cnt">0</h4>
-                        <div class="card-icon d-flex align-items-center justify-content-center">
-                            <i class="bi bi-clipboard2-check"></i>
+            <div class="col mb-3">
+                <div class="statcard card secondary">
+                    <div class="card-body">
+                        <p class="nm">Today's Total</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt4" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clipboard2-check"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="statcard card primary col-12 col-sm-6 col-md-4 col-lg-2">
-                <div class="card-body">
-                    <p class="nm">All Total</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h4 id="cnt5" class="cnt">0</h4>
-                        <div class="card-icon d-flex align-items-center justify-content-center">
-                            <i class="bi bi-clipboard2-check"></i>
+            <div class="col mb-3">
+                <div class="statcard card primary">
+                    <div class="card-body">
+                        <p class="nm">All Total</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt5" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clipboard2-check"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,15 +174,15 @@
 <script>
     function loadStats() {
         webserv("GET", "{{ route('att.scanstat') }}", {}, function ok(resp) {
-			if(!resp) return;
+            if (!resp) return;
             if (resp.data) {
                 $("#cnt1").html(resp.data[0]);
                 $("#cnt2").html(resp.data[1]);
                 $("#cnt3").html(resp.data[2]);
                 $("#cnt4").html(resp.data[3]);
-                $("#cnt5").html(resp.data[4]);                
+                $("#cnt5").html(resp.data[4]);
             }
-            if(resp.dt) $("#today").html(resp.dt);
+            if (resp.dt) $("#today").html(resp.dt);
 
         }, function fail() {});
 
