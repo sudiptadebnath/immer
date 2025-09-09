@@ -15,15 +15,10 @@ class ScanController extends Controller
 
     
     public function getcomm_bydt(Request $request) {
-        $date = $request->input('dt');
-        $typ  = $request->input('typ', "0");
+        $date = $request->input('date');
+        $typ  = $request->input('typ', "1");
         //Log::info("xxx",["data"=>$request->all()]);
-
-        if (!$date) {
-            return DataTables::of(collect([]))->make(true); // empty table
-        }
-
-
+        if (!$date) return $this->err("Date is required");
         try {
             // immersion window = 3 AM → next day 3 AM
             $start = Carbon::parse($date)->addHours(3);
@@ -35,11 +30,12 @@ class ScanController extends Controller
                 $end   = Carbon::parse($date)->addHours(3);
             }
 
-            if ($typ == "0") {
+            if ($typ == "1") {
                 // all committees registered that day
-                $query = PujaCommittee::whereDate('proposed_immersion_date', $date)
-                    ->orderBy('proposed_immersion_date');
-            } elseif ($typ == "1") {
+                $query = PujaCommittee::orderBy('proposed_immersion_date');
+                // $query = PujaCommittee::whereDate('proposed_immersion_date', $date)
+                //     ->orderBy('proposed_immersion_date');
+            } elseif ($typ == "2") {
                 // only immersed committees (attendance out)
                 $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
                     ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
@@ -48,32 +44,14 @@ class ScanController extends Controller
                     ->distinct()
                     ->orderBy('a.scan_datetime');
             } else {
-                return DataTables::of(collect([]))->make(true); // empty table
+                return $this->err("Incorrect Type");
             }
 
-            $data = $query->get()->map(function ($row) {
-                $row['proposed_immersion_date'] = $row->proposed_immersion_date
-                    ? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y')
-                    : null;
-
-                $row['proposed_immersion_time'] = $row->proposed_immersion_time
-                    ? Carbon::parse($row->proposed_immersion_time)->format('h:i A')
-                    : null;
-
-                if (isset($row['immersion_time'])) {
-                    $row['immersion_time'] = Carbon::parse($row['immersion_time'])->format('d/m/Y h:i A');
-                }
-
-                $row['stat'] = statDict()[$row->stat] ?? $row->stat;
-                return $row;
-            });
-
-            return DataTables::of($data)->make(true);
-
+            $data = $query->get();
+            return $this->ok("Pujas",["data"=>$data]);
         } catch (\Exception $e) {
-            return DataTables::of(collect([]))->make(true); // empty table
+            return $this->err("Server Error");
         }
-
     }
 
     public function scanstat_bydt(Request $request) {

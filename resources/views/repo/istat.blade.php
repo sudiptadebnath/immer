@@ -6,6 +6,14 @@
 
 @section('styles')
 <style>
+.pujas-items {
+  max-height: 70vh;
+  overflow: auto;
+  padding-right: 8px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  word-wrap: break-word;
+}
 </style>
 @endsection
 @section('content')
@@ -22,7 +30,7 @@
                 <p class="nm">Registered</p>
                 <div class="d-flex align-items-center justify-content-between">
                     <h4 id="cnt1" class="cnt">-</h4>
-                    <button class="btn btn-sm btn-info" onclick="showRecsFor('0')">
+                    <button class="btn btn-sm btn-info" onclick="showRecs(1)">
                         <i class="bi bi-clipboard2-check"></i>
                     </button>
                 </div>
@@ -33,7 +41,7 @@
                 <p class="nm">Immeresed</p>
                 <div class="d-flex align-items-center justify-content-between">
                     <h4 id="cnt2" class="cnt">-</h4>
-                    <button class="btn btn-sm btn-info" onclick="showRecsFor('1')">
+                    <button class="btn btn-sm btn-info" onclick="showRecs(2)">
                         <i class="bi bi-clipboard2-check"></i>
                     </button>
                 </div>
@@ -42,189 +50,63 @@
     </div>    
 </div>
 
-<div class="modal fade" id="commModal1" tabindex="-1" aria-labelledby="commModal1Label" aria-hidden="true"
-data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white py-1">
-          <h5 class="modal-title" id="commModal1Label">Registered Committies</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-@php
-    $opts1 = [
-        "ajaxdata"=>"getajaxdata1",
-        "plain"=>true,
-    ];
-
-    $tbldata1 = [
-        [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
-            let aa = row.action_area ? row.action_area : "";
-            let cat = row.category ? row.category : "";
-            if (aa && cat) return "Action Area - "+ aa + "<br>Category - " + cat ;
-            else if (aa) return "Action Area - "+ aa;
-            else if (cat) return "Category - " + cat;
-            return "";
-        }', ], 
-        [ 'data'=>'category','visible'=>false ], 
-        [ 'data'=>'puja_committee_name',"th"=>"Puja Committee", 'render' => 'function (data, type, row) {
-            let name = row.puja_committee_name ? row.puja_committee_name : "";
-            let add = row.puja_committee_address ? row.puja_committee_address : "";
-            if (name && add) return name + "<hr><b>Address - </b>" + add ;
-            else if (name) return name;
-            else if (add) return "<b>Address - </b>"+add;
-            return "";
-        }', ], 
-        [ 'data'=>'puja_committee_address','visible'=>false ], 
-        [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
-            let name = row.secretary_name ? row.secretary_name : "";
-            let mobile = row.secretary_mobile ? row.secretary_mobile : "";
-            if (name && mobile) return name + " (" + mobile + ")";
-            else if (name) return name;
-            else if (mobile) return mobile;
-            return "";
-        }', ], 
-        [ 'data'=>'secretary_mobile','visible'=>false ], 
-        [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
-            let name = row.chairman_name ? row.chairman_name : "";
-            let mobile = row.chairman_mobile ? row.chairman_mobile : "";
-            if (name && mobile) return name + " (" + mobile + ")";
-            else if (name) return name;
-            else if (mobile) return mobile;
-            return "";
-        }', ], 
-        [ 'data'=>'chairman_mobile','visible'=>false ], 
-        [ 'data'=>'proposed_immersion_date',"th"=>"Immersion Date", 'render' => 'function (data, type, row) {
-            let dt = row.proposed_immersion_date ? row.proposed_immersion_date : "";
-            let tm = row.proposed_immersion_time ? row.proposed_immersion_time : "";
-            if (dt && tm) return dt + "<br>" + tm;
-            else if (dt) return dt;
-            else if (tm) return tm;
-            return "";
-        }', ], 
-        [ 'data'=>'proposed_immersion_time','visible'=>false ], 
-    ];
-@endphp
-
-<x-table name="commTable1" title="Pujas" :url="route('att.getcomm_bydt')" :data=$tbldata1 :opts=$opts1 />
-
-        </div>
-      </div>
-  </div>
-</div>
-
-
 <div class="modal fade" id="commModal2" tabindex="-1" aria-labelledby="commModal2Label" aria-hidden="true"
 data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white py-1">
-          <h5 class="modal-title" id="commModal2Label">Committies Done Immeresion</h5>
+          <h5 class="modal-title" id="commModal2Label">Pujas</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-
-@php
-    $opts2 = [
-        "ajaxdata"=>"getajaxdata2",
-        "plain"=>true,
-    ];
-
-    $tbldata2 = [
-        [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
-            let aa = row.action_area ? row.action_area : "";
-            let cat = row.category ? row.category : "";
-            if (aa && cat) return "Action Area - "+ aa + "<br>Category - " + cat ;
-            else if (aa) return "Action Area - "+ aa;
-            else if (cat) return "Category - " + cat;
-            return "";
-        }', ], 
-        [ 'data'=>'category','visible'=>false ], 
-        [ 'data'=>'puja_committee_name',"th"=>"Puja Committee", 'render' => 'function (data, type, row) {
-            let name = row.puja_committee_name ? row.puja_committee_name : "";
-            let add = row.puja_committee_address ? row.puja_committee_address : "";
-            if (name && add) return name + "<hr><b>Address - </b>" + add ;
-            else if (name) return name;
-            else if (add) return "<b>Address - </b>"+add;
-            return "";
-        }', ], 
-        [ 'data'=>'puja_committee_address','visible'=>false ], 
-        [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
-            let name = row.secretary_name ? row.secretary_name : "";
-            let mobile = row.secretary_mobile ? row.secretary_mobile : "";
-            if (name && mobile) return name + " (" + mobile + ")";
-            else if (name) return name;
-            else if (mobile) return mobile;
-            return "";
-        }', ], 
-        [ 'data'=>'secretary_mobile','visible'=>false ], 
-        [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
-            let name = row.chairman_name ? row.chairman_name : "";
-            let mobile = row.chairman_mobile ? row.chairman_mobile : "";
-            if (name && mobile) return name + " (" + mobile + ")";
-            else if (name) return name;
-            else if (mobile) return mobile;
-            return "";
-        }', ], 
-        [ 'data'=>'chairman_mobile','visible'=>false ], 
-        [ 'data'=>'proposed_immersion_date',"th"=>"Immersion Date", 'render' => 'function (data, type, row) {
-            let dt = row.proposed_immersion_date ? row.proposed_immersion_date : "";
-            let tm = row.proposed_immersion_time ? row.proposed_immersion_time : "";
-            if (dt && tm) return dt + "<br>" + tm;
-            else if (dt) return dt;
-            else if (tm) return tm;
-            return "";
-        }', ], 
-        [ 'data'=>'proposed_immersion_time','visible'=>false ], 
-    ];
-@endphp
-
-<x-table name="commTable2" title="Pujas" :url="route('att.getcomm_bydt')" :data=$tbldata2 :opts=$opts2 />
-
+        <div id="pujasItems" class="pujas-items"></div>
         </div>
       </div>
   </div>
 </div>
-
-
-
-
 @endsection
 
 @section('scripts')
 
 <script>
+function showRecs(typ) {
+    let dt = $("#immersion_date").val();
+    if (!dt) return;
 
-function getajaxdata1(d){
-    d.dt = $("#immersion_date").val();
-    d.typ = "0";
+    webserv("GET", "{{ route('att.getcomm_bydt') }}", { date: dt, typ }, function (resp) {
+        $("#cnt1").text(resp.registered ?? 0);
+        $("#cnt2").text(resp.immersed ?? 0);
+
+        let pujas = resp.data || [];
+        let html = "";
+
+        pujas.forEach(puja => {
+            html += `
+                <div class="mb-3">
+                    <strong>Name:</strong> ${puja.puja_committee_name ?? '-'}<br>
+                    ${(puja.action_area || puja.category) ? `<strong>Location:</strong> ${puja.action_area ?? ''}${puja.category ? ', ' + puja.category : ''}<br>` : ''}
+                    ${puja.puja_committee_address ? `<strong>Address:</strong> ${puja.puja_committee_address}<br>` : ''}
+                    <strong>Secretary:</strong> ${puja.secretary_name ?? ''} (${puja.secretary_mobile ?? '-'})<br>
+                    <strong>Chairman:</strong> ${puja.chairman_name ?? ''} (${puja.chairman_mobile ?? '-'})<br>
+                    <strong>Proposed Immersion:</strong> ${puja.proposed_immersion_date ?? ''} ${puja.proposed_immersion_time ?? ''}<br>
+                    ${puja.immersion_time ? `<strong>Reported At:</strong> ${puja.immersion_time}<br>` : ''}
+                    ${puja.vehicle_no ? `<strong>Vehicle No:</strong> ${puja.vehicle_no}<br>` : ''}
+                </div>
+                <hr>
+            `;
+        });
+
+        $("#pujasItems").html(html || "<p class='text-muted'>No records found.</p>");
+        $("#commModal2").modal("show");
+    }, function (err) {
+        toastr.error(err.msg || "Failed to fetch stats");
+        $("#cnt1, #cnt2").text("-");
+        $("#pujasItems").html("<p class='text-danger'>Error loading data</p>");
+    });
 }
 
-function getajaxdata2(d){
-    d.dt = $("#immersion_date").val();
-    d.typ = "1";
-}
-
-function showRecsFor(t) {
-    /*if(t=="0") {
-        $('#commTable1').DataTable().ajax.reload();
-        $('#commModal1').modal('show');
-    }
-    else if(t=="1") {
-        $('#commTable2').DataTable().ajax.reload();
-        $('#commModal2').modal('show');
-    }*/
-}
 
 $(function () {
-    $('#commModal1').on('shown.bs.modal', function () {
-        $('#commTable1').DataTable().columns.adjust().responsive.recalc();
-    });
-    $('#commModal2').on('shown.bs.modal', function () {
-        $('#commTable2').DataTable().columns.adjust().responsive.recalc();
-    });
-
     $("#immersion_date").on("change", function () {
         let dt = $(this).val();
         if (!dt) return;
@@ -236,7 +118,6 @@ $(function () {
             $("#cnt1, #cnt2").text("-");
         });
     });
-
 });
 </script>
 @endsection
