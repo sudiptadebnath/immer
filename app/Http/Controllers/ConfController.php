@@ -24,10 +24,12 @@ class ConfController extends Controller
     }
     public function updateorder_action(Request $request)
     {
-        foreach ($request->order as $item) {
-            ActionArea::where('id', $item['id'])
-            ->update(['view_order' => $item['position']]);
-        }
+		if (is_array($request->order)) {
+			foreach ($request->order as $item) {
+				ActionArea::where('id', $item['id'])
+				->update(['view_order' => $item['position']]);
+			}
+		}
         return $this->ok('Record ordered successfully');
     }
     public function add_action(Request $request)
@@ -73,10 +75,12 @@ class ConfController extends Controller
     }
     public function updateorder_category(Request $request)
     {
-        foreach ($request->order as $item) {
-            PujaCategorie::where('id', $item['id'])
-            ->update(['view_order' => $item['position']]);
-        }
+		if (is_array($request->order)) {
+			foreach ($request->order as $item) {
+				PujaCategorie::where('id', $item['id'])
+				->update(['view_order' => $item['position']]);
+			}
+		}
         return $this->ok('Record ordered successfully');
     }
     public function add_category(Request $request)
@@ -148,10 +152,12 @@ class ConfController extends Controller
     }
     public function updateorder_committee(Request $request)
     {
-        foreach ($request->order as $item) {
-            PujaCommitteeRepo::where('id', $item['id'])
-            ->update(['view_order' => $item['position']]);
-        }
+		if (is_array($request->order)) {
+			foreach ($request->order as $item) {
+				PujaCommitteeRepo::where('id', $item['id'])
+				->update(['view_order' => $item['position']]);
+			}
+		}
         return $this->ok('Record ordered successfully');
     }
     public function add_committee(Request $request)

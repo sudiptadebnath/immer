@@ -87,6 +87,7 @@
             font-weight: bold;
             color: #333;
             min-width: 88px;
+            max-width: 88px;
         }
 
         .visitor_form .wraper {
@@ -204,11 +205,11 @@
             </div>
             <div class="rightpart">
                 <div class="imagepic">
-                    <img src="{{asset("public/qrs/{$puja->id}.png")}}" alt="QR Code">
+                    <img src="{{asset("qrs/{$puja->id}.png")}}" alt="QR Code">
                 </div>
             </div>
         </div>
-        <div class="bottombar">
+        <!-- <div class="bottombar">
             <div class="info">
                 <span class="label">Address:</span>
                 <span>Administrative Building. Plot No - DG/13, Premises
@@ -218,12 +219,12 @@
                 <p class="blank"></p>
                 <p class="sigtext">Counter Signature</p>
             </div>
-        </div>
-        <div class="info" style="font-size: 0.6em; margin: 0; padding-top: 10px; border-top: 1px solid #ccc;">
+        </div> -->
+        <!-- <div class="info" style="font-size: 0.6em; margin: 0; padding-top: 10px; border-top: 1px solid #ccc;">
             <span class="label" style="min-width: auto;">Note:</span>
             <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
                 been the industry's standard dummy text ever since the 1500s,</span>
-        </div>
+        </div> -->
     </div>
 </body>
 

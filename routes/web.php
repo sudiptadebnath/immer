@@ -19,6 +19,7 @@ Route::get('/', function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/register', fn() => view("register"));
+Route::get('/thanks/{id}',  [PujaController::class, 'thanks'])->name('puja.thanks');
 Route::post('/register', [PujaController::class, 'add']);
 Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
 Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');

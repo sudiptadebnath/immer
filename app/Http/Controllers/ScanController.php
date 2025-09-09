@@ -146,7 +146,7 @@ class ScanController extends Controller
 		$iCount = (clone $scans)->where('typ', 'in')->count();
 		$oCount = (clone $scans)->where('typ', 'out')->count();
 		
-		$totalOut = DB::table('attendance')->where('typ', 'queue')->count();
+		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
 
 		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $totalOut ];
 
@@ -177,7 +177,7 @@ class ScanController extends Controller
             ->orderBy('scan_datetime', 'desc')
             ->first();
         if (!$lastAtt && $cuser->role=="s") $typ = 'queue';
-        elseif ($lastAtt->typ === 'queue' && $cuser->role=="o")  $typ = 'in';
+        elseif ($lastAtt->typ === 'queue' && hasRole("ao"))  $typ = 'in';
         elseif ($lastAtt->typ === 'in' && $cuser->role=="s") $typ = 'out';
         else return $this->err("Unaccepted pass");
         Attendance::create([

@@ -49,6 +49,7 @@ class PujaController extends Controller
 
     public function add(Request $request)
     {
+		//Log::info("aaa",["data"=>$request->all()]);
         $rules = [
             'puja_committee_name'   => 'required|string|min:3|max:100|unique:puja_committees,puja_committee_name',
             'puja_committee_address' => 'nullable|string|min:3|max:200',
@@ -90,7 +91,7 @@ class PujaController extends Controller
 		$request->merge([
 			'puja_committee_name' => $nm
 		]);
-
+		//Log::info("xxx",["data"=>$request->all()]);
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
 
@@ -110,8 +111,8 @@ class PujaController extends Controller
             'stat'                  => 'a', 
         ];
 
-        PujaCommittee::create($pujaData);
-        return $this->ok('Registration Successful');
+        $puja = PujaCommittee::create($pujaData);
+        return $this->ok('Registration Successful',["data"=>$puja->id]);
     }
 
     public function update(Request $request, $id)
@@ -184,6 +185,13 @@ class PujaController extends Controller
         return $this->ok('Puja Saved Successfully');
     }
 
+	public function thanks($id) 
+	{
+        $puja = PujaCommittee::find($id);
+        if (!$puja) abort(404, 'INVALID puja');
+		return view("thanks",compact("puja"));
+	}
+	
     public function delete($id)
     {
         $puja = PujaCommittee::find($id);
@@ -230,7 +238,7 @@ class PujaController extends Controller
         $repoAtt = Attendance::where('puja_committee_id', $puja->id)
             ->where('typ', 'in')->first();
         if (!$repoAtt) return $this->err("Not scanned by operator post yet");
-        return $this->ok("Ok",["data"=>$puja->secretary_mobile]);
+        return $this->ok("Ok",["data"=>$puja->secretary_mobile,"repoAtt"=>$repoAtt]);
     }
 
     public function entryslip($id) 

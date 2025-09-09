@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container mt-3">
-    {{-- <button onclick="test()">test</button> --}}
+	{{-- <button onclick="test()">test</button> --}}
 <div class="row g-2 justify-content-center">
     <x-button size="4" name="toggle-scan" icon="qr-code-scan" title="QR" onclick="toggleScan()" />
     <x-number size="4" name="mobile" title="Mobile Number" icon="telephone">
@@ -26,8 +26,8 @@ let html5QrCode;
 let isScanning = false;
 
 
-function test() {
-    const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', '9611111111');
+function PrintPreview(txt) {
+    const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', txt);
     const w = window.open(printUrl, '_blank');
     w.onload = function() { w.print(); };
 }
@@ -59,11 +59,14 @@ $(document).ready(function () {
 //     return true;
 // }
 
+//let w;
+
 function toggleScan() {
     const btn = $('#toggle-scan span'); // span holds Start/Stop text
 
     if (!isScanning) {
         //if (!validate()) return;
+    // open blank immediately (browser won't block this)
 
         btn.text("Stop");
         //$('#qr-result').html('');
@@ -124,23 +127,28 @@ function onScanSuccess(decodedText, decodedResult) {
     //stopScan();
     startStopScan(true);
     const typ  = $('#typ').val();
+	
     webserv("POST", "{{ route('att.mark_by_qr') }}", { 
         token: decodedText
     }, function ok(resp) {
+		
+        setTimeout(() => { startStopScan(false); }, 3000);
+		
+		@if(hasRole("ao"))
+		myAlert(resp.msg+"<br>Go for Print","success","Ok",function() {
+			const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', decodedText);
+			const w = window.open(printUrl, '_blank');
+			w.onload = function() { w.print(); };
+		});
+		@else
 		toastr.success(resp.msg);
+		@endif
         /*$('#qr-result')
         .removeClass('d-none alert-danger alert-success alert-primary')
         .addClass('alert-success')
         .html(resp.msg)
         .show();*/
 
-        @if(hasRole("ao")) 
-        const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', decodedText);
-        const w = window.open(printUrl, '_blank');
-        w.onload = function() { w.print(); };
-        @endif
-
-        setTimeout(() => { startStopScan(false); }, 3000);
     }, function fail(resp) {
 		toastr.error(resp.msg);
         /*$('#qr-result')
