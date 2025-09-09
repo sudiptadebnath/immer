@@ -21,6 +21,7 @@
       'conf.immerdt',
     ]);
     $repoActive = in_array(Route::currentRouteName(), [
+      'repo.istat',
       'repo.regs',
       'repo.immer',
       'repo.dhun',
