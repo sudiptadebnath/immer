@@ -59,7 +59,7 @@
 <div class="container-fluid m-0 p-2">
 
 <x-table name="pujaTable" title="Immersion By Date - " :url="route('repo.immerdata')" :data=$tbldata :opts=$opts>
-	<x-select size="3" icon="calendar-date" name="immersion_date" title="Date"
+	<x-select size="" icon="calendar-date" name="immersion_date" title="Date"
 	 :value="$immer_dts" required="true" />	
 </x-table>
 
