@@ -32,9 +32,8 @@ class ScanController extends Controller
 
             if ($typ == "1") {
                 // all committees registered that day
-                $query = PujaCommittee::orderBy('proposed_immersion_date');
-                // $query = PujaCommittee::whereDate('proposed_immersion_date', $date)
-                //     ->orderBy('proposed_immersion_date');
+                $query = PujaCommittee::whereDate('proposed_immersion_date', $date)
+                    ->orderBy('proposed_immersion_date');
             } elseif ($typ == "2") {
                 // only immersed committees (attendance out)
                 $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
