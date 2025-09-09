@@ -40,7 +40,7 @@ class UserController extends Controller
             })
             // allow partial search for stat
             ->filterColumn('stat', function ($query, $keyword) {
-                $map = statDict(); // e.g. ['0'=>'Inactive','1'=>'Active']
+                $map = statDict();
                 $matchedKeys = [];
                 foreach ($map as $key => $val) {
                     if (stripos($val, $keyword) !== false) {
