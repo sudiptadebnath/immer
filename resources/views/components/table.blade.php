@@ -70,7 +70,7 @@
         <h3 class="d-flex flex-wrap gap-1">
             {{ $title }}
             {{ $slot }}
-            @if($imp)
+            @if(!empty($imp))
             <div class="dropdown mb-0 ms-auto exportmenu">
                 <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
                     Export
@@ -85,20 +85,22 @@
             </div>
             @endif
         </h3>
+        @if($act)
         @if(is_array($add))
-                            @foreach($add as $btn)
-                                <button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
-                                    onclick="{{$btn[2]}}()">
-                                    <i class="bi bi-{{$btn[1]}}"></i>
-                                </button>
-                            @endforeach
-                        @else
-                            <button class="addmore_btn btn btn-sm btn-outline-{{ $style }}" title="Add"
-                                onclick="{{ $add }}()">
-                                <i class="bi bi-plus"></i>
-                                Add
-                            </button>
-                        @endif
+			@foreach($add as $btn)
+				<button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
+					onclick="{{$btn[2]}}()">
+					<i class="bi bi-{{$btn[1]}}"></i>
+				</button>
+			@endforeach
+		@else
+			<button class="addmore_btn btn btn-sm btn-outline-{{ $style }}" title="Add"
+				onclick="{{ $add }}()">
+				<i class="bi bi-plus"></i>
+				Add
+			</button>
+		@endif
+		@endif
     </div>
 @endif
 
@@ -142,7 +144,7 @@
 $(document).ready(function () {
 	$.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss');
 
-    @if($imp)
+    @if(!empty($imp))
 	const skipExport{{ $name }} = { 
 		columns: function (idx, data, node) {
 			return @json($imp).includes(idx);
@@ -190,7 +192,7 @@ $(document).ready(function () {
                 next: '>>'
             }
         },
-        @if($imp)
+        @if(!empty($imp))
         buttons: [
 			{ extend: 'copy', filename: '{{ $efnm }}', title: '{{ $title }}', 
             className: 'btn-copy d-none', exportOptions: skipExport{{ $name }} },
@@ -254,7 +256,7 @@ $(document).ready(function () {
         ],
     });
 
-    @if($imp)
+    @if(!empty($imp))
 	$('.export-btn-{{ $name }}').on('click', function () {
 		var type = $(this).data('type');
 		{{ $name }}.button(`.btn-${type}`).trigger();
