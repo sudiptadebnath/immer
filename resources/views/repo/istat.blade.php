@@ -24,8 +24,8 @@
         <x-select size="3" icon="calendar-date" name="immersion_date" title="Date"
 	    :value="$immer_dts" required="true" />	
     </h3>
-    <div class="row gap-3 m-0">
-        <div class="statcard card primary col-12 col-md-6">
+    <div class="d-flex flex-wrap gap-3 mb-3">
+        <div class="statcard card primary flex-fill">
             <div class="card-body">
                 <p class="nm">Registered</p>
                 <div class="d-flex align-items-center justify-content-between">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="statcard card primary col-12 col-md-6">
+        <div class="statcard card primary flex-fill">
             <div class="card-body">
                 <p class="nm">Immeresed</p>
                 <div class="d-flex align-items-center justify-content-between">
