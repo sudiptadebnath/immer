@@ -7,7 +7,7 @@
 @section('styles')
 <style>
 .pujas-items {
-  max-height: 70vh;
+  max-height: 40vh;
   overflow: auto;
   padding-right: 8px;
   font-size: 0.95rem;
