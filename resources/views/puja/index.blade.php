@@ -22,10 +22,10 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         "add"=> "addPuja",
         "edit"=>"editPuja",
         "actions"=>'
-            <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-secondary px-1">
-                <i class="bi bi-ticket-perforated"></i>
+            <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-primary px-1">
+                <i class="bi bi-qr-code-scan"></i>
             </a>
-            <button class="actbtn1 btn btn-link text-secondary px-1" onclick="getEntrySlip(__)">
+            <button class="actbtn1 btn btn-link text-warning px-1" onclick="getEntrySlip(__)">
                 <i class="bi bi-ticket-perforated"></i>
             </button>
         ',

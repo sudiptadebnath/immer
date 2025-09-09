@@ -146,7 +146,7 @@ class ScanController extends Controller
 		$iCount = (clone $scans)->where('typ', 'in')->count();
 		$oCount = (clone $scans)->where('typ', 'out')->count();
 		
-		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
+		$totalOut = DB::table('attendance')->where('typ', 'queue')->count();
 
 		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $totalOut ];
 
