@@ -33,7 +33,7 @@ function test() {
 }
 
 $(document).ready(function () {
-    //toggleScan(); // auto-start QR scanning
+    toggleScan(); // auto-start QR scanning
 });
 // function toggle_scan_otp() {
 //     const val = $('#typ').val();
