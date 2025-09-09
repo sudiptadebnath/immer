@@ -17,7 +17,7 @@ class ScanController extends Controller
     public function getcomm_bydt(Request $request) {
         $date = $request->input('dt');
         $typ  = $request->input('typ', "0");
-        Log::info("xxx",["data"=>$request->all()]);
+        //Log::info("xxx",["data"=>$request->all()]);
 
         if (!$date) {
             return DataTables::of(collect([]))->make(true); // empty table
@@ -202,6 +202,7 @@ class ScanController extends Controller
 		], [
 			'mobile.regex' => 'Enter a valid 10-digit Indian mobile number starting with 6–9',
 		]);
+        $today = Carbon::today();
         $puja = PujaCommittee::where('secretary_mobile', $request->mobile)->first();
         if (!$puja) {
 			$mob = $request->mobile;
@@ -210,11 +211,10 @@ class ScanController extends Controller
 			];
 			$puja = PujaCommittee::create($pujaData);
 		} else {
-			if (!$puja->proposed_immersion_date || !\Carbon\Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
+			if (!$puja->proposed_immersion_date || !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 				return $this->err("GatePass not valid for today");
 			}
 		}
-        $today = Carbon::today();
         $lastAtt = Attendance::where('puja_committee_id', $puja->id)
             //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
@@ -228,7 +228,7 @@ class ScanController extends Controller
             'typ'           => $typ,
         ]);
         $typNm = attDict()[$typ];
-        return $this->ok("Mobile verified and <br>Marked <b>Reported</b> for " . $mob);
+        return $this->ok("Mobile verified and <br>Marked <b>$typNm</b> for " . $mob);
     }
 
 }

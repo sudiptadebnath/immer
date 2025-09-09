@@ -32,6 +32,25 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+
+        /*for ($i = 10; $i <= 50; $i++) {
+            User::create([
+                'name'     => "Operator{$i}",
+                'email'    => "operator{$i}@mail.com",
+                'phone'    => "92" . str_pad($i, 8, '0', STR_PAD_LEFT),
+                'password' => 'abc123&',
+                'role'     => 'o',
+            ]);
+
+            User::create([
+                'name'     => "Scanner{$i}",
+                'email'    => "scanner{$i}@mail.com",
+                'phone'    => "93" . str_pad($i, 8, '0', STR_PAD_LEFT),
+                'password' => 'abc123&',
+                'role'     => 's',
+            ]);
+        }*/
+
         $err = $this->validate($request->all(), [
             'email' => 'required|email',
             'password' => [

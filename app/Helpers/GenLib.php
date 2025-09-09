@@ -64,8 +64,8 @@ if (!function_exists('attDict')) {
     function attDict($typ = 0)
     {
         $dict = [
-            "queue" => "Reported",
-            "in" => "In",
+            "queue" => "Queued",
+            "in" => "Reported",
             "out" => "Immersion Done",
         ];
         return $typ == 1 ? array_flip($dict) : $dict;
