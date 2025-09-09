@@ -73,6 +73,10 @@ input:focus {
     padding: 0px;
 }
 
+.modal-header {
+    background-color: #177f88 !important;
+}
+
 /* Sidebar container */
 @media (max-width: 576px) {
     #sidebarOffcanvas {
@@ -350,7 +354,11 @@ table .btn-outline-primary:hover {
     width: 100%;
     height: 100%;
     padding: 40px 0;
-    background-color: #ffc1074a;
+    /* background-color: #ffc1074a; */
+    background-image: url(/resources/img/green-sky-bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 .PCRegistpage_wrap {
@@ -359,7 +367,7 @@ table .btn-outline-primary:hover {
     height: auto;
     margin: 0 auto;
     background-color: #fff;
-    border-radius: 8px 8px 0px 0px;
+    border-radius: 8px;
     overflow: hidden;
 }
 

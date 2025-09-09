@@ -223,12 +223,26 @@ class PujaController extends Controller
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 
-    public function entryslip($id) {
+    public function has_entryslip($id) 
+    {
         $puja = PujaCommittee::find($id);
+        if (!$puja) return $this->err("No Such Puja");
+        $repoAtt = Attendance::where('puja_committee_id', $puja->id)
+            ->where('typ', 'in')->first();
+        if (!$repoAtt) return $this->err("Not scanned by operator post yet");
+        return $this->ok("Ok",["data"=>$puja->secretary_mobile]);
+    }
+
+    public function entryslip($id) 
+    {
+        $puja = PujaCommittee::where('secretary_mobile', $id)->first();
         if (!$puja) abort(404, 'Puja not found');
+        $repoAtt = Attendance::where('puja_committee_id', $puja->id)
+            ->where('typ', 'in')->first();
+        //if (!$repoAtt) abort(404, 'Yet not reported');
         $file = public_path("qrs/{$puja->id}.png");
         $this->qrGen($file, $puja->secretary_mobile);
-        return view("puja.gatepass", compact('puja', 'file'));
+        return view("puja.entryslip", compact('puja', 'file', 'repoAtt'));
     }
 
     public function scan()

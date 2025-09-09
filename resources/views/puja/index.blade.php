@@ -25,6 +25,9 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
             <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-secondary px-1">
                 <i class="bi bi-ticket-perforated"></i>
             </a>
+            <button class="actbtn1 btn btn-link text-secondary px-1" onclick="getEntrySlip(__)">
+                <i class="bi bi-ticket-perforated"></i>
+            </button>
         ',
     ];
     if(hasRole("a")) {
@@ -182,8 +185,16 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
 <script>
 
+function getEntrySlip(id) {
+    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (resp) {
+        const printUrl = "{{ url('user/puja/entryslip') }}/" + resp.data;
+        const w = window.open(printUrl, '_blank');
+        w.onload = function() { w.print(); };
+    });
+}
+
 function loadCommittees(actionArea, category, selected = '') {
-    webserv("GET", `{{ url('user/conf/get/committees') }}`, {action_area: actionArea, category: category}, function (resp) {
+    webserv("GET", `{{ route('conf.get.committees') }}`, {action_area: actionArea, category: category}, function (resp) {
         let list = resp.data || [];
         let $ddl = $("#puja_committee_name");
         $ddl.empty().append('<option value="">Select Puja Committee</option>');

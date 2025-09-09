@@ -6,6 +6,11 @@
       <i class="bi bi-house-door me-2"></i>Dashboard
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('user.dashboard_live') ? 'active' : '' }}" href="{{ route('user.dashboard_live') }}">
+      <i class="bi bi-record-circle me-2"></i>Dashboard-Live
+    </a>
+  </li>
 
   <!-- Settings (Collapsible) -->
   @php

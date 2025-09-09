@@ -24,6 +24,8 @@ Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
 Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
+Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
+
 Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
 
     Route::get("/logout", function () {
@@ -31,7 +33,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         return redirect('/');
     });
 
-    Route::get("/dashboard", fn() => view('user.dashboard'))->name('user.dashboard');
+    Route::get("/dashboard", fn() => view('user.dashboard',["live"=>false]))->name('user.dashboard');
 
     Route::middleware('role:a')->prefix('users')->group(function () {
         Route::get('/', fn() => view("user.users"))->name('user.users');
@@ -48,6 +50,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
         Route::post('/add', [PujaController::class, 'add']);
         Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
+        Route::get('/has_entryslip/{id}', [PujaController::class, 'has_entryslip'])->name('puja.has_entryslip');
         Route::get('/{id}', [PujaController::class, 'get']);
         Route::put('/{id}', [PujaController::class, 'update']);
         Route::delete('/{id}', [PujaController::class, 'delete']);

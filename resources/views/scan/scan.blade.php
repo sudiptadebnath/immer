@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="container mt-3">
+    <button onclick="test()">test</button>
 <div class="row g-2 justify-content-center">
     <x-button size="4" name="toggle-scan" icon="qr-code-scan" title="QR" onclick="toggleScan()" />
     <x-number size="4" name="mobile" title="Mobile Number" icon="telephone">
@@ -25,8 +26,14 @@ let html5QrCode;
 let isScanning = false;
 
 
+function test() {
+    const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', '9611111111');
+    const w = window.open(printUrl, '_blank');
+    w.onload = function() { w.print(); };
+}
+
 $(document).ready(function () {
-    toggleScan(); // auto-start QR scanning
+    //toggleScan(); // auto-start QR scanning
 });
 // function toggle_scan_otp() {
 //     const val = $('#typ').val();

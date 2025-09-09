@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends($live ? 'layouts.blank' : 'layouts.app')
 
 @push("styles")
 <style>
@@ -98,7 +98,10 @@
 @section('content')
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
-        <div id="today" class="h4 mb-3 border-bottom p-3">25-sep-2026</div>
+        <div class="h5 mb-3 border-bottom p-2">
+            <i class="bi bi-calendar-check"></i>
+            <span id="today">25-sep-2026</span>
+        </div>
         <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
             <div class="col mb-3">
                 <div class="statcard card primary">
