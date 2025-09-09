@@ -20,6 +20,7 @@
             else if (tm) return tm;
             return "";
         }', ], 
+        [ 'data'=>'proposed_immersion_time','visible'=>false ], 
         [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
             let aa = row.action_area ? row.action_area : "";
             let cat = row.category ? row.category : "";
@@ -28,6 +29,7 @@
             else if (cat) return "Category - " + cat;
             return "";
         }', ], 
+        [ 'data'=>'category','visible'=>false ], 
         [ 'data'=>'puja_committee_name',"th"=>"Puja Committee", 'render' => 'function (data, type, row) {
             let name = row.puja_committee_name ? row.puja_committee_name : "";
             let add = row.puja_committee_address ? row.puja_committee_address : "";
@@ -36,6 +38,7 @@
             else if (add) return "<b>Address - </b>"+add;
             return "";
         }', ], 
+        [ 'data'=>'puja_committee_address','visible'=>false ], 
         [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
             let name = row.secretary_name ? row.secretary_name : "";
             let mobile = row.secretary_mobile ? row.secretary_mobile : "";
@@ -44,6 +47,7 @@
             else if (mobile) return mobile;
             return "";
         }', ], 
+        [ 'data'=>'secretary_mobile','visible'=>false ], 
         [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
             let name = row.chairman_name ? row.chairman_name : "";
             let mobile = row.chairman_mobile ? row.chairman_mobile : "";
@@ -52,6 +56,7 @@
             else if (mobile) return mobile;
             return "";
         }', ], 
+        [ 'data'=>'chairman_mobile','visible'=>false ], 
     ];
 @endphp
 <div class="container-fluid m-0 p-2">
