@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -15,12 +17,51 @@ class UserController extends Controller
         $query = User::where('id', '!=', $cuser->id)
             ->where('role','!=','a')
             ->orderBy('created_at', 'desc');
-        $data = $query->get()->map(function ($row) {
-            $row['stat'] = statDict()[$row->stat] ?? $row->stat;
-            $row['role'] = roleDict()[$row->role] ?? $row->role;
-            return $row;
-        });
-        return DataTables::of($data)->make(true);
+        return DataTables::of($query)
+            ->editColumn('role', function ($row) {
+                return roleDict()[$row->role] ?? $row->role;
+            })
+            // allow partial search for role
+            ->filterColumn('role', function ($query, $keyword) {
+                $map = roleDict();
+                $matchedKeys = [];
+                foreach ($map as $key => $val) {
+                    if (stripos($val, $keyword) !== false) {
+                        $matchedKeys[] = $key;
+                    }
+                }
+                if ($matchedKeys) {
+                    $query->whereIn('role', $matchedKeys);
+                }
+            })
+            // show stat as text
+            ->editColumn('stat', function ($row) {
+                return statDict()[$row->stat] ?? $row->stat;
+            })
+            // allow partial search for stat
+            ->filterColumn('stat', function ($query, $keyword) {
+                $map = statDict(); // e.g. ['0'=>'Inactive','1'=>'Active']
+                $matchedKeys = [];
+                foreach ($map as $key => $val) {
+                    if (stripos($val, $keyword) !== false) {
+                        $matchedKeys[] = $key;
+                    }
+                }
+                if ($matchedKeys) {
+                    $query->whereIn('stat', $matchedKeys);
+                }
+            })
+            // format logged_at nicely
+            ->editColumn('logged_at', function ($row) {
+                return $row->logged_at
+                    ? Carbon::parse($row->logged_at)->format('d/m/Y H:i')
+                    : '';
+            })
+            // allow partial search for logged_at
+            ->filterColumn('logged_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(logged_at, '%d/%m/%Y %H:%i') LIKE ?", ["%{$keyword}%"]);
+            })
+            ->make(true);
     }
 
     public function get($id)
@@ -33,18 +74,18 @@ class UserController extends Controller
     public function login(Request $request)
     {
 
-        /*for ($i = 10; $i <= 50; $i++) {
+        /*for ($i = 10; $i <= 20; $i++) {
             User::create([
-                'name'     => "Operator{$i}",
-                'email'    => "operator{$i}@mail.com",
+                'name'     => "Aprator{$i}",
+                'email'    => "Aprator{$i}@mail.com",
                 'phone'    => "92" . str_pad($i, 8, '0', STR_PAD_LEFT),
                 'password' => 'abc123&',
                 'role'     => 'o',
             ]);
 
             User::create([
-                'name'     => "Scanner{$i}",
-                'email'    => "scanner{$i}@mail.com",
+                'name'     => "Janner{$i}",
+                'email'    => "Janner{$i}@mail.com",
                 'phone'    => "93" . str_pad($i, 8, '0', STR_PAD_LEFT),
                 'password' => 'abc123&',
                 'role'     => 's',
