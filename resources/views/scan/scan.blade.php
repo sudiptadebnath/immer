@@ -139,7 +139,7 @@ function onScanSuccess(decodedText, decodedResult) {
 			const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', decodedText);
 			const w = window.open(printUrl, '_blank');
 			w.onload = function() { w.print(); };
-		});
+		},"",null,true);
 		@else
 		toastr.success(resp.msg);
 		@endif
