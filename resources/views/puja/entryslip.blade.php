@@ -11,20 +11,33 @@
         }
 
         .visitor_form {
-            background: white;
+            position: relative;
             padding: 10px;
-            border: 2px solid #024a74;
+            border: 1px solid #585858;
             max-width: 600px;
-            height: auto;
             margin: auto;
+            background-image: url(/resources/img/bg2.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
         }
+
+        .visitor_form::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: -1;
+        }
+
 
         .visitor_form .topbar {
             display: flex;
             align-items: center;
             padding-bottom: 10px;
             gap: 10px;
-            border-bottom: 1px solid #024a74;
+            border-bottom: 1px solid #585858;
         }
 
         .visitor_form .topbar .logo {
@@ -55,7 +68,7 @@
         .visitor_form .cardhead {
             text-align: center;
             font-size: 1em;
-            color: #024a74;
+            color: #ae3707;
             margin: 5px 0 15px;
             text-decoration: underline;
         }
@@ -188,7 +201,7 @@
                 <div class="info">
                     <span class="label">Proposed Immersion:</span>
                     <span>{{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
-                    {{ $puja->proposed_immersion_time }}</span>
+                        {{ $puja->proposed_immersion_time }}</span>
                 </div>
                 @if($repoAtt && $repoAtt->scan_datetime)
                 <div class="info">

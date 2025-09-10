@@ -8,6 +8,7 @@ use App\Models\PujaCategorie;
 use App\Models\PujaCommittee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
@@ -38,6 +39,12 @@ class RepoController extends Controller
     {
         $query = PujaCommittee::orderBy('proposed_immersion_date');
 
+        $date = $request->filled('dt') ? Carbon::parse($request->dt) : now();
+
+        // Immersion window based on given date
+        $start = $date->copy()->startOfDay()->addHours(3);
+        $end   = $start->copy()->addDay();
+
         if ($request->filled('dt')) {
             $query->whereDate('proposed_immersion_date', $request->dt);
         }
@@ -56,6 +63,20 @@ class RepoController extends Controller
             ->editColumn('stat', function ($row) {
                 return statDict()[$row->stat] ?? $row->stat;
             })
+            ->addColumn('attendance', function ($row) use ($start, $end) {
+                $att = DB::table('attendance')
+                    ->where('puja_committee_id', $row->id)
+                    ->whereBetween('scan_datetime', [$start, $end])
+                    ->orderByDesc('scan_datetime') // <- latest first
+                    ->get()
+                    ->map(function ($att) {
+                        return [
+                            'typ'  => $att->typ,
+                            'time' => Carbon::parse($att->scan_datetime)->format('d/m/Y h:i A'),
+                        ];
+                    });
+                return $att->toArray(); 
+            })          
             ->make(true);
     }
 	

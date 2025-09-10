@@ -11,7 +11,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     <div class="container d-flex align-items-center justify-content-center login-container h-100">
         <div class="PCRegistpage_wrap position-relative">
             <div class="watermark_img">
-                <img src="{{asset("resources/img/happy-durga-puja.png")}}" class="img-fluid" alt="image" />
+                <img src="{{asset("resources/img/happy-durga.png")}}" class="img-fluid" alt="image" />
             </div>
             <div class="PCRegist_form">
 
@@ -112,7 +112,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 </x-card>
             </div>
             <div class="PCRegist_footer">
-                <p class="text">© 2025 Copyright By New Town Kolkata Development Authority</p>
+                <p class="text">Copyright © 2025 New Town Kolkata Development Authority</p>
             </div>
         </div>
     </div>

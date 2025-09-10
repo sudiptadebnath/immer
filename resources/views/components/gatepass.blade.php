@@ -1,10 +1,11 @@
 @props([
-	"file",
-	"puja",
-	"pdf",
+"file",
+"puja",
+"pdf",
 ])
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>GatePass</title>
@@ -12,58 +13,84 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-		@if($pdf)
-            margin: 0;
+            @if($pdf) margin: 0;
             padding: 0;
-		@else
-            margin: 20;
+            @else margin: 20;
             padding: 20;
-		@endif
+            @endif
         }
+
         .card {
-		@if($pdf)
+            @if($pdf) padding: 5px;
+            margin: 0 auto;
+            @else max-width: 500px;
             padding: 5px;
             margin: 0 auto;
-		@else
-			max-width: 500px;
-            padding: 5px;
-            margin: 0 auto;
-		    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3); 
-		@endif
-            border: 1px solid #000000a4;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+            @endif border: 1px solid #000000a4;
             width: 100%;
             box-sizing: border-box;
         }
+
+        .Registration_card {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #585858;
+            max-width: 600px;
+            margin: auto;
+            background-image: url(/resources/img/bg2.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .Registration_card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: -1;
+        }
+
         h2 {
             text-align: center;
             margin: 5px 0 10px 0;
         }
+
         .content {
             display: table;
             width: 100%;
         }
-        .qr-cell, .details-cell {
+
+        .qr-cell,
+        .details-cell {
             display: table-cell;
             vertical-align: top;
         }
+
         .qr-cell {
             width: 40%;
             text-align: center;
             border-right: 1px solid #000000a4;
             padding-right: 5px;
         }
+
         .qr-cell img {
             max-width: 100%;
             height: auto;
         }
+
         .details-cell {
             width: 60%;
             padding-left: 5px;
         }
+
         table.details {
             width: 100%;
             border-collapse: collapse;
         }
+
         table.details th,
         table.details td {
             border: 1px solid #000000a4;
@@ -71,31 +98,36 @@
             font-size: 11px;
             text-align: left;
         }
+
         table.details th {
-            background: #f0f0f0;
+            background: #fff;
             text-align: center;
         }
-		.download-container {
-			text-align: center;
-			margin-top: 20px;
-		}
-		.btn-danger {
-			display: inline-block;
-			padding: 8px 16px;
-			background: #dc3545;
-			color: #fff;
-			text-decoration: none;
-			border-radius: 6px;
-			font-size: 14px;
-			font-family: DejaVu Sans, sans-serif;
-		}
-		.btn-danger:hover {
-			background: #bb2d3b;
-		}
-	</style>
+
+        .download-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-danger {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #dc3545;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: DejaVu Sans, sans-serif;
+        }
+
+        .btn-danger:hover {
+            background: #bb2d3b;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="card">
+    <div class="card Registration_card">
         <h2>Registration Slip</h2>
         <div class="content">
             <!-- QR Code -->
@@ -130,11 +162,11 @@
                         @endif
                         <tr>
                             <td><strong>Secretary</strong></td>
-                            <td>{{ $puja->secretary_name }} ({{ $puja->secretary_mobile }})</td>
+                            <td>{{ $puja->secretary_name }} - <b>{{ $puja->secretary_mobile }}</b></td>
                         </tr>
                         <tr>
                             <td><strong>Chairman</strong></td>
-                            <td>{{ $puja->chairman_name }} ({{ $puja->chairman_mobile }})</td>
+                            <td>{{ $puja->chairman_name }} - <b>{{ $puja->chairman_mobile }}</b></td>
                         </tr>
                         <tr>
                             <td><strong>Proposed Immersion</strong></td>
@@ -154,6 +186,7 @@
             </div>
         </div>
     </div>
-	{{ $slot }}
+    {{ $slot }}
 </body>
+
 </html>

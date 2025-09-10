@@ -197,7 +197,7 @@ table tbody td {
 
 .page-item .page-link {
     z-index: 3;
-    color:  #64696d !important;
+    color: #64696d !important;
     background-color: transparent !important;
     border-color: 1px solid #64696d !important;
 }
@@ -353,9 +353,9 @@ table .btn-outline-primary:hover {
 .PCRegist_sec {
     width: 100%;
     height: 100%;
-    padding: 40px 0;
-    /* background-color: #ffc1074a; */
-    background-image: url(/resources/img/green-sky-bg.jpg);
+    padding: 20px 0;
+    /* background-image: url(/resources/img/green-sky-bg.jpg); */
+    background-image: url(/resources/img/bg.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -366,7 +366,7 @@ table .btn-outline-primary:hover {
     max-width: 1024px;
     height: auto;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #ffffffb8;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -378,7 +378,8 @@ table .btn-outline-primary:hover {
     width: 100%;
     height: 95%;
     z-index: 1;
-    opacity: 0.05;
+    opacity: 0.10;
+    /* display: none; */
 }
 
 .watermark_img img {
@@ -392,7 +393,7 @@ table .btn-outline-primary:hover {
     height: auto;
     background: transparent;
     padding: 15px;
-    border: 1px solid #732b17;
+    border: 1px solid #6ea7d2;
     border-radius: 8px 8px 0px 0px;
     position: relative;
     z-index: 2;
@@ -403,10 +404,14 @@ table .btn-outline-primary:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* padding: 5px 0; */
+    padding: 0 0 5px 0;
     margin-bottom: 10px;
     gap: 15px;
-    /* border-bottom: 1px solid #177f88; */
+    border-bottom: 1px solid #b3afaf;
+}
+
+.card-header {
+    border-bottom: none;
 }
 
 .PCRegist_header .left {
@@ -446,8 +451,40 @@ table .btn-outline-primary:hover {
 .PCRegist_header .logo_desc h2 {
     margin: 0 0 3px 0;
     padding: 0;
-    font-size: 1.3em;
+    font-size: 1.8em;
+    font-weight: 600;
     color: #333;
+    -webkit-animation: txtblink 1s linear infinite;
+    -moz-animation: txtblink 1s linear infinite;
+    animation: txtblink 1s linear infinite;
+}
+
+@keyframes txtblink {
+    0% {
+        color: #333;
+    }
+
+    50% {
+        color: #6ea7d2;
+    }
+
+    100% {
+        color: #00732b;
+    }
+}
+
+@-webkit-keyframes txtblink {
+    0% {
+        color: #333;
+    }
+
+    50% {
+        color: #6ea7d2;
+    }
+
+    100% {
+        color: #00732b;
+    }
 }
 
 .PCRegist_header .logo_desc p {
@@ -461,7 +498,7 @@ table .btn-outline-primary:hover {
     width: 100%;
     height: auto;
     padding: 6px 10px 10px;
-    background-color: #732b17;
+    background-color: #6ea7d2;
     color: #fff;
     border-radius: 0px 0px 8px 8px;
 }
@@ -481,13 +518,17 @@ table .btn-outline-primary:hover {
 
 .PCRegist_form .card-header {
     border-radius: 0 !important;
-    background-color: #177f88 !important;
+    /* background-color: #177f88 !important; */
+    background-color: transparent !important;
 }
 
 .PCRegist_form .card-header .card-title {
     text-align: center;
     text-transform: uppercase;
     font-size: 110%;
+    color: #6ea7d2;
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 .PCRegist_form .card-header .card-title i {
@@ -500,8 +541,8 @@ table .btn-outline-primary:hover {
 }
 
 .PCRegist_form button[type="submit"] {
-    background-color: #177f88;
-    border: 1px solid #177f88;
+    background-color: #388817;
+    border: 1px solid #388817;
     color: #fff;
     transition: 0.6s;
     display: block;
@@ -534,7 +575,7 @@ table .btn-outline-primary:hover {
 }
 
 .PCRegist_form .input-group-text {
-    color: #177f88;
+    color: #212529;
 }
 
 .PCRegist_form input:focus,
@@ -549,9 +590,58 @@ table .btn-outline-primary:hover {
 }
 
 .PCRegist_form input[type="text"],
+.PCRegist_form input[type="time"],
 .PCRegist_form textarea,
 .PCRegist_form select {
     background-color: transparent !important;
+    border: 1px solid #b3afaf !important;
+    font-weight: 500 !important;
+}
+
+.PCRegist_form .input-group-text {
+    background-color: transparent !important;
+    border: 1px solid #b3afaf !important;
+}
+
+.PCRegist_form input::placeholder,
+.PCRegist_form textarea::placeholder,
+.PCRegist_form select {
+    color: #000;
+}
+
+/********************/
+.thankyou_page {
+    width: 100%;
+    padding: 45px 15px;
+}
+
+.thankyou_page .head {
+    font-size: 150%;
+    text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.download_btn {
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    background-color: #e9ac03;
+    color: #000;
+    border-radius: 4px;
+    text-decoration: none;
+    box-shadow: none;
+    outline: 0;
+}
+
+.thankyou_icon {
+    font-size: 300%;
+    text-align: center;
+    color: #00732b;
 }
 
 
@@ -690,15 +780,49 @@ table .btn-outline-primary:hover {
     border-radius: 8px;
 }
 
+.PCRegist_form .form-label {
+    font-weight: 600 !important;
+    color: #000 !important;
+}
+
+
+/*------Registration_card---------
+--------------------------------*/
+.Registration_card {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #585858;
+    max-width: 600px;
+    margin: auto;
+    background-image: url(/resources/img/bg2.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+}
+
+.Registration_card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: -1;
+}
+
+
+
+
+
+
+
+
+
 
 
 
 /******responsive all******/
 /**************************/
 @media (max-width: 991px) {
-    /* .PCRegist_sec {
-        height: auto;
-    } */
 
     .PCRegist_header .logo_desc h2 {
         font-size: 1em;
@@ -713,7 +837,6 @@ table .btn-outline-primary:hover {
 
     .PCRegist_form {
         padding: 10px;
-        border: 1px solid #732b17;
     }
 
     .PCRegist_header .logo {
@@ -779,6 +902,11 @@ table .btn-outline-primary:hover {
 
     .PCRegist_form button[type="submit"] {
         margin: 10px auto;
+    }
+
+    .PCRegist_sec {
+        padding: 15px 0;
+        background-image: url(/resources/img/bg-mobile.jpg);
     }
 }
 
