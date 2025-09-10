@@ -19,10 +19,10 @@ Route::get('/', function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/register', fn() => view("register"));
-Route::get('/thanks/{id}',  [PujaController::class, 'thanks'])->name('puja.thanks');
+Route::get('/thanks/{token}',  [PujaController::class, 'thanks'])->name('puja.thanks');
 Route::post('/register', [PujaController::class, 'add']);
-Route::get('/gpass/{id}', [PujaController::class, 'gpass'])->name('puja.gpass');
-Route::get('/gpass/pdf/{id}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
+Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
+Route::get('/gpass/pdf/{token}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');

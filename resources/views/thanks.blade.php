@@ -29,7 +29,7 @@
                     <h2 class="head">Thank you</h2>
                     <p class="text-center mb-4" style="max-width: 700px; margin: 0 auto;">Thank you for registering for the NKDA Durga Puja Immersion Programme {{ date("Y") }}. Please use the link below to download your QR Code.</p>
                     <div class="d-flex align-items-center justify-content-center">
-                        <a class="download_btn" href="{{ route('puja.gpass.pdf', ['id' => $puja->id]) }}">
+                        <a class="download_btn" href="{{ route('puja.gpass.pdf', ['token' => $puja->token]) }}">
                             <i class="bi bi-download"></i>
                             <span>QR Code</span>
                         </a>

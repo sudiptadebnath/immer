@@ -22,9 +22,9 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         "add"=> "addPuja",
         "edit"=>"editPuja",
         "actions"=>'
-            <a href="'. route('puja.gpass', ['id' => '__']) .'" target="_blank" class="actbtn1 btn btn-link text-primary px-1">
+            <button class="actbtn1 btn btn-link text-primary px-1" onclick="getGatepass(__)">
                 <i class="bi bi-qr-code-scan"></i>
-            </a>
+            </button>
             <button class="actbtn1 btn btn-link text-warning px-1" onclick="getEntrySlip(__)">
                 <i class="bi bi-ticket-perforated"></i>
             </button>
@@ -185,11 +185,20 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
 <script>
 
+function getGatepass(id) {
+    webserv("GET",`puja/${id}`, {}, function (d) {
+        let puja = d["data"];
+        window.location.href = "{{ route('puja.thanks', ['id' => '___ID___']) }}".replace("___ID___", d.data);
+
+    });
+}
+
 function getEntrySlip(id) {
-    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (resp) {
-        const printUrl = "{{ url('user/puja/entryslip') }}/" + resp.data;
-        const w = window.open(printUrl, '_blank');
-        w.onload = function() { w.print(); };
+    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (d) {
+        let puja = d.data;
+        let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
+            .replace("___TOKEN___", puja.token);
+        window.open(url, "_blank");
     });
 }
 

@@ -7,16 +7,13 @@ use App\Models\Attendance;
 use App\Models\PujaCategorie;
 use App\Models\PujaCommittee;
 use App\Models\PujaCommitteeRepo;
-use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Str;
 
 class PujaController extends Controller
 {
@@ -112,7 +109,7 @@ class PujaController extends Controller
         ];
 
         $puja = PujaCommittee::create($pujaData);
-        return $this->ok('Registration Successful',["data"=>$puja->id]);
+        return $this->ok('Registration Successful',["data"=>$puja->token]);
     }
 
     public function update(Request $request, $id)
@@ -185,9 +182,9 @@ class PujaController extends Controller
         return $this->ok('Puja Saved Successfully');
     }
 
-	public function thanks($id) 
+	public function thanks($token) 
 	{
-        $puja = PujaCommittee::find($id);
+        $puja = PujaCommittee::where('token', $token)->first();
         if (!$puja) abort(404, 'INVALID puja');
 		return view("thanks",compact("puja"));
 	}
@@ -209,22 +206,22 @@ class PujaController extends Controller
         $result->saveToFile($file);
     }
 
-    public function gpass($id)
+    public function gpass($token)
     {
-        $puja = PujaCommittee::find($id);
+        $puja = PujaCommittee::where('token', $token)->first();
         if (!$puja) abort(404, 'INVALID puja');
         $path = public_path('qrs');
         if (!file_exists($path)) mkdir($path, 0755, true);
-        $file = $path . '/' . $puja->id . '.png';
+        $file = $path . '/' . $puja->token . '.png';
         $this->qrGen($file, $puja->secretary_mobile);
         return view('puja.gatepass', compact('puja'));
     }
 
-    public function downloadPdf($id)
+    public function downloadPdf($token)
     {
-        $puja = PujaCommittee::find($id);
+        $puja = PujaCommittee::where('token', $token)->first();
         if (!$puja) abort(404, 'Puja not found');
-        $file = public_path("qrs/{$puja->id}.png");
+        $file = public_path("qrs/{$puja->token}.png");
         $this->qrGen($file, $puja->secretary_mobile);
         $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'))
             ->setPaper([0,0,297,420],'landscape');// A4 quarter = A6
@@ -259,64 +256,6 @@ class PujaController extends Controller
         return view('puja.scan', compact('puja'));
     }
 
-    public function attendance(Request $request)
-    {
-        $cuser = $this->getUserObj();
-        $request->validate([
-            'token'    => 'required|string',          // scanned QR token or UID
-            'post'     => 'required|string|max:30',
-            'typ'      => 'required|string|max:10',
-            'location' => 'nullable|string|max:255',
-        ]);
-
-        // Find the user by token
-        $puja = PujaCommittee::where('token', $request->token)->first();
-
-        if (!$puja) return $this->err("GatePass not exists");
-
-        $today = Carbon::today();
-        $exists = Attendance
-            ::where('scan_by', $cuser->id)
-            ->where('user_id', $puja->id)
-            ->whereDate('scan_datetime', $today)
-            ->where('post', $request->post ?? 'post1')
-            ->where('typ', $request->typ ?? 'att')
-            ->exists();
-        if ($exists) {
-            return $this->err('Duplicate Entry not allowed');
-        }
-
-        $typNm = attDict()[$request->typ];
-        Attendance::create([
-            'scan_datetime' => now(),
-            'scan_by'       => $cuser->id,
-            'user_id'       => $puja->id,
-            'post'          => $request->post ?? 'post1',
-            'typ'           => $request->typ ?? 'att',
-            'location'      => $request->location,
-        ]);
-
-        return $this->ok("Marked <b>" . $typNm . "</b> for " . $puja->secretary_mobile);
-    }
-
-    public function scanStat(Request $request)
-    {
-        $gateId = $request->get('gate_id');
-        if (!$gateId) return $this->ok("ok", ["data" => []]);
-        $today = Carbon::today();
-        $scans = Attendance::where('post', $gateId)
-            ->whereDate('scan_datetime', $today);
-        $qCount  = (clone $scans)->where('typ', 'QUEUE')->count();
-        $iCount  = (clone $scans)->where('typ', 'IN')->count();
-        $oCount  = (clone $scans)->where('typ', 'OUT')->count();
-        $stats = [
-            ['name' => 'QUEUE', 'count' => $qCount, 'color' => 'danger'],
-            ['name' => 'IN',    'count' => $iCount, 'color' => 'success'],
-            ['name' => 'OUT',   'count' => $oCount, 'color' => 'primary'],
-        ];
-        return $this->ok("ok", ["data" => $stats]);
-    }
-
     public function save_settings(Request $request)
     {
         Log::info("save_settings", $request->all());
@@ -326,72 +265,5 @@ class PujaController extends Controller
         return $this->ok("Saved Successfully");
     }
 
-    public function send_otp(Request $request)
-    {
-        $err = $this->validate($request->all(), [
-            'mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile',
-        ]);
-        if ($err) return $err;
-        $mob = $request->mobile;
-        $otpData = Session::get('otp_sessions', []);
-        if (isset($otpData[$mob])) {
-            $data = $otpData[$mob];
-            if ($data['attempts'] >= 3 && Carbon::now()->diffInMinutes($data['created_at']) < 3) {
-                return $this->err('Maximum OTP attempts reached. Try after some time');
-            }
-        }
-        $otp = rand(100000, 999999);
-        $otpData[$mob] = [
-            'otp' => $otp,
-            'created_at' => Carbon::now(),
-            'attempts' => isset($otpData[$mob]) ? $otpData[$mob]['attempts'] + 1 : 1
-        ];
-        Session::put('otp_sessions', $otpData);
-        // Example: SmsService::send($mobile, "Your OTP is $otp");
-        return $this->ok("OTP : $otp sent to $mob");
-    }
-
-    public function verify_otp(Request $request)
-    {
-        $cuser = $this->getUserObj();
-        $mob = $request->input('mobile');
-        $otp = $request->input('otp');
-        $otpData = Session::get('otp_sessions', []);
-        if (!isset($otpData[$mob])) {
-            return $this->err('Invalid mobile.');
-        }
-        $data = $otpData[$mob];
-        if (Carbon::now()->diffInMinutes($data['created_at']) > 5) {
-            unset($otpData[$mob]);
-            Session::put('otp_sessions', $otpData);
-            return $this->err('OTP expired. Please request again.');
-        }
-        if ($otp != $data['otp']) {
-            return $this->err('Invalid OTP.');
-        }
-        unset($otpData[$mob]);
-        Session::put('otp_sessions', $otpData);
-
-        $pass = Str::random(6);
-        $pujaData = [
-            'secretary_mobile'      => $mob,
-            'password'              => $pass,
-            'role'                  => $request->role ?? 'u', 
-            'stat'                  => $request->stat ?? 'a', 
-        ];
-        $puja = User::create($pujaData);
-        // Example: SmsService::send($mob, "Your password is $pass");
-        $typNm = attDict()[$request->typ];
-        Attendance::create([
-            'scan_datetime' => now(),
-            'scan_by'       => $cuser->id,
-            'user_id'       => $puja->id,
-            'post'          => $request->post ?? 'post1',
-            'typ'           => $request->typ ?? 'att',
-            'location'      => $request->location,
-        ]);
-
-        return $this->ok("OTP verified successfully and <br>Marked <b>" . $typNm . "</b> for " . $puja->secretary_mobile);
-    }
 
 }

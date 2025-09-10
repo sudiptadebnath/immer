@@ -34,7 +34,7 @@ class PujaCommittee extends Model
     {
         parent::boot();
         static::creating(function ($rec) {
-            $rec->token = Str::random(64);
+            $rec->token = Str::random(6);
         });
     }
 }

@@ -280,7 +280,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
             webserv("POST", "{{ url('/register') }}", "register",
                 function ok(d) {
                     myAlert(d["msg"], "success", "Ok", function() {
-						window.location.href = "{{ route('puja.thanks', ['id' => '___ID___']) }}".replace("___ID___", d.data);
+						window.location.href = "{{ route('puja.thanks', ['token' => '___ID___']) }}".replace("___ID___", d.data);
                     });
                 });
         }
