@@ -128,7 +128,7 @@
 
 <body>
     <div class="card Registration_card">
-        <h2>Registration Slip</h2>
+        <h2>Digital Pass</h2>
         <div class="content">
             <!-- QR Code -->
             <div class="qr-cell">
@@ -172,10 +172,10 @@
                             <td><strong>Proposed Immersion</strong></td>
                             <td>
                                 {{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
-                                {{ $puja->proposed_immersion_time }}
+                                {{ $puja->proposed_immersion_time ? \Carbon\Carbon::parse($puja->proposed_immersion_time)->format('h:i A') : '' }}
                             </td>
                         </tr>
-                        @if($puja->vehicle_no)
+                        @if(1>2 && $puja->vehicle_no)
                         <tr>
                             <td><strong>Vehicle No</strong></td>
                             <td>{{ $puja->vehicle_no }}</td>

@@ -188,17 +188,18 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 function getGatepass(id) {
     webserv("GET",`puja/${id}`, {}, function (d) {
         let puja = d["data"];
-        window.location.href = "{{ route('puja.thanks', ['id' => '___ID___']) }}".replace("___ID___", d.data);
-
+        console.log(puja);
+        let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
+            .replace("___TOKEN___", puja['token']);
+        window.open(url, "_blank");
     });
 }
 
 function getEntrySlip(id) {
-    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (d) {
-        let puja = d.data;
-        let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
-            .replace("___TOKEN___", puja.token);
-        window.open(url, "_blank");
+    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (resp) {
+        const printUrl = "{{ url('user/puja/entryslip') }}/" + resp.data;
+        const w = window.open(printUrl, '_blank');
+        w.onload = function() { w.print(); };
     });
 }
 

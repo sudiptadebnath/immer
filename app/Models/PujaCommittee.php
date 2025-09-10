@@ -26,9 +26,9 @@ class PujaCommittee extends Model
     ];
 
     // Hide sensitive fields in JSON
-    protected $hidden = [
+    /*protected $hidden = [
         'token',
-    ];
+    ];*/
 
     protected static function boot()
     {
