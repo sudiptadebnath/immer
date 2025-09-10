@@ -427,6 +427,7 @@ table .btn-outline-primary:hover {
     height: auto;
     overflow: hidden;
     border-radius: 2px;
+    display: none;
 }
 
 .PCRegist_header .right img {
@@ -453,13 +454,13 @@ table .btn-outline-primary:hover {
     padding: 0;
     font-size: 1.8em;
     font-weight: 600;
-    color: #333;
-    -webkit-animation: txtblink 1s linear infinite;
+    color: #000;
+    /* -webkit-animation: txtblink 1s linear infinite;
     -moz-animation: txtblink 1s linear infinite;
-    animation: txtblink 1s linear infinite;
+    animation: txtblink 1s linear infinite; */
 }
 
-@keyframes txtblink {
+/* @keyframes txtblink {
     0% {
         color: #333;
     }
@@ -485,20 +486,20 @@ table .btn-outline-primary:hover {
     100% {
         color: #00732b;
     }
-}
+} */
 
 .PCRegist_header .logo_desc p {
     margin: 0;
     padding: 0;
-    font-size: .9em;
-    color: #585858;
+    font-size: 1em;
+    color: #2b2a2a;
 }
 
 .PCRegist_footer {
     width: 100%;
     height: auto;
     padding: 6px 10px 10px;
-    background-color: #6ea7d2;
+    background-color: #375e7b;
     color: #fff;
     border-radius: 0px 0px 8px 8px;
 }
@@ -525,8 +526,8 @@ table .btn-outline-primary:hover {
 .PCRegist_form .card-header .card-title {
     text-align: center;
     text-transform: uppercase;
-    font-size: 110%;
-    color: #6ea7d2;
+    font-size: 150%;
+    color: #375e7b;
     font-weight: 700;
     text-decoration: underline;
 }
@@ -868,7 +869,7 @@ table .btn-outline-primary:hover {
     }
 
     .PCRegist_form .card-header .card-title {
-        font-size: 100%;
+        font-size: 112%;
     }
 
     .PCRegist_header .right img {

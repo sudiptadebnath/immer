@@ -188,7 +188,6 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 function getGatepass(id) {
     webserv("GET",`puja/${id}`, {}, function (d) {
         let puja = d["data"];
-        console.log(puja);
         let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
             .replace("___TOKEN___", puja['token']);
         window.open(url, "_blank");

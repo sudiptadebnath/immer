@@ -13,7 +13,7 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-            @if($pdf) margin: 0;
+            @if($pdf) margin: 0 auto;
             padding: 0;
             @else margin: 20;
             padding: 20;
@@ -34,15 +34,20 @@
 
         .Registration_card {
             position: relative;
-            padding: 10px;
+            /* padding: 10px;
             border: 1px solid #585858;
             max-width: 600px;
-            margin: auto;
-            background-image: url(/resources/img/bg2.jpg);
+            margin: 0 auto; */
+            background-image: url(/public/resources/img/bg2.jpg);
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
             z-index: 1;
+        }
+
+        .Registration_card .head {
+            text-align: center;
+            margin: 5px 0 10px 0;
         }
 
         .Registration_card::before {
@@ -70,19 +75,19 @@
         }
 
         .qr-cell {
-            width: 40%;
+            width: 35%;
             text-align: center;
-            border-right: 1px solid #000000a4;
-            padding-right: 5px;
+            /* padding-right: 2px; */
         }
 
         .qr-cell img {
             max-width: 100%;
             height: auto;
+            object-fit: contain;
         }
 
         .details-cell {
-            width: 60%;
+            width: 65%;
             padding-left: 5px;
         }
 
@@ -94,7 +99,6 @@
         table.details th,
         table.details td {
             border: 1px solid #000000a4;
-            padding: 4px 6px;
             font-size: 11px;
             text-align: left;
         }
@@ -102,6 +106,11 @@
         table.details th {
             background: #fff;
             text-align: center;
+            padding: 4px 5px;
+        }
+
+        table.details td {
+            padding: 2px 5px;
         }
 
         .download-container {
@@ -128,7 +137,7 @@
 
 <body>
     <div class="card Registration_card">
-        <h2>Digital Pass</h2>
+        <h4 class="head">Digital Pass for immersion of Durga Idol at NKDA Bisarjan Ghat</h4>
         <div class="content">
             <!-- QR Code -->
             <div class="qr-cell">
@@ -169,7 +178,7 @@
                             <td>{{ $puja->chairman_name }} - <b>{{ $puja->chairman_mobile }}</b></td>
                         </tr>
                         <tr>
-                            <td><strong>Proposed Immersion</strong></td>
+                            <td><strong>Date of Immersion</strong></td>
                             <td>
                                 {{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
                                 {{ $puja->proposed_immersion_time ? \Carbon\Carbon::parse($puja->proposed_immersion_time)->format('h:i A') : '' }}

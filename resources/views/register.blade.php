@@ -31,7 +31,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 
                 </div>
 
-                <x-card icon="person-plus" title="Puja Committee Registration">
+                <x-card icon="person-plus" title="Puja Committee Registration for Immersion">
 
                     <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
 

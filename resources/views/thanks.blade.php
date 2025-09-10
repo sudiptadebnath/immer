@@ -27,11 +27,11 @@
                 <div class="thankyou_page">
                     <div class="thankyou_icon"><i class="bi bi-check-circle-fill"></i></div>
                     <h2 class="head">Thank you</h2>
-                    <p class="text-center mb-4" style="max-width: 700px; margin: 0 auto;">Thank you for registering for the NKDA Durga Puja Immersion Programme {{ date("Y") }}. Please use the link below to download your QR Code.</p>
+                    <p class="text-center mb-4" style="max-width: 700px; margin: 0 auto;">Thank you for registering for immersion of Durga Idol at NKDA Bisarjan Ghat on {{ $puja->created_at ? $puja->created_at->timezone('Asia/Kolkata')->format('d/m/Y h:i A') : '' }}. Please use the link below to download your Digital pass.</p>
                     <div class="d-flex align-items-center justify-content-center">
                         <a class="download_btn" href="{{ route('puja.gpass.pdf', ['token' => $puja->token]) }}">
                             <i class="bi bi-download"></i>
-                            <span>QR Code</span>
+                            <span>Download Digital Pass</span>
                         </a>
                     </div>
                 </div>
