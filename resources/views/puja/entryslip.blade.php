@@ -80,7 +80,7 @@
             align-items: start;
             gap: 10px;
             color: #585858;
-            text-transform: capitalize;
+            /*text-transform: capitalize;*/
         }
 
         .visitor_form .info.bold {
