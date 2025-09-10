@@ -170,6 +170,7 @@ function markByMob() {
     { mobile: $('#mobile').val() }, 
     function ok(resp) {
 		toastr.success(resp.msg);
+        $('#mobile').val("");
         /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
             .addClass('alert-success')
@@ -177,6 +178,7 @@ function markByMob() {
             .show();*/
     }, function fail(resp) {
 		toastr.error(resp.msg);
+        $('#mobile').val("");
         /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
             .addClass('alert-danger')

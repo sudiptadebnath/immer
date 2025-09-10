@@ -62,23 +62,6 @@ class PujaController extends Controller
 		if ($request->in_newtown) {
 			if (strtolower($request->input('puja_committee_name')) === 'other') {
 				$nm = $request->input('puja_committee_name_other');
-
-                // ✅ Insert into Repo if not exists already
-                $actionArea = ActionArea::where('name', $request->action_area)->first();
-                $category   = PujaCategorie::where('name', $request->category)->first();
-                if ($actionArea && $category) {
-                    // Insert into Repo if not exists
-                    $exists = PujaCommitteeRepo::where('name', $nm)->first();
-                    if (!$exists) {
-                        PujaCommitteeRepo::create([
-                            'action_area_id'   => $actionArea->id,
-                            'puja_category_id' => $category->id,
-                            'name'             => $nm,
-                            'puja_address'     => $request->puja_committee_address,
-                        ]);
-                    }
-                }
-
 			} else {
 				$nm = $request->input('puja_committee_name');
 			}
@@ -109,6 +92,27 @@ class PujaController extends Controller
         ];
 
         $puja = PujaCommittee::create($pujaData);
+		
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+                // ✅ Insert into Repo if not exists already
+                $actionArea = ActionArea::where('name', $request->action_area)->first();
+                $category   = PujaCategorie::where('name', $request->category)->first();
+                if ($actionArea && $category) {
+                    // Insert into Repo if not exists
+                    $exists = PujaCommitteeRepo::where('name', $nm)->first();
+                    if (!$exists) {
+                        PujaCommitteeRepo::create([
+                            'action_area_id'   => $actionArea->id,
+                            'puja_category_id' => $category->id,
+                            'name'             => $nm,
+                            'puja_address'     => $request->puja_committee_address,
+                        ]);
+                    }
+                }
+			} 
+		} 
+		
         return $this->ok('Registration Successful',["data"=>$puja->token]);
     }
 
@@ -244,7 +248,7 @@ class PujaController extends Controller
         if (!$puja) abort(404, 'Puja not found');
         $repoAtt = Attendance::where('puja_committee_id', $puja->id)
             ->where('typ', 'in')->first();
-        //if (!$repoAtt) abort(404, 'Yet not reported');
+        if (!$repoAtt) abort(404, 'Not scanned by operator post yet');
         $file = public_path("qrs/{$puja->id}.png");
         $this->qrGen($file, $puja->secretary_mobile);
         return view("puja.entryslip", compact('puja', 'file', 'repoAtt'));

@@ -59,6 +59,23 @@
             return "";
         }', ], 
         [ 'data'=>'chairman_mobile','visible'=>false ], 
+		[ 'data'=>'attendance',"th"=>"Status", 'orderable' => false, 'searchable' => false, 'render' => 'function (data, type, row) {
+			if (!data || data.length === 0) 
+				return "<span class=\'text-muted\'>No Records</span>";
+
+			let html = "<ul class=\'list-unstyled mb-0\'>";
+			data.forEach(function(item, i) {
+				let badgeClass = (item.typ === "out") ? "success" : (item.typ === "in" ? "danger" : "primary"); 
+				// highlight first (latest) record
+				let latest = (i === 0) ? "fw-bold" : "text-muted";
+				html += "<li class=\'" + latest + "\'>" +
+						  "<span class=\'badge bg-" + badgeClass + " me-1\'>" + item.typ + "</span>" +
+						  "<span>" + item.time + "</span>" +
+						"</li>";
+			});
+			html += "</ul>";
+			return html;
+		}','visible'=>false, ],
     ];
 @endphp
 <div class="container-fluid m-0 p-2">

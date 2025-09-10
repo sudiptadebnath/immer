@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\PujaCommittee;
+use App\Models\ImmersionDate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -141,6 +142,18 @@ class ScanController extends Controller
 
     public function mark_by_qr(Request $request)
     {
+		// define immersion day window
+		$start = Carbon::today()->addHours(3);      // today 3 AM
+		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
+		if (now()->lt($start)) {
+			$start = Carbon::yesterday()->addHours(3);
+			$end   = Carbon::today()->addHours(3);
+		}
+		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
+		if (!$allowed) {
+			return $this->err("Today is Not immersion date");
+		}
+
         $cuser = $this->getUserObj();
         $request->validate(['token'    => 'required|string',]);
         $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
@@ -169,6 +182,19 @@ class ScanController extends Controller
 
     public function mark_by_mob(Request $request)
     {
+		// define immersion day window
+		$start = Carbon::today()->addHours(3);      // today 3 AM
+		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
+		if (now()->lt($start)) {
+			$start = Carbon::yesterday()->addHours(3);
+			$end   = Carbon::today()->addHours(3);
+		}
+		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
+		if (!$allowed) {
+			return $this->err("Today is Not immersion date");
+		}
+		$today = Carbon::today();
+
         $cuser = $this->getUserObj();
 		if($cuser->role != "s") return $this->err("Not a scanner post");
 		$request->validate([
@@ -179,16 +205,16 @@ class ScanController extends Controller
 		], [
 			'mobile.regex' => 'Enter a valid 10-digit Indian mobile number starting with 6–9',
 		]);
-        $today = Carbon::today();
         $puja = PujaCommittee::where('secretary_mobile', $request->mobile)->first();
         if (!$puja) {
 			$mob = $request->mobile;
 			$pujaData = [
 				'secretary_mobile'      => $mob,
+				'proposed_immersion_date'=> $today,
 			];
 			$puja = PujaCommittee::create($pujaData);
 		} else {
-			if (!$puja->proposed_immersion_date || !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
+			if ($puja->proposed_immersion_date && !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 				return $this->err("GatePass not valid for today");
 			}
 		}

@@ -206,12 +206,21 @@ function loadCommittees(actionArea, category, selected = '') {
     webserv("GET", `{{ route('conf.get.committees') }}`, {action_area: actionArea, category: category}, function (resp) {
         let list = resp.data || [];
         let $ddl = $("#puja_committee_name");
+        let found = false;
         $ddl.empty().append('<option value="">Select Puja Committee</option>');
         list.forEach(function (item) {
+            if(item.name === selected) found=true;
             let sel = (item.name === selected) ? 'selected' : '';
             $ddl.append(`<option value="${item.name}" ${sel} data-address="${item.puja_address ?? ''}">${item.name}</option>`);
         });
         $ddl.append('<option value="Other">Other</option>');
+        if (selected) {
+            if(!found) {
+                $("#puja_committee_name_text").val(selected);
+            } else {
+                $("#puja_committee_name_text").val("");
+            }
+        }
     });
 }
 

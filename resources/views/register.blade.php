@@ -182,6 +182,9 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
             }
         });
 
+		$("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
+		$("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
+		
         $("#register").validate({
             rules: {
                 in_newtown: {

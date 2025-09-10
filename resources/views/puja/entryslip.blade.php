@@ -171,7 +171,7 @@
                     - 700156</p>
             </div>
         </div>
-        <h6 class="cardhead">GatePass</h6>
+        <h6 class="cardhead">Gate Pass</h6>
         <div class="wraper">
             <div class="leftpart">
                 <div class="info bold">
@@ -199,7 +199,7 @@
                     <span>{{ $puja->chairman_name }} ({{ $puja->chairman_mobile }})</span>
                 </div>
                 <div class="info">
-                    <span class="label">Proposed Immersion:</span>
+                    <span class="label">Date of Immersion:</span>
                     <span>{{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
                         {{ $puja->proposed_immersion_time }}</span>
                 </div>
@@ -209,7 +209,7 @@
                     <span>{{ \Carbon\Carbon::parse($repoAtt->scan_datetime)->format('d M Y h:i A') }}</span>
                 </div>
                 @endif
-                @if($puja->vehicle_no)
+                @if(1>2 && $puja->vehicle_no)
                 <div class="info">
                     <span class="label">Vehicle No:</span>
                     <span>{{ $puja->vehicle_no }}</span>
