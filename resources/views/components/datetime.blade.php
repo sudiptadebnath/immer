@@ -55,7 +55,7 @@
         },
         localization: {
             startOfTheWeek: 1, // Monday
-            format: '{{ $clock ? "HH:mm T" : dtfmt() }}'
+            format: '{{ $clock ? "HH:mm" : dtfmt() }}'
         }
     });
     document.getElementById('{{ $name }}').addEventListener('change', function () {
