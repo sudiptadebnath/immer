@@ -107,9 +107,8 @@ function objS(msg, trim = 0) {
     return trim == 0 ? msg : msg.slice(0, trim).trim() + "...";
 }
 
-function myAlert(msg, typ, yesText, yesAct, noText, noAct) {
+function myAlert(msg, typ="primary", yesText="", yesAct=null, noText="", noAct=null, noclose=false) {
     //console.log("SUDIPTA >> ", msg, typ, yesText, yesAct, noText, noAct);
-    typ = getval(typ, "primary");
     msg = objS(msg);
 
     // Toast body
@@ -141,26 +140,26 @@ function myAlert(msg, typ, yesText, yesAct, noText, noAct) {
     $btnContainer.empty();
     let callbackToRunAfterClose = null;
 
-    if (!undef(yesText)) {
+    if (yesText) {
         const $yesBtn = $(
             '<button type="button" class="exbtn btn btn-' +
                 typ +
                 ' btn-sm me-2"></button>'
         ).text(yesText);
         $yesBtn.on("click", function () {
-            if (typeof yesAct === "function") callbackToRunAfterClose = yesAct;
+            if (yesAct) callbackToRunAfterClose = yesAct;
             bootstrap.Toast.getInstance($("#myToast")[0]).hide();
         });
         $btnContainer.append($yesBtn);
     }
-    if (!undef(noText)) {
+    if (noText) {
         const $noBtn = $(
             '<button type="button" class="exbtn btn btn-' +
                 typ +
                 ' btn-sm"></button>'
         ).text(noText);
         $noBtn.on("click", function () {
-            if (typeof noAct === "function") callbackToRunAfterClose = noAct;
+            if (noAct) callbackToRunAfterClose = noAct;
             bootstrap.Toast.getInstance($("#myToast")[0]).hide();
         });
         $btnContainer.append($noBtn);
@@ -176,6 +175,10 @@ function myAlert(msg, typ, yesText, yesAct, noText, noAct) {
                 setTimeout(callbackToRunAfterClose, 10);
         });
 
+    let closeBtn = $("#myToast").find(".btn-close");
+    if(noclose) closeBtn.hide();
+    else closeBtn.show();
+    
     // Show
     const toast = new bootstrap.Toast($("#myToast"));
     toast.show();

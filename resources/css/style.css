@@ -393,7 +393,7 @@ table .btn-outline-primary:hover {
     height: auto;
     background: transparent;
     padding: 15px;
-    border: 1px solid #6ea7d2;
+    border: 1px solid #375e7b;
     border-radius: 8px 8px 0px 0px;
     position: relative;
     z-index: 2;
@@ -492,7 +492,7 @@ table .btn-outline-primary:hover {
     margin: 0;
     padding: 0;
     font-size: 1em;
-    color: #2b2a2a;
+    color: #000;
 }
 
 .PCRegist_footer {
@@ -553,7 +553,7 @@ table .btn-outline-primary:hover {
 
 .PCRegist_form button[type="submit"]:hover {
     background-color: #083438;
-    border: 1px solid #177f88;
+    border: 1px solid #083438;
 }
 
 .PCRegist_form .form-check-input {
@@ -561,8 +561,8 @@ table .btn-outline-primary:hover {
 }
 
 .PCRegist_form .form-check-input:checked {
-    background-color: #177f88;
-    border-color: #177f88;
+    background-color: #375e7b;
+    border-color: #375e7b;
     box-shadow: none;
 }
 
@@ -572,7 +572,7 @@ table .btn-outline-primary:hover {
 
 .PCRegist_form .input-group:focus .input-group-text,
 .PCRegist_form .input-group:focus {
-    border: 1px solid #177f88 !important;
+    border: 1px solid #375e7b !important;
 }
 
 .PCRegist_form .input-group-text {
@@ -583,11 +583,11 @@ table .btn-outline-primary:hover {
 .PCRegist_form select:focus,
 .PCRegist_form textarea:focus {
     box-shadow: none;
-    border: 1px solid #177f88;
+    border: 1px solid #375e7b;
 }
 
 .PCRegist_form select::selection {
-    background: #177f88 !important;
+    background: #375e7b !important;
 }
 
 .PCRegist_form input[type="text"],
@@ -617,7 +617,7 @@ table .btn-outline-primary:hover {
 }
 
 .thankyou_page .head {
-    font-size: 150%;
+    font-size: 165%;
     text-align: center;
     font-weight: 500;
     text-transform: uppercase;
@@ -908,6 +908,18 @@ table .btn-outline-primary:hover {
     .PCRegist_sec {
         padding: 15px 0;
         background-image: url(/resources/img/bg-mobile.jpg);
+    }
+
+    input[type="time"]::before {
+        content: attr(placeholder);
+        color: #000;
+        position: absolute;
+        margin-left: 0px;
+    }
+
+    input[type="time"]:focus::before,
+    input[type="time"]:valid::before {
+        content: "";
     }
 }
 

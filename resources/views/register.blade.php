@@ -82,7 +82,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                             {{-- Immersion --}}
                             <x-select size="4" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
                                 :value="$immer_dts" required="true" />
-                            <x-text size="4" typ="time" name="proposed_immersion_time" title="Immersion Time" icon="!" required="true" />
+                            <x-datetime size="4" name="proposed_immersion_time" title="Immersion Time" icon="clock" date="false" clock="true" required="true" />
                             <x-text size="4" name="vehicle_no" title="Vehicle No (optional)" icon="truck-front" />
 
                             {{-- Dhunuchi Nach --}}

@@ -4,12 +4,14 @@
     'title' => 'Select Date & Time',
     'icon' => 'calendar-event',
     'value' => '',
-    'date'=>'true',
-    'clock'=>'false',
+    'date'=>true,
+    'clock'=>false,
     'required' => false,
 ])
 @php
     $required = filter_var($required, FILTER_VALIDATE_BOOLEAN);
+    $date = filter_var($date, FILTER_VALIDATE_BOOLEAN);
+    $clock = filter_var($clock, FILTER_VALIDATE_BOOLEAN);
 @endphp
 
 <div class="col-md-{{ $size }}">
@@ -40,20 +42,20 @@
         defaultDate: '{{ old($name, $value) }}' || new Date(),
         display: {
             components: {
-                calendar: true,
-                date: {{$date}},
-                month: true,
-                year: true,
-                decades: true,
-                clock: {{$clock}},
-                hours: {{$clock}},
-                minutes: {{$clock}},
+                calendar: {{$date ? 'true' : 'false' }},
+                date: {{$date ? 'true' : 'false' }},
+                month: {{$date ? 'true' : 'false' }},
+                year: {{$date ? 'true' : 'false' }},
+                decades: {{$date ? 'true' : 'false' }},
+                clock: {{$clock ? 'true' : 'false' }},
+                hours: {{$clock ? 'true' : 'false' }},
+                minutes: {{$clock ? 'true' : 'false' }},
                 seconds: false
             }
         },
         localization: {
             startOfTheWeek: 1, // Monday
-            format: '{{ filter_var($clock, FILTER_VALIDATE_BOOLEAN) ? dttmfmt() : dtfmt() }}'
+            format: '{{ $clock ? "HH:mm T" : dtfmt() }}'
         }
     });
     document.getElementById('{{ $name }}').addEventListener('change', function () {

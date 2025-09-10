@@ -1,4 +1,4 @@
-@extends($live ? 'layouts.blank' : 'layouts.app')
+@extends($live ? 'layouts.blankwithheader' : 'layouts.app')
 
 @push("styles")
 <style>
