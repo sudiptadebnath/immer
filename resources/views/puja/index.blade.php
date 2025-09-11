@@ -220,7 +220,7 @@ function loadCommittees(actionArea, category, selected = '') {
             } else {
                 $("#puja_committee_name_text").val("");
             }
-        }
+        }        
     });
 }
 

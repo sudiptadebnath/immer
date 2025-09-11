@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ env('APP_TITLE', 'pms') }}</title>
-	<link rel="icon" type="image/x-icon" href={{ asset("resources/img/favicon.ico") }}>
+	<title>{{ env('APP_TITLE', 'pms') }}</title>
+	<!-- <link rel="icon" type="image/x-icon" href={{ asset("resources/img/favicon_io/favicon.ico") }}>--->
+	<link rel="icon" type="image/x-icon" href="{{ asset('resources/img/favicon_io/favicon.ico') }}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('resources/img/favicon_io/apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('resources/img/favicon_io/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('resources/img/favicon_io/favicon-16x16.png') }}">
+	<link rel="manifest" href="{{ asset('resources/img/favicon_io/site.webmanifest') }}">
+
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
@@ -14,44 +21,44 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
 
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	
+
 	<link rel="stylesheet" href={{ asset("resources/css/style.css") }}>
-    @yield('styles') 
-    @stack('styles') 
+	@yield('styles')
+	@stack('styles')
 </head>
-	
+
 <body onload="myLoad();">
 
 	<!-- ===================================================================================== -->
 	<!-- ============================ LOADER AND ALERT POPUP ================================= -->
 	<!-- ===================================================================================== -->
 	<div id="loader" class="d-none">
-	  <div class="spinner"></div>
+		<div class="spinner"></div>
 	</div>
 
 	<div id="toastBackdrop" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 d-none"></div>
-	<div id="myToast" 
-	class="toast position-fixed top-50 start-50 translate-middle border-0 shadow-lg rounded-3"
-	role="alert" style="z-index: 9999;" data-bs-autohide="false">
+	<div id="myToast"
+		class="toast position-fixed top-50 start-50 translate-middle border-0 shadow-lg rounded-3"
+		role="alert" style="z-index: 9999;" data-bs-autohide="false">
 		<div class="d-flex align-items-start p-3 bg-light border-start border-4 rounded-3">
 			<i id="toastIcon" class="bi me-3 big-toast-icon"></i>
 			<div class="flex-grow-1">
-			<div class="toast-body"></div>
-			<div class="w-100 text-center" id="toastButtons"></div>
+				<div class="toast-body"></div>
+				<div class="w-100 text-center" id="toastButtons"></div>
 			</div>
 			<button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
 		</div>
 	</div>
 
-	
+
 
 	<!-- ============================ MAIN LAYOUT ==================================== -->
 	<div class="d-flex flex-grow-1">
-	  <div class="flex-grow-1 d-flex flex-column">
-		<main class="flex-grow-1 p-0 bg-white">
-		  @yield('content')
-		</main>
-	  </div>
+		<div class="flex-grow-1 d-flex flex-column">
+			<main class="flex-grow-1 p-0 bg-white">
+				@yield('content')
+			</main>
+		</div>
 	</div>
 
 	<!-- ===================================================================================== -->
@@ -60,11 +67,16 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-	<script> let appsettings = { dtfmt: @json(dtfmt(1)), dttmfmt: @json(dttmfmt(1)) } </script>
-	
+	<script>
+		let appsettings = {
+			dtfmt: @json(dtfmt(1)),
+			dttmfmt: @json(dttmfmt(1))
+		}
+	</script>
+
 	<script src={{asset("resources/js/scripts.js")}}></script>
 
 	<!-- DataTables JS + Bootstrap 5 styling -->
@@ -110,7 +122,7 @@
 
 	@yield("scripts")
 	@stack('scripts')
-	
-</body>
-</html>
 
+</body>
+
+</html>

@@ -67,7 +67,7 @@
 		</main>
 	  </div>
 	</div>
-	<div class="PCRegist_footer">
+	<div class="PCRegist_footer rounded-0">
 		<p class="text">Copyright © 2025 New Town Kolkata Development Authority</p>
 	</div>
 

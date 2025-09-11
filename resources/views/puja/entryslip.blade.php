@@ -167,11 +167,10 @@
             </div>
             <div class="logo_desc">
                 <h2>NEW TOWN KOLKATA DEVELOPMENT AUTHORITY</h2>
-                <p>Administrative Building. Plot No - DG/13, Premises No - 04-3333, Action Area - ID, New Town, Kolkata
-                    - 700156</p>
+                <p>Administrative Building. Plot No - DG/13, Premises No - 04-3333, Action Area - ID, New Town, Kolkata - 700156</p>
             </div>
         </div>
-        <h6 class="cardhead">Gate Pass</h6>
+        <h6 class="cardhead">Immersion Pass</h6>
         <div class="wraper">
             <div class="leftpart">
                 <div class="info bold">

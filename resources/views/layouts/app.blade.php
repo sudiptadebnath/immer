@@ -5,7 +5,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ env('APP_TITLE', 'pms') }}</title>
-	<link rel="icon" type="image/x-icon" href={{ asset("resources/img/favicon.ico") }}>
+	<!-- <link rel="icon" type="image/x-icon" href={{ asset("resources/img/favicon.ico") }}> -->
+	 <link rel="icon" type="image/x-icon" href="{{ asset('resources/img/favicon_io/favicon.ico') }}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('resources/img/favicon_io/apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('resources/img/favicon_io/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('resources/img/favicon_io/favicon-16x16.png') }}">
+	<link rel="manifest" href="{{ asset('resources/img/favicon_io/site.webmanifest') }}">
+
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
