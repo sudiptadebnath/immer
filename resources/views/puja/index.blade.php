@@ -22,10 +22,10 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         "add"=> "addPuja",
         "edit"=>"editPuja",
         "actions"=>'
-            <button class="actbtn1 btn btn-link text-primary px-1" onclick="getGatepass(__)">
+            <button class="actbtn1 btn btn-link text-primary px-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Digital Pass" onclick="getGatepass(__)">
                 <i class="bi bi-qr-code-scan"></i>
             </button>
-            <button class="actbtn1 btn btn-link text-warning px-1" onclick="getEntrySlip(__)">
+            <button class="actbtn1 btn btn-link text-warning px-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Immersion Pass" onclick="getEntrySlip(__)">
                 <i class="bi bi-ticket-perforated"></i>
             </button>
         ',

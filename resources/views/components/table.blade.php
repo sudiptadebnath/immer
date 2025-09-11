@@ -284,6 +284,14 @@ $(document).ready(function () {
     });
     @endif
 
+    {{ $name }}.on('draw', function () {
+        $('[data-bs-toggle="tooltip"]').each(function () {
+            var existing = bootstrap.Tooltip.getInstance(this);
+            if (existing) existing.dispose();
+            new bootstrap.Tooltip(this);
+        });
+    });    
+
 });
 
 
