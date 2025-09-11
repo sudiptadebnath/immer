@@ -16,7 +16,7 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: auto;
-            background-image: url(/resources/img/bg2.jpg);
+            background-image: url({{asset('public/resources/img/bg2.jpg') }});
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -82,6 +82,15 @@
             color: #585858;
             /*text-transform: capitalize;*/
         }
+        .info2 {
+            font-size: 0.7em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: black;
+        }
 
         .visitor_form .info.bold {
             font-weight: bold;
@@ -117,6 +126,7 @@
             margin-left: auto;
             border: dashed 1px #ccc;
             padding: 5px;
+            margin-bottom: 5px;
         }
 
         .visitor_form .imagepic img {
@@ -217,7 +227,11 @@
             </div>
             <div class="rightpart">
                 <div class="imagepic">
-                    <img src="{{asset("qrs/{$puja->id}.png")}}" alt="QR Code">
+                    <img src="{{asset("public/qrs/{$puja->id}.png")}}" alt="QR Code">
+                </div>
+                <div class="info2">
+                    <span>Newtown ?</span>
+                    <span>{{ $puja->action_area ? "✔️" : "❌" }}</span>
                 </div>
             </div>
         </div>
