@@ -132,7 +132,7 @@
             <div class="col mb-3">
                 <div class="statcard card danger">
                     <div class="card-body">
-                        <p class="nm">Reported</p>
+                        <p class="nm">Immersion Completed</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt2" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col mb-3">
+            {{-- <div class="col mb-3">
                 <div class="statcard card success">
                     <div class="card-body">
                         <p class="nm">Immersion Completed</p>
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col mb-3">
                 <div class="statcard card primary">
                     <div class="card-body">
@@ -207,7 +207,7 @@
             if (resp.data) {
                 $("#cnt1").html(resp.data[0]);
                 $("#cnt2").html(resp.data[1]);
-                $("#cnt3").html(resp.data[2]);
+                //$("#cnt3").html(resp.data[2]);
                 $("#cnt4").html(resp.data[3]);
                 $("#cnt5").html(resp.data[4]);
                 $("#cnt6").html(resp.data[5]);

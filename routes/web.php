@@ -51,10 +51,12 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::view('/','puja.index');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
         Route::post('/add', [PujaController::class, 'add']);
+        Route::post('/addadmin', [PujaController::class, 'addadmin']);
         Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
         Route::get('/has_entryslip/{id}', [PujaController::class, 'has_entryslip'])->name('puja.has_entryslip');
         Route::get('/{id}', [PujaController::class, 'get']);
         Route::put('/{id}', [PujaController::class, 'update']);
+        Route::put('/editadmin/{id}', [PujaController::class, 'updateadmin']);
         Route::delete('/{id}', [PujaController::class, 'delete']);
     });
 

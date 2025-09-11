@@ -104,11 +104,11 @@ data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="d-flex flex-wrap align-items-center">
                 <label class="me-3 form-label">Puja in New Town Area ?</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio"  required="true"
+                    <input class="form-check-input" type="radio"
                     name="in_newtown" value="1" title="Puja in New Town Area"> Yes
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" required="true"
+                    <input class="form-check-input" type="radio"
                     name="in_newtown" value="0" title="Puja in New Town Area"> No
                 </div>
             </div>
@@ -118,13 +118,13 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         {{-- If Yes --}}
         <div id="ifYes" class="d-none col-md-12 row g-2 m-0 px-2">
             <x-select icon="geo-alt" size="6" name="action_area" title="Action Area"
-             :value="$action_area" required="true" />
+             :value="$action_area" />
             <x-select icon="tags" size="6" name="category" title="Category" 
-             :value="$category" required="true" />
-            <x-select icon="people" name="puja_committee_name" title="Puja Committee" required="true" />
+             :value="$category" />
+            <x-select icon="people" name="puja_committee_name" title="Puja Committee" />
             <div class="mb-2 d-none" id="otherCommitteeBox">
                 <input type="text" class="form-control" name="puja_committee_name_other"
-                 placeholder="Enter Committee Name" required="true" >
+                 placeholder="Enter Committee Name" >
             </div>
         </div>
 
@@ -135,10 +135,10 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
         {{-- Common fields --}}
         <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
-        <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
+        <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" />
         <x-number size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
-        <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
-        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
+        <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" />
+        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
 
         {{-- Immersion --}}
         <x-select size="4" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
@@ -152,18 +152,18 @@ data-bs-backdrop="static" data-bs-keyboard="false">
                 <label class="me-3 form-label">Participating in Dhunuchi Nach Competition ?</label><br>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
-                    name="dhunuchi" value="1" required="true"> Yes
+                    name="dhunuchi" value="1"> Yes
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
-                    name="dhunuchi" value="0" required="true"> No
+                    name="dhunuchi" value="0"> No
                 </div>
             </div>
             <label id="dhunuchi-error" class="error text-danger" for="dhunuchi"></label>
         </div>
 
         <div id="ifDhunuchiYes" class="d-none col-md-12">
-            <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" required="true" />
+            <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" />
         </div>
 
         </div>
@@ -276,15 +276,15 @@ $(function () {
 
     $("#register").validate({
         rules: {
-            in_newtown: {
-                required: true,
-            },
-            action_area: {
-                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
-            },
-            category: {
-                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
-            },
+            // in_newtown: {
+            //     required: true,
+            // },
+            // action_area: {
+            //     required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            // },
+            // category: {
+            //     required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            // },
             puja_committee_name: {
                 required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
             },
@@ -297,29 +297,29 @@ $(function () {
             puja_committee_address: {
                 required: true,
             },
-            secretary_name: {
-                required: true,
-            },
+            // secretary_name: {
+            //     required: true,
+            // },
             secretary_mobile: {
                 required: true,
                 indianMobile: true,
             },
-            chairman_name: {
-                required: true,
-            },
-            chairman_mobile: {
-                required: true,
-                indianMobile: true,
-            },
+            // chairman_name: {
+            //     required: true,
+            // },
+            // chairman_mobile: {
+            //     required: true,
+            //     indianMobile: true,
+            // },
             proposed_immersion_date: {
                 required: true,
             },
             proposed_immersion_time: {
                 required: true,
             },
-            dhunuchi: {
-                required: true,
-            },
+            // dhunuchi: {
+            //     required: true,
+            // },
             team_members: {
                 required: function() { return $("input[name='dhunuchi']:checked").val() == "1"; },
                 digits: true,
@@ -328,9 +328,9 @@ $(function () {
             }
         },
         messages: {
-            in_newtown: "Please select whether the puja is in New Town area",
-            action_area: "Please select an action area",
-            category: "Please select a category",
+            // in_newtown: "Please select whether the puja is in New Town area",
+            // action_area: "Please select an action area",
+            // category: "Please select a category",
             puja_committee_name: "Please select a puja committee",
             puja_committee_name_other: "Please enter the committee name",
             puja_committee_name_text: "Please enter the puja committee name",
@@ -340,14 +340,14 @@ $(function () {
                 required: "Please enter the secretary's mobile number",
                 indianMobile: "Please enter a valid Indian mobile number"
             },
-            chairman_name: "Please enter the chairman/president's name",
-            chairman_mobile: {
-                required: "Please enter the chairman's mobile number",
-                indianMobile: "Please enter a valid Indian mobile number"
-            },
+            // chairman_name: "Please enter the chairman/president's name",
+            // chairman_mobile: {
+            //     required: "Please enter the chairman's mobile number",
+            //     indianMobile: "Please enter a valid Indian mobile number"
+            // },
             proposed_immersion_date: "Please select a proposed immersion date",
             proposed_immersion_time: "Please select a proposed immersion time",
-            dhunuchi: "Please select Yes or No for Dhunuchi Nach participation",
+            // dhunuchi: "Please select Yes or No for Dhunuchi Nach participation",
             team_members: "Please enter number of team members (1–{{ setting('DHUNUCHI_TEAM',20) }})"
         }
     });
@@ -360,7 +360,7 @@ function register_submt (e) {
     if($("#register").valid()) {
         const id = $('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/puja') }}/${id}` : `{{ url('user/puja/add') }}`;
+        const url = isEdit ? `{{ url('user/puja/editadmin') }}/${id}` : `{{ url('user/puja/addadmin') }}`;
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "register", function ok(d) {
             toastr.success(d["msg"]);

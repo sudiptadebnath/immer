@@ -93,11 +93,11 @@ class PujaController extends Controller
 
         $puja = PujaCommittee::create($pujaData);
 		
+        $actionArea = ActionArea::where('name', $request->action_area)->first();
+        $category   = PujaCategorie::where('name', $request->category)->first();
 		if ($request->in_newtown) {
 			if (strtolower($request->input('puja_committee_name')) === 'other') {
                 // ✅ Insert into Repo if not exists already
-                $actionArea = ActionArea::where('name', $request->action_area)->first();
-                $category   = PujaCategorie::where('name', $request->category)->first();
                 if ($actionArea && $category) {
                     // Insert into Repo if not exists
                     $exists = PujaCommitteeRepo::where('name', $nm)->first();
@@ -110,12 +110,181 @@ class PujaController extends Controller
                         ]);
                     }
                 }
-			} 
+			} else {
+                // always update address if given
+                if ($request->filled('puja_committee_address')) {
+                    $repo = PujaCommitteeRepo::firstOrNew([
+                        'name'             => $nm,
+                        'action_area_id'   => $actionArea->id,
+                        'puja_category_id' => $category->id,
+                    ]);
+                    $repo->puja_address = $request->puja_committee_address;
+                }
+                $repo->save();
+
+            }
 		} 
 		
         return $this->ok('Registration Successful',["data"=>$puja->token]);
     }
 
+    
+    public function addadmin(Request $request)
+    {
+		//Log::info("aaa",["data"=>$request->all()]);
+        $rules = [
+            'puja_committee_name'   => 'required|string|min:3|max:100|unique:puja_committees,puja_committee_name',
+            'puja_committee_address' => 'nullable|string|min:3|max:200',
+            'secretary_name'        => 'nullable|string|min:3|max:100',
+            'secretary_mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile',
+            'chairman_name'         => 'nullable|string|min:3|max:100',
+            'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile',
+            'proposed_immersion_date' => 'required|date',
+            'proposed_immersion_time' => 'required|string',
+            'vehicle_no'            => 'nullable|string|min:3|max:50',
+            'team_members'          => 'nullable|integer|min:1|max:100',
+        ];
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+				$nm = $request->input('puja_committee_name_other');
+			} else {
+				$nm = $request->input('puja_committee_name');
+			}
+		} else {
+			$nm = $request->input('puja_committee_name_text');
+		}
+		$request->merge([
+			'puja_committee_name' => $nm
+		]);
+		//Log::info("xxx",["data"=>$request->all()]);
+        $err = $this->validate($request->all(), $rules);
+        if ($err) return $err;
+
+        $pujaData = [
+            'action_area'           => $request->in_newtown ? $request->action_area : null,
+            'category'              => $request->in_newtown ? $request->category : null,
+            'puja_committee_name'   => $request->puja_committee_name,
+            'puja_committee_address' => $request->puja_committee_address,
+            'secretary_name'        => $request->secretary_name,
+            'secretary_mobile'      => $request->secretary_mobile,
+            'chairman_name'         => $request->chairman_name,
+            'chairman_mobile'       => $request->chairman_mobile,
+            'proposed_immersion_date' => $request->proposed_immersion_date,
+            'proposed_immersion_time' => $request->proposed_immersion_time,
+            'vehicle_no'            => $request->vehicle_no,
+            'team_members'          => $request->dhunuchi ? $request->team_members : null,
+            'stat'                  => 'a', 
+        ];
+
+        $puja = PujaCommittee::create($pujaData);
+		
+        $actionArea = ActionArea::where('name', $request->action_area)->first();
+        $category   = PujaCategorie::where('name', $request->category)->first();
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+                // ✅ Insert into Repo if not exists already
+                if ($actionArea && $category) {
+                    // Insert into Repo if not exists
+                    $exists = PujaCommitteeRepo::where('name', $nm)->first();
+                    if (!$exists) {
+                        PujaCommitteeRepo::create([
+                            'action_area_id'   => $actionArea->id,
+                            'puja_category_id' => $category->id,
+                            'name'             => $nm,
+                            'puja_address'     => $request->puja_committee_address,
+                        ]);
+                    }
+                }
+			} else {
+                // always update address if given
+                if ($request->filled('puja_committee_address')) {
+                    $repo = PujaCommitteeRepo::firstOrNew([
+                        'name'             => $nm,
+                        'action_area_id'   => $actionArea->id,
+                        'puja_category_id' => $category->id,
+                    ]);
+                    $repo->puja_address = $request->puja_committee_address;
+                }
+                $repo->save();
+
+            }
+		} 
+		
+        return $this->ok('Registration Successful',["data"=>$puja->token]);
+    }
+
+
+    public function updateadmin(Request $request, $id)
+    {
+        $puja = PujaCommittee::find($id);
+        if (!$puja) return $this->err("No Such Puja");
+		
+		if ($request->in_newtown) {
+			if (strtolower($request->input('puja_committee_name')) === 'other') {
+				$nm = $request->input('puja_committee_name_other');
+			} else {
+				$nm = $request->input('puja_committee_name');
+			}
+		} else {
+			$nm = $request->input('puja_committee_name_text');
+		}
+		$request->merge([
+			'puja_committee_name' => $nm
+		]);
+
+        $err = $this->validate($request->all(), [
+            'puja_committee_name'   => 'required|string|min:3|max:100|unique:puja_committees,puja_committee_name,' . $id,
+            'puja_committee_address' => 'nullable|string|min:3|max:200',
+            'secretary_name'        => 'nullable|string|min:3|max:100',
+            'secretary_mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile,' . $id,
+            'chairman_name'         => 'nullable|string|min:3|max:100',
+            'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile,' . $id,
+            'proposed_immersion_date' => 'required|date',
+            'proposed_immersion_time' => 'required|string',
+            'vehicle_no'            => 'nullable|string|min:3|max:50',
+            'team_members'          => 'nullable|integer|min:1|max:100',
+        ]);
+        if ($err) return $err;
+
+        $puja->action_area            = $request->in_newtown ? $request->action_area : null;
+        $puja->category               = $request->in_newtown ? $request->category : null;
+        $puja->puja_committee_name    = $request->puja_committee_name;
+        $puja->puja_committee_address = $request->puja_committee_address;
+        $puja->secretary_name         = $request->secretary_name;
+        $puja->secretary_mobile       = $request->secretary_mobile;
+        $puja->chairman_name          = $request->chairman_name;
+        $puja->chairman_mobile        = $request->chairman_mobile;
+        $puja->proposed_immersion_date = $request->proposed_immersion_date;
+        $puja->proposed_immersion_time = $request->proposed_immersion_time;
+        $puja->vehicle_no             = $request->vehicle_no;
+        $puja->team_members           = $request->dhunuchi ? $request->team_members : null;
+        $puja->save();
+
+        $actionArea = $request->in_newtown
+            ? ActionArea::where('name', $request->action_area)->first()
+            : null;
+
+        $category = $request->in_newtown
+            ? PujaCategorie::where('name', $request->category)->first()
+            : null;
+            
+        if ($request->in_newtown && $actionArea && $category) {
+            $repo = PujaCommitteeRepo::firstOrNew([
+                'name'             => $nm,
+                'action_area_id'   => $actionArea->id,
+                'puja_category_id' => $category->id,
+            ]);
+            // always update address if given
+            if ($request->filled('puja_committee_address')) {
+                $repo->puja_address = $request->puja_committee_address;
+            }
+            $repo->save();
+        }
+
+        return $this->ok('Puja Saved Successfully');
+    }
+
+    
     public function update(Request $request, $id)
     {
         $puja = PujaCommittee::find($id);
