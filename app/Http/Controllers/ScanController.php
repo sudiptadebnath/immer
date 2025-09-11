@@ -159,17 +159,30 @@ class ScanController extends Controller
         $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
         if (!$puja) return $this->err("GatePass not found");
         $today = Carbon::today();
-		if (!$puja->proposed_immersion_date || !\Carbon\Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
+		if (!$puja->proposed_immersion_date || !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 			return $this->err("GatePass not valid for today");
 		}
         $lastAtt = Attendance::where('puja_committee_id', $puja->id)
             //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
             ->first();
-        if (!$lastAtt && $cuser->role=="s") $typ = 'queue';
-        elseif ($lastAtt->typ === 'queue' && hasRole("ao"))  $typ = 'in';
-        elseif ($lastAtt->typ === 'in' && $cuser->role=="s") $typ = 'out';
-        else return $this->err("Unaccepted pass");
+        if(!$lastAtt) { // FIRST SWIPE
+            if($cuser->role != "s") { // MUST BE SCANNER POST
+                return $this->err("Scanner post required.");
+            } else $typ = 'queue';
+        } else {
+            if($lastAtt->typ === 'queue') { // 2ND SWIPE
+                if(!hasRole("ao")) { // MUST BE SCANNER POST
+                    return $this->err("Counter post required");
+                } else $typ = 'in';
+            } else if($lastAtt->typ === 'in') { // 3RD SWIPE
+                if($cuser->role != "s") { // MUST BE SCANNER POST
+                    return $this->err("Scanner post required.");
+                } else $typ = 'out';
+            } else {
+                return $this->err("All scan completed.");
+            }
+        } 
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,
@@ -222,8 +235,13 @@ class ScanController extends Controller
             //->whereDate('scan_datetime', $today)
             ->orderBy('scan_datetime', 'desc')
             ->first();
-        if (!$lastAtt && $cuser->role=="s") $typ = 'queue';
-        else return $this->err("Unaccepted pass");
+        if(!$lastAtt) { // FIRST SWIPE
+            if($cuser->role != "s") { // MUST BE SCANNER POST
+                return $this->err("Scanner post required.");
+            } else $typ = 'queue';
+        } else {
+            return $this->err("Already Marked this mobile.");
+        } 
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,

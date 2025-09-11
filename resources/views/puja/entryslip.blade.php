@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            /* background: #f4f4f4; */
         }
 
         .visitor_form {
