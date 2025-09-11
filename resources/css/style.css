@@ -44,18 +44,18 @@ input:focus {
 
 /* Tooltip inner box */
 .tooltip-inner {
-    background-color: #46b0e4 !important;
+    background-color: #064247 !important;
     color: #fff !important;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* Fix arrow color */
 .tooltip .tooltip-arrow::before {
-    border-top-color: #46b0e4 !important;
-    border-bottom-color: #46b0e4 !important;
-    border-left-color: #46b0e4 !important;
-    border-right-color: #46b0e4 !important;
+    border-top-color: #064247 !important;
+    /* border-bottom-color: #064247 !important;
+    border-left-color: #064247 !important;
+    border-right-color: #064247 !important; */
 }
 
 

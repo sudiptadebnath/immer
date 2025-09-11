@@ -39,7 +39,7 @@ class ScanController extends Controller
                 // only immersed committees (attendance out)
                 $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
                     ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
-                    ->where('a.typ', 'out')
+                    ->where('a.typ', 'in')
                     ->whereBetween('a.scan_datetime', [$start, $end])
                     ->distinct()
                     ->orderBy('a.scan_datetime');
@@ -78,7 +78,7 @@ class ScanController extends Controller
 
             // Immersed committees (attendance "out" between 3AM→3AM)
             $immersed = DB::table('attendance')
-                ->where('typ', 'out')
+                ->where('typ', 'in')
                 ->whereBetween('scan_datetime', [$start, $end])
                 ->distinct('puja_committee_id')
                 ->count('puja_committee_id');
@@ -122,7 +122,7 @@ class ScanController extends Controller
 
 		$qCount = (clone $scans)->where('typ', 'queue')->count();
 		$iCount = (clone $scans)->where('typ', 'in')->count();
-		$oCount = (clone $scans)->where('typ', 'out')->count();
+		//$oCount = (clone $scans)->where('typ', 'out')->count();
             
         $immersionData = DB::table('attendance')
             ->select(
@@ -159,9 +159,9 @@ class ScanController extends Controller
             $avgImmersionTime = sprintf("%02d:%02d", 0, 0); // HH:MM format
 		}
         
-		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
+		$totalOut = DB::table('attendance')->where('typ', 'in')->count();
 
-		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $avgImmersionTime, $totalOut ];
+		$stats = [ $qCount, $iCount, 0, /*$oCount,*/ $qCount + $iCount /*+ $oCount*/, $avgImmersionTime, $totalOut ];
 
 		return $this->ok("ok", [
 			"data" => $stats, 
@@ -178,7 +178,7 @@ class ScanController extends Controller
     public function mark_by_qr(Request $request)
     {
 		// define immersion day window
-		$start = Carbon::today()->addHours(3);      // today 3 AM
+		/*$start = Carbon::today()->addHours(3);      // today 3 AM
 		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
 		if (now()->lt($start)) {
 			$start = Carbon::yesterday()->addHours(3);
@@ -187,7 +187,7 @@ class ScanController extends Controller
 		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");
-		}
+		}*/
 
         $cuser = $this->getUserObj();
         $request->validate(['token'    => 'required|string',]);
@@ -231,7 +231,7 @@ class ScanController extends Controller
     public function mark_by_mob(Request $request)
     {
 		// define immersion day window
-		$start = Carbon::today()->addHours(3);      // today 3 AM
+		/*$start = Carbon::today()->addHours(3);      // today 3 AM
 		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
 		if (now()->lt($start)) {
 			$start = Carbon::yesterday()->addHours(3);
@@ -240,7 +240,8 @@ class ScanController extends Controller
 		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");
-		}
+		}*/
+		
 		$today = Carbon::today();
 
         $cuser = $this->getUserObj();

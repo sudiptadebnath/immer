@@ -270,9 +270,3 @@ function webserv(typ, api, dt, f1 = null, f2 = null) {
 function goLnk(lnk) {
     window.open(lnk, "_self", false);
 }
-
-
-
-//tooltip
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el))
