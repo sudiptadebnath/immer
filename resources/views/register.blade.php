@@ -11,14 +11,14 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     <div class="container d-flex align-items-center justify-content-center login-container h-100">
         <div class="PCRegistpage_wrap position-relative">
             <div class="watermark_img">
-                <img src="{{asset("resources/img/happy-durga.png")}}" class="img-fluid" alt="image" />
+                <img src="{{asset('resources/img/happy-durga.png')}}" class="img-fluid" alt="image" />
             </div>
             <div class="PCRegist_form">
 
                 <div class="PCRegist_header">
                     <div class="left">
                         <div class="logo">
-                            <img src="{{asset("resources/img/logo-nkda.png")}}" alt="Logo">
+                            <img src="{{asset('resources/img/logo-nkda.png')}}" alt="Logo">
                         </div>
                         <div class="logo_desc">
                             <h2>NEW TOWN KOLKATA DEVELOPMENT AUTHORITY</h2>
@@ -26,7 +26,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                         </div>
                     </div>
                     <div class="right">
-                        <img src="{{asset("resources/img/durga-img.jpg")}}" class="img-fluid" alt="image" />
+                        <img src="{{asset('resources/img/durga-img.jpg')}}" class="img-fluid" alt="image" />
                     </div>
 
                 </div>

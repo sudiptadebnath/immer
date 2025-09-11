@@ -1,4 +1,4 @@
-<x-gatepass :file="asset('qrs/'.$puja->id.'.png')" 
+<x-gatepass :file="asset('qrs/'.$puja->token.'.png')" 
 	:puja="$puja" :pdf="false">
 <div class="download-container">
     <a class="btn-danger" href="{{ route('puja.gpass.pdf', $puja->token) }}">

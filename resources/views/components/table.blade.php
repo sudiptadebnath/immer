@@ -88,13 +88,13 @@
         @if($act)
         @if(is_array($add))
 			@foreach($add as $btn)
-				<button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" title="{{$btn[0]}}"
+				<button class="btn btn-sm btn-link text-{{ $style }} m-0 p-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{{$btn[0]}}" 
 					onclick="{{$btn[2]}}()">
 					<i class="bi bi-{{$btn[1]}}"></i>
 				</button>
 			@endforeach
 		@else
-			<button class="addmore_btn btn btn-sm btn-outline-{{ $style }}" title="Add"
+			<button class="addmore_btn btn btn-sm btn-outline-{{ $style }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Add"
 				onclick="{{ $add }}()">
 				<i class="bi bi-plus"></i>
 				Add
@@ -237,13 +237,13 @@ $(document).ready(function () {
             render: function actBtns(data, type, row) {
                 return `
                 @if($edit)
-                <button class="btn btn-sm btn-link px-1" title="Edit"
+                <button class="btn btn-sm btn-link px-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
                     onclick="{{ $edit }}(${row.id})">
                     <i class="text-info bi bi-pencil"></i>
                 </button>
                 @endif
                 @if($delete)
-                <button class="btn btn-sm btn-link px-1" title="Delete"
+                <button class="btn btn-sm btn-link px-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"
                     onclick="{{ $delete }}(${row.id})">
                     <i class="text-danger bi bi-trash"></i>
                 </button>

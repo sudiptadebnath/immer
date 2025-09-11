@@ -41,6 +41,24 @@ input:focus {
     display: block;
 }
 
+
+/* Tooltip inner box */
+.tooltip-inner {
+    background-color: #46b0e4 !important;
+    color: #fff !important;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Fix arrow color */
+.tooltip .tooltip-arrow::before {
+    border-top-color: #46b0e4 !important;
+    border-bottom-color: #46b0e4 !important;
+    border-left-color: #46b0e4 !important;
+    border-right-color: #46b0e4 !important;
+}
+
+
 #loader {
     position: fixed;
     top: 0;
@@ -906,6 +924,7 @@ table .btn-outline-primary:hover {
     }
 
     .PCRegist_sec {
+        height: auto;
         padding: 15px 0;
         background-image: url(/resources/img/bg-mobile.jpg);
     }

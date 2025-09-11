@@ -26,6 +26,7 @@ Route::get('/gpass/pdf/{token}', [PujaController::class, 'downloadPdf'])->name('
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
+Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
 
 Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
 
@@ -70,7 +71,6 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
     Route::middleware('role:aos')->prefix('att')->group(function () {
         Route::get('/scan', [ScanController::class, 'scanview'])->name('att.scan');
         Route::post('/mark_by_mob', [ScanController::class, 'mark_by_mob'])->name('att.mark_by_mob');
-        Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
         Route::get('/scanstat_bydt', [ScanController::class, 'scanstat_bydt'])->name('att.scanstat_bydt');
         Route::get('/getcomm_bydt', [ScanController::class, 'getcomm_bydt'])->name('att.getcomm_bydt');
         Route::post('/mark_by_qr', [ScanController::class, 'mark_by_qr'])->name('att.mark_by_qr');

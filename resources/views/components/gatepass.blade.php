@@ -141,7 +141,7 @@
         <div class="content">
             <!-- QR Code -->
             <div class="qr-cell">
-                <img src="{{ $file }}" width="150" alt="QR Code">
+                <img src="{{$file}}" width="150" alt="QR Code">
             </div>
 
             <!-- Details Table -->

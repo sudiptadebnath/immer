@@ -123,10 +123,45 @@ class ScanController extends Controller
 		$qCount = (clone $scans)->where('typ', 'queue')->count();
 		$iCount = (clone $scans)->where('typ', 'in')->count();
 		$oCount = (clone $scans)->where('typ', 'out')->count();
-		
+            
+        $immersionData = DB::table('attendance')
+            ->select(
+                'puja_committee_id',
+                DB::raw('MIN(scan_datetime) as first_scan'),
+                DB::raw('MAX(scan_datetime) as last_scan')
+            )
+            ->whereBetween('scan_datetime', [$start, $end])
+            ->groupBy('puja_committee_id')
+            ->get();
+
+        $totalDuration = 0;
+        $committeeCount = 0;
+
+        foreach ($immersionData as $row) {
+            $first = Carbon::parse($row->first_scan);
+            $last  = Carbon::parse($row->last_scan);
+            $diffMinutes = $last->diffInMinutes($first);
+
+            if ($diffMinutes > 0) { // ignore 0-diff cases
+                $totalDuration += $diffMinutes;
+                $committeeCount++;
+            }
+        }
+
+        $avgImmersionTime = 0;
+
+        if ($committeeCount > 0) {
+            $avgMinutes = round($totalDuration / $committeeCount); // average in minutes
+            $hours = floor($avgMinutes / 60);
+            $minutes = $avgMinutes % 60;
+            $avgImmersionTime = sprintf("%02d:%02d", $hours, $minutes); // HH:MM format
+        } else {
+            $avgImmersionTime = sprintf("%02d:%02d", 0, 0); // HH:MM format
+		}
+        
 		$totalOut = DB::table('attendance')->where('typ', 'out')->count();
 
-		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $totalOut ];
+		$stats = [ $qCount, $iCount, $oCount, $qCount + $iCount + $oCount, $avgImmersionTime, $totalOut ];
 
 		return $this->ok("ok", [
 			"data" => $stats, 

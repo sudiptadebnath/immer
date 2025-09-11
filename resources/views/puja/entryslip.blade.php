@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            /* background: #f4f4f4; */
+            /*background: none;*/
         }
 
         .visitor_form {
@@ -16,7 +16,7 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: auto;
-            background-image: url({{asset('public/resources/img/bg2.jpg') }});
+            background-image: url({{asset('resources/img/bg2.jpg') }});
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -92,6 +92,7 @@
             color: black;
         }
 
+
         .visitor_form .info.bold {
             font-weight: bold;
             color: #333;
@@ -126,7 +127,6 @@
             margin-left: auto;
             border: dashed 1px #ccc;
             padding: 5px;
-            margin-bottom: 5px;
         }
 
         .visitor_form .imagepic img {
@@ -201,16 +201,18 @@
                 @endif
                 <div class="info">
                     <span class="label">Secretary:</span>
-                    <span>{{ $puja->secretary_name }} ({{ $puja->secretary_mobile }})</span>
+                    <span>{{ $puja->secretary_name }} - <b>{{ $puja->secretary_mobile }}</b></span>
                 </div>
                 <div class="info">
                     <span class="label">Chairman:</span>
-                    <span>{{ $puja->chairman_name }} ({{ $puja->chairman_mobile }})</span>
+                    <span>{{ $puja->chairman_name }} - <b>{{ $puja->chairman_mobile }}</b></span>
                 </div>
                 <div class="info">
                     <span class="label">Date of Immersion:</span>
-                    <span>{{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
-                        {{ $puja->proposed_immersion_time }}</span>
+                    <span>
+						{{ $puja->proposed_immersion_date ? \Carbon\Carbon::parse($puja->proposed_immersion_date)->format('d M Y') : '' }}
+						{{ $puja->proposed_immersion_time ? \Carbon\Carbon::parse($puja->proposed_immersion_time)->format('h:i A') : '' }}
+					</span>
                 </div>
                 @if($repoAtt && $repoAtt->scan_datetime)
                 <div class="info">
@@ -227,10 +229,10 @@
             </div>
             <div class="rightpart">
                 <div class="imagepic">
-                    <img src="{{asset("public/qrs/{$puja->id}.png")}}" alt="QR Code">
+                    <img src="{{asset("qrs/{$puja->id}.png")}}" alt="QR Code">
                 </div>
                 <div class="info2">
-                    <span>Newtown ?</span>
+                    <span>Puja in New Town Area ?</span>
                     <span>{{ $puja->action_area ? "✔️" : "❌" }}</span>
                 </div>
             </div>

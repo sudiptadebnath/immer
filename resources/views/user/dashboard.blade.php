@@ -43,6 +43,12 @@
         border-top: 5px solid #5a287d !important;
     }
 
+    .statcard.info {
+        /* background: linear-gradient(135deg, #17a2b8,rgb(166, 237, 248)); */
+        background: transparent;
+        border-top: 5px solid #17a2b8 !important;
+    }
+
     .statcard .nm {
         font-size: 1rem;
         font-weight: 600;
@@ -92,6 +98,13 @@
         background: rgb(238, 218, 252);
         color: #5a287d;
     }
+
+      .statcard.info .card-icon {
+        background:rgb(206, 248, 255);
+        color: #17a2b8;
+    }
+
+    
 </style>
 @endpush
 
@@ -102,28 +115,15 @@
             <i class="bi bi-calendar-check"></i>
             <span id="today">25-sep-2026</span>
         </div>
-        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
             <div class="col mb-3">
-                <div class="statcard card primary">
+                <div class="statcard card warning">
                     <div class="card-body">
                         <p class="nm">Queued</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt1" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-clipboard2-check"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-3">
-                <div class="statcard card warning">
-                    <div class="card-body">
-                        <p class="nm">Reported</p>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h4 id="cnt2" class="cnt">0</h4>
-                            <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-clipboard2-check"></i>
+                                <i class="bi bi-people"></i>
                             </div>
                         </div>
                     </div>
@@ -132,24 +132,24 @@
             <div class="col mb-3">
                 <div class="statcard card danger">
                     <div class="card-body">
-                        <p class="nm">Immersion Completed</p>
+                        <p class="nm">Reported</p>
                         <div class="d-flex align-items-center justify-content-between">
-                            <h4 id="cnt3" class="cnt">0</h4>
+                            <h4 id="cnt2" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-clipboard2-check"></i>
+                                <i class="bi bi-card-checklist"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col mb-3">
-                <div class="statcard card secondary">
+                <div class="statcard card success">
                     <div class="card-body">
-                        <p class="nm">Today's Total</p>
+                        <p class="nm">Immersion Completed</p>
                         <div class="d-flex align-items-center justify-content-between">
-                            <h4 id="cnt4" class="cnt">0</h4>
+                            <h4 id="cnt3" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-clipboard2-check"></i>
+                                <i class="bi bi-check2-circle"></i>
                             </div>
                         </div>
                     </div>
@@ -158,9 +158,35 @@
             <div class="col mb-3">
                 <div class="statcard card primary">
                     <div class="card-body">
-                        <p class="nm">All Total</p>
+                        <p class="nm">Today's Total</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt4" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-list-ol"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="statcard card secondary">
+                    <div class="card-body">
+                        <p class="nm">Average Immersion time</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt5" class="cnt">0</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="statcard card info">
+                    <div class="card-body">
+                        <p class="nm">All Total</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt6" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
                                 <i class="bi bi-clipboard2-check"></i>
                             </div>
@@ -184,6 +210,7 @@
                 $("#cnt3").html(resp.data[2]);
                 $("#cnt4").html(resp.data[3]);
                 $("#cnt5").html(resp.data[4]);
+                $("#cnt6").html(resp.data[5]);
             }
             if (resp.dt) $("#today").html(resp.dt);
 
