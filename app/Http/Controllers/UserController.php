@@ -17,8 +17,7 @@ class UserController extends Controller
     {
         $cuser = $this->getUserObj();
         $query = User::where('id', '!=', $cuser->id)
-            ->where('role','!=','a')
-            ->orderBy('created_at', 'desc');
+            ->where('role','!=','a');
         return DataTables::of($query)
             ->editColumn('role', function ($row) {
                 return roleDict()[$row->role] ?? $row->role;

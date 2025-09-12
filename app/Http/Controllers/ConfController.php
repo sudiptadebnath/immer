@@ -16,7 +16,7 @@ class ConfController extends Controller
     /* ==================== SERVICES FOR ACTION AREA ====================================*/
     public function data_action()
     {
-        return DataTables::of(ActionArea::query()->orderBy('view_order', 'asc'))->make(true);
+        return DataTables::of(ActionArea::query())->make(true);
     }
     public function get_action($id)
     {
@@ -237,10 +237,13 @@ class ConfController extends Controller
     public function data_immerdt()
     {
         return DataTables::of(
-                ImmersionDate::query()->orderBy('idate', 'asc')
+                ImmersionDate::query()
             )
             ->editColumn('idate', function ($row) {
                 return $row->idate?->format('d-m-Y');
+            })
+            ->filterColumn('idate', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(idate, '%d-%m-%Y') like ?", ["%{$keyword}%"]);
             })
             ->make(true);
     }

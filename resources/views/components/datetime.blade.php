@@ -32,10 +32,10 @@
                title="{{ ucfirst($title) }}"
                autocomplete='off'
                @if($required) required @endif>
+        @if(trim($slot))
+        <div class="compo-info" style="font-size:10px;">{{ $slot }}</div>
+        @endif
     </div>
-    @if(trim($slot))
-    <div class="compo-info" style="font-size:10px;">{{ $slot }}</div>
-    @endif
     <label class="error" for="{{ $name }}"></label>
 </div>
 
