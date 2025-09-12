@@ -37,6 +37,38 @@ function addValidators() {
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(value);
     }, "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character.");    
 
+    $.validator.addMethod("vehicleNoFormat", function(value, element) {
+        if (!value) return true; 
+        let vehicles = value.split(",").map(v => v.trim()).filter(v => v.length > 0);
+        let pattern = /^[A-Z]{2}\d{1,2}[A-Z]{1,2}\d{4}$/;
+        return vehicles.every(v => pattern.test(v));
+    }, "Please enter valid vehicle number(s)");
+
+    $.validator.addMethod("vehicleCountMatch", function(value, element) {
+        let requiredCount = parseInt($("#no_of_vehicles").val(), 10);
+        if (!requiredCount || !value) return true; 
+        let vehicles = value.split(",").map(v => v.trim()).filter(v => v.length > 0);
+        return vehicles.length === requiredCount;
+    }, "Number of vehicles entered must match the selected count");
+
+    $.validator.addMethod("vehicleNoUnique", function(value, element) {
+        if (!value) return true;
+        let vehicles = value.split(",").map(v => v.trim().toUpperCase()).filter(v => v.length > 0);
+        let unique = new Set(vehicles);
+        return unique.size === vehicles.length;
+    }, "Duplicate vehicle numbers are not allowed");
+
+    jQuery.validator.addMethod("timeRange", function(value, element) {
+        if (!value) return true;
+        let parts = value.split(":");
+        if (parts.length !== 2) return false;
+        let hours = parseInt(parts[0], 10);
+        let minutes = parseInt(parts[1], 10);
+        if (isNaN(hours) || isNaN(minutes)) return false;
+        let totalMinutes = hours * 60 + minutes;
+        return totalMinutes >= 16 * 60 && totalMinutes <= (23 * 60 + 59);
+    }, "Please select a time between 16:00 and 23:59");
+
     $.validator.methods.mydate = function (value, element) {
         return (
             this.optional(element) ||

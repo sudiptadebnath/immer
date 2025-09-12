@@ -19,6 +19,7 @@ class PujaCommittee extends Model
         'chairman_mobile',
         'proposed_immersion_date',
         'proposed_immersion_time',
+        'no_of_vehicles',
         'vehicle_no',
         'team_members',
         'stat',

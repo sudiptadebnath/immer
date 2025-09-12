@@ -37,6 +37,20 @@ function addValidators() {
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(value);
     }, "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character.");    
 
+    $.validator.addMethod("vehicleNoFormat", function(value, element) {
+        if (!value) return true; 
+        let vehicles = value.split(",").map(v => v.trim()).filter(v => v.length > 0);
+        let pattern = /^[A-Z]{2}\d{1,2}[A-Z]{1,2}\d{4}$/;
+        return vehicles.every(v => pattern.test(v));
+    }, "Please enter valid vehicle number(s)");
+
+    $.validator.addMethod("vehicleCountMatch", function(value, element) {
+        let requiredCount = parseInt($("#no_of_vehicles").val(), 10);
+        if (!requiredCount || !value) return true; 
+        let vehicles = value.split(",").map(v => v.trim()).filter(v => v.length > 0);
+        return vehicles.length === requiredCount;
+    }, "Number of vehicles entered must match the selected count");
+
     $.validator.methods.mydate = function (value, element) {
         return (
             this.optional(element) ||

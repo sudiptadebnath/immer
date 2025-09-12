@@ -74,10 +74,16 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         [ 'data'=>'proposed_immersion_date',"th"=>"Immersion Date", 'render' => 'function (data, type, row) {
             let dt = row.proposed_immersion_date ? row.proposed_immersion_date : "";
             let tm = row.proposed_immersion_time ? row.proposed_immersion_time : "";
-            if (dt && tm) return dt + "<br>" + tm;
-            else if (dt) return dt;
-            else if (tm) return tm;
-            return "";
+            let ans="";
+            if (dt && tm) ans += dt + "<br>" + tm;
+            else if (dt) ans += dt;
+            else if (tm) ans += tm;
+            let vc = row.no_of_vehicles ? row.no_of_vehicles : "";
+            let vns = row.vehicle_no ? row.vehicle_no : "";
+            if (vc && vns) ans += "<br>Vehicle - " + vc + " : " + vns;
+            else if (vc) ans += "<br>Vehicle - " + vc;
+            else if (vns) ans += "<br>Vehicle - " + vns;
+            return ans;
         }', ], 
         [ 'data'=>'proposed_immersion_time','visible'=>false ], 
     ];
@@ -141,10 +147,15 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
 
         {{-- Immersion --}}
-        <x-select size="4" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
+        <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
          :value="$immer_dts" required="true" />
-        <x-text size="4" typ="time" name="proposed_immersion_time" title="Immersion Time"  icon="!" required="true" />
-        <x-text size="4" name="vehicle_no" title="Vehicle No (optional)"  icon="truck-front" />
+        <x-text size="6" typ="time" name="proposed_immersion_time" title="Immersion Time"  icon="clock">
+            Range 16:00 - 23:59
+        </x-text>
+        <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3']" />
+        <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)"  icon="truck-front">
+            Vehicle No(s) separated by comma
+        </x-text>
 
         {{-- Dhunuchi Nach --}}
         <div class="col-md-12">
@@ -315,7 +326,17 @@ $(function () {
                 required: true,
             },
             proposed_immersion_time: {
-                required: true,
+                required: false,
+                timeRange: true,
+            },
+            no_of_vehicles: {
+                required: false
+            },
+            vehicle_no: {
+                required: false,
+                vehicleCountMatch: true,
+                vehicleNoFormat: true,
+                vehicleNoUnique: true,
             },
             // dhunuchi: {
             //     required: true,
@@ -346,7 +367,15 @@ $(function () {
             //     indianMobile: "Please enter a valid Indian mobile number"
             // },
             proposed_immersion_date: "Please select a proposed immersion date",
-            proposed_immersion_time: "Please select a proposed immersion time",
+            proposed_immersion_time: {
+                required: "Please select a proposed immersion time",
+                timeRange: "Immersion time must be between 16:00 and 23:59"
+            },
+            vehicle_no: {
+                vehicleCountMatch: "Vehicle numbers count must match selected number",
+                vehicleNoFormat: "Each vehicle number must be valid (e.g. WB12AB1234)",
+                vehicleNoUnique: "Duplicate vehicle numbers are not allowed",
+            },
             // dhunuchi: "Please select Yes or No for Dhunuchi Nach participation",
             team_members: "Please enter number of team members (1–{{ setting('DHUNUCHI_TEAM',20) }})"
         }
@@ -371,6 +400,9 @@ function register_submt (e) {
 }
 
 function addPuja() {
+    $("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
+    $("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
+    
     $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
     $('#register').find("select").prop('selectedIndex', 0); // reset all dropdowns
     $('#id').val(''); 
@@ -393,6 +425,7 @@ function editPuja(id) {
         $('#chairman_mobile').val(puja.chairman_mobile);
         $('#proposed_immersion_date').val(puja.proposed_immersion_date);
         $('#proposed_immersion_time').val(puja.proposed_immersion_time);
+        $('#no_of_vehicles').val(puja.no_of_vehicles);
         $('#vehicle_no').val(puja.vehicle_no);
         $('#team_members').val(puja.team_members);
 

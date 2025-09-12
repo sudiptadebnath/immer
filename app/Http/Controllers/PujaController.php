@@ -56,6 +56,7 @@ class PujaController extends Controller
             'chairman_mobile'       => 'required|string|min:8|max:20|unique:puja_committees,chairman_mobile',
             'proposed_immersion_date' => 'required|date',
             'proposed_immersion_time' => 'required|string',
+            'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
         ];
@@ -86,6 +87,7 @@ class PujaController extends Controller
             'chairman_mobile'       => $request->chairman_mobile,
             'proposed_immersion_date' => $request->proposed_immersion_date,
             'proposed_immersion_time' => $request->proposed_immersion_time,
+            'no_of_vehicles'        => $request->no_of_vehicles,
             'vehicle_no'            => $request->vehicle_no,
             'team_members'          => $request->dhunuchi ? $request->team_members : null,
             'stat'                  => 'a', 
@@ -140,7 +142,8 @@ class PujaController extends Controller
             'chairman_name'         => 'nullable|string|min:3|max:100',
             'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile',
             'proposed_immersion_date' => 'required|date',
-            'proposed_immersion_time' => 'required|string',
+            'proposed_immersion_time' => 'nullable|string',
+            'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
         ];
@@ -171,6 +174,7 @@ class PujaController extends Controller
             'chairman_mobile'       => $request->chairman_mobile,
             'proposed_immersion_date' => $request->proposed_immersion_date,
             'proposed_immersion_time' => $request->proposed_immersion_time,
+            'no_of_vehicles'        => $request->no_of_vehicles,
             'vehicle_no'            => $request->vehicle_no,
             'team_members'          => $request->dhunuchi ? $request->team_members : null,
             'stat'                  => 'a', 
@@ -216,6 +220,7 @@ class PujaController extends Controller
 
     public function updateadmin(Request $request, $id)
     {
+        //Log::info("ccc",["data"=>$request->all()]);
         $puja = PujaCommittee::find($id);
         if (!$puja) return $this->err("No Such Puja");
 		
@@ -240,7 +245,8 @@ class PujaController extends Controller
             'chairman_name'         => 'nullable|string|min:3|max:100',
             'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile,' . $id,
             'proposed_immersion_date' => 'required|date',
-            'proposed_immersion_time' => 'required|string',
+            'proposed_immersion_time' => 'nullable|string',
+            'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
         ]);
@@ -256,6 +262,7 @@ class PujaController extends Controller
         $puja->chairman_mobile        = $request->chairman_mobile;
         $puja->proposed_immersion_date = $request->proposed_immersion_date;
         $puja->proposed_immersion_time = $request->proposed_immersion_time;
+        $puja->no_of_vehicles          = $request->no_of_vehicles;
         $puja->vehicle_no             = $request->vehicle_no;
         $puja->team_members           = $request->dhunuchi ? $request->team_members : null;
         $puja->save();
@@ -312,6 +319,7 @@ class PujaController extends Controller
             'chairman_mobile'       => 'required|string|min:8|max:20|unique:puja_committees,chairman_mobile,' . $id,
             'proposed_immersion_date' => 'required|date',
             'proposed_immersion_time' => 'required|string',
+            'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
         ]);
@@ -327,6 +335,7 @@ class PujaController extends Controller
         $puja->chairman_mobile        = $request->chairman_mobile;
         $puja->proposed_immersion_date = $request->proposed_immersion_date;
         $puja->proposed_immersion_time = $request->proposed_immersion_time;
+        $puja->no_of_vehicles          = $request->no_of_vehicles;
         $puja->vehicle_no             = $request->vehicle_no;
         $puja->team_members           = $request->dhunuchi ? $request->team_members : null;
         $puja->save();

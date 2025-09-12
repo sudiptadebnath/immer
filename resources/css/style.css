@@ -953,3 +953,13 @@ table .btn-outline-primary:hover {
         font-size: .6em;
     }
 }
+
+.compo-info {
+    font-size: 10px;
+    color: #177f88 !important;
+    padding: 0px 0px 0px 50px;
+    margin: 0px;
+}
+.compo-info::before {
+    content: "- ";
+}

@@ -31,5 +31,8 @@
             title="{{ ucfirst($title) }}"
             @if($required) required @endif>
     </div>
+    @if(trim($slot))
+    <div class="compo-info" style="font-size:10px;">{{ $slot }}</div>
+    @endif
     <label class="error" for="{{ $name }}"></label>
 </div>

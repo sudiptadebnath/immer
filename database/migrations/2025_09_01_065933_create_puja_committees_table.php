@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('chairman_mobile', 20)->nullable()->unique();
             $table->date('proposed_immersion_date')->nullable();
             $table->time('proposed_immersion_time')->nullable();
+            $table->unsignedTinyInteger('no_of_vehicles')->nullable();
             $table->string('vehicle_no', 50)->nullable();
             $table->unsignedTinyInteger('team_members')->nullable();
             $table->string('stat', 1)->default('a');
