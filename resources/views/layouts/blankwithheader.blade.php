@@ -96,7 +96,7 @@
 
 	<!--------new layout------->
 	<div class="PCRegist_sec">
-		<div class="container d-flex align-items-center justify-content-center login-container h-100">
+		<div class="container-fluid d-flex align-items-center justify-content-center login-container h-100">
 			<div class="PCRegistpage_wrap position-relative" style="max-width: 1200px;">
 				<div class="watermark_img">
 					<img src="{{asset('resources/img/happy-durga.png')}}" class="img-fluid" alt="image">

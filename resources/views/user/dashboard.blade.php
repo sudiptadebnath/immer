@@ -115,7 +115,7 @@
             <i class="bi bi-calendar-check"></i>
             <span id="today">25-sep-2026</span>
         </div>
-        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
             <div class="col mb-3">
                 <div class="statcard card warning">
                     <div class="card-body">
