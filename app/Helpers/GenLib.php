@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AppLog;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -196,3 +197,45 @@ if (!function_exists('dbVals')) {
     }
 }
 
+if (! function_exists('get_client_ip')) {
+    function get_client_ip(): string
+    {
+        // If running in HTTP request context
+        if (app()->runningInConsole() === false && request() instanceof \Illuminate\Http\Request) {
+            // Prefer X-Forwarded-For when behind proxies (first entry is the client)
+            $xff = request()->server('HTTP_X_FORWARDED_FOR') ?: request()->header('X-Forwarded-For');
+            if ($xff) {
+                $parts = explode(',', $xff);
+                return trim($parts[0]);
+            }
+
+            // Fallback to Laravel request IP (handles proxies if configured)
+            return request()->ip() ?? 'unknown';
+        }
+
+        // Running in CLI (scheduler / queue worker). Return host IP
+        // try to get primary address of the machine
+        $hostname = gethostname() ?: 'cli';
+        $hostIp = gethostbyname($hostname);
+
+        // if still unresolved, attempt SERVER_ADDR env var or loopback
+        if (! $hostIp || $hostIp === $hostname) {
+            $hostIp = env('SERVER_ADDR') ?: '127.0.0.1';
+        }
+
+        return $hostIp;
+    }
+}
+
+if (! function_exists('app_log')) {
+    function app_log($name, $action, $reaction="", $context = null, $user = "") {
+        AppLog::create([
+            'ip'       => get_client_ip(),
+            'name'     => $name,
+            'action'   => $action,
+            'reaction' => $reaction,
+            'user'  => ($user ? $user : (userLogged() ? getUsrProp("name") : "NONUSER")),
+            'context'  => is_array($context) ? json_encode($context) : $context,
+        ]);
+    }
+}

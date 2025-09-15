@@ -49,6 +49,7 @@
     $opts = array_merge([
         "rowreorder"=>[],
         "responsive"=>false,
+        "scrollY"=>"",
         "style"=>"primary",
         "add"=>"",
         "edit"=>"",
@@ -69,7 +70,6 @@
     <div class="d-flex align-items-center justify-content-between border-1 border-bottom pb-1 mb-2">
         <h3 class="d-flex flex-wrap gap-1">
             {{ $title }}
-            {{ $slot }}
             @if(!empty($imp))
             <div class="dropdown mb-0 ms-auto exportmenu">
                 <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
@@ -85,6 +85,7 @@
             </div>
             @endif
         </h3>
+        {{ $slot }}
         @if($act)
         @if(is_array($add))
 			@foreach($add as $btn)
@@ -141,6 +142,7 @@
 
 @push('scripts')
 <script>
+var {{ $name }};
 $(document).ready(function () {
 	$.fn.dataTable.moment('DD-MM-YYYY HH:mm:ss');
 
@@ -165,7 +167,7 @@ $(document).ready(function () {
 	};
     @endif
     
-    var {{ $name }} = $('#{{ $name }}').DataTable({
+    {{ $name }} = $('#{{ $name }}').DataTable({
         autoWidth: {{ $autoWidth ? 'true' : 'false' }},
         order: [],
     @if($rowreorder)
@@ -177,6 +179,9 @@ $(document).ready(function () {
         responsive: true,
     @else
         scrollX: true,
+    @endif
+    @if($scrollY)
+        scrollY: "{{ $scrollY }}", 
     @endif
         processing: true,
         serverSide: true,

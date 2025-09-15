@@ -85,6 +85,8 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
     Route::middleware('role:ao')->prefix('conf')->group(function () {
         Route::get('/settings', fn() => view("conf.settings"))->name('conf.settings');
         Route::post('/save_settings', [ConfController::class, 'save_settings'])->name('conf.save_settings');
+        Route::get('/data/logs', [ConfController::class, 'data_logs'])->name('conf.data.logs');
+        Route::delete('/del/logs', [ConfController::class, 'del_logs'])->name('conf.del.logs');
 
         Route::get('/action', fn() => view("conf.actions"))->name('conf.action');
         Route::get('/data/action', [ConfController::class, 'data_action'])->name('conf.data.action');

@@ -11,6 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Http\Middleware\LogRequestMiddleware::class);
         $middleware->alias([
             // register aliases here
             'check.user.session' => \App\Http\Middleware\CheckUserSession::class,

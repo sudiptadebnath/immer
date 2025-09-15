@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActionArea;
+use App\Models\AppLog;
 use App\Models\ImmersionDate;
 use App\Models\PujaCategorie;
 use App\Models\PujaCommitteeRepo;
@@ -301,5 +302,32 @@ class ConfController extends Controller
             set_setting($key, $val);
         }
         return $this->ok("Saved Successfully");
+    }
+
+    public function data_logs()
+    {
+        return DataTables::of(AppLog::query())
+        ->rawColumns(['context'])
+        ->editColumn('created_at', function ($row) {
+            return $row->created_at?->timezone('Asia/Kolkata')->format('d-m-Y H:i:s');
+        })
+        ->make(true);
+    }
+
+    public function del_logs(Request $request)
+    {
+        $search = $request->input('search', '');
+        $query = AppLog::query();
+        $query->where(function($q) use ($search) {
+            $q->where('ip', 'like', "%$search%")
+            ->orWhere('user', 'like', "%$search%")
+            ->orWhere('name', 'like', "%$search%")
+            ->orWhere('action', 'like', "%$search%")
+            ->orWhere('reaction', 'like', "%$search%")
+            ->orWhere('context', 'like', "%$search%");
+        });
+
+        $deleted = $query->delete();
+        return $this->ok("$deleted Record Purged Successfully");
     }
 }

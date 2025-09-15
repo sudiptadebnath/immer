@@ -1,5 +1,16 @@
 @extends('layouts.app')
 
+@push("styles")
+<style>
+.pre-json {
+    max-width: 400px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow: auto;
+}    
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid m-0 p-3">
 <div class="row g-2">
@@ -23,10 +34,49 @@
     </x-card>
 </div>
 </div>
+
+@php
+    $opts_log = [
+        "scrollY" => "500px"
+    ];
+    $data_log = [
+        [ 'data'=>'ip', ], 
+        [ 'data'=>'user', ], 
+        [ 'data'=>'name', ], 
+        [ 'data'=>'action', ], 
+        [ 'data'=>'reaction', ], 
+        [
+            'data' => 'context',
+            'render' => 'function(data, type, row, meta) {
+                data = JSON.stringify(JSON.parse(data), null, 4);
+                return "<pre class=\'pre-json\'>" + $("<div>").text(data).html() + "</pre>";
+            }'
+        ],
+        [ 'data'=>'created_at', ], 
+    ];
+@endphp
+<x-table name="table_log" title="Application Logs" :url="route('conf.data.logs')" :data="$data_log" :opts="$opts_log">
+    <button class="btn btn-sm btn-danger" onclick="purge()">Purge</button>
+</x-table>
+
 @endsection
 
 @push('scripts')
 <script>
+function purge() {
+
+    var search = table_log.search();
+
+    myAlert("Sure to delete all application log data ?","danger","Yes",function(){
+        webserv("DELETE","{{ route('conf.del.logs') }}", { search }, 
+        function ok(d) { 
+            myAlert(d["msg"]);
+            $('#table_log').DataTable().ajax.reload(null, false);
+        }, function err(d) {
+            myAlert(d["msg"],"danger");
+        });
+    },"No");
+}
 $(function () {
     $("#settings").validate({
         rules: {
