@@ -14,10 +14,16 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 		$schedule->call(function (PujaController $controller) {
-			$controller->sendPujaReminders();
-        })->everyThirtyMinutes();
-		//})->dailyAt('09:00')->timezone('Asia/Kolkata');
-		//})->cron('*/30 * * * *'); 
+			$controller->sendPujaReminders1(); // FOR REMINDER AT IMMERSION DAY
+        })->dailyAt('00:01')->timezone('Asia/Kolkata')->withoutOverlapping();
+        
+		$schedule->call(function (PujaController $controller) {
+			$controller->sendPujaReminders2(); // FOR REMINDER AT BEFORE 2 HR OF IMMERSION TIME
+        })->everyMinute()->withoutOverlapping();
+
+        // })->everyThirtyMinutes()->withoutOverlapping();
+		// })->dailyAt('09:00')->timezone('Asia/Kolkata');
+		// })->cron('*/30 * * * *'); 
 		// hourly() weeklyOn(1, '08:00') twiceDaily(1, 13)
     }
 

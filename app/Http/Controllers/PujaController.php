@@ -583,12 +583,102 @@ class PujaController extends Controller
     }
 
 	/*
-	This method should not rely on $request, session, or middleware, 
+	Following methods should not rely on $request, session, or middleware, 
 	because this is scheduler run which is outside of HTTP context.
 	*/
-	public function sendPujaReminders()
+	public function sendPujaReminders1()
 	{
-		//
+        $sms = new SmsService;
+        $today = Carbon::today()->toDateString();
+
+        $committees = PujaCommittee::whereDate('proposed_immersion_date', $today)
+            ->where(function ($q) {
+                $q->whereNotNull('secretary_mobile')
+                  ->orWhereNotNull('chairman_mobile');
+            })
+            ->where('reminder_typ', 0)
+            ->where('reminder_cnt', '<', 3)
+            ->get();
+
+        foreach ($committees as $c) {
+            try {
+                // Collect mobiles
+                $mobiles = array_filter([
+                    $c->secretary_mobile,
+                    $c->chairman_mobile,
+                ]);
+
+                // ---- Send SMS here ----
+                $message = "Dear {$c->puja_committee_name}, "
+                    ."please remember your immersion today at {$c->proposed_immersion_time}. "
+                    ."Wishing you a safe and happy event.";
+                
+                $ok = $sms->send($mobiles, $message);
+
+                // If sent successfully
+                if ($ok['success']) {
+                    $c->update([
+                        'reminder_typ' => 1,  // mark as second reminder done
+                        'reminder_cnt' => 0,
+                    ]);
+                } else {
+                    // Retry count will increase anyway
+                    $c->increment('reminder_cnt');
+                    Log::warning("Reminder1 SMS failed for {$c->puja_committee_name}");
+                }
+            } catch (\Exception $e) {
+                $c->increment('reminder_cnt');
+                Log::error("Reminder1 SMS error for {$c->puja_committee_name}: ".$e->getMessage());
+            }
+        }        
 	}
+
+    public function sendPujaReminders2()
+    {
+        $sms = new SmsService;
+        $now = Carbon::now('Asia/Kolkata');
+        $from = $now;                       // current time
+        $to   = $now->copy()->addHours(2);  // next 2 hours
+
+        $committees = PujaCommittee::whereDate('proposed_immersion_date', Carbon::today())
+            ->where(function ($q) {
+                $q->whereNotNull('secretary_mobile')
+                ->orWhereNotNull('chairman_mobile');
+            })
+            ->where('reminder_typ', 1)
+            ->where('reminder_cnt', '<', 3)
+            ->whereBetween('proposed_immersion_time', [$from->toTimeString(), $to->toTimeString()])
+            ->get();
+
+        foreach ($committees as $c) {
+            try {
+                $mobiles = array_filter([
+                    $c->secretary_mobile,
+                    $c->chairman_mobile,
+                ]);
+
+                $message = "Dear {$c->puja_committee_name}, "
+                    ."your idol immersion is scheduled at {$c->proposed_immersion_time} today. "
+                    ."This is a gentle reminder from NKDA. "
+                    ."Wishing you a safe and happy event.";
+
+                $ok = $sms->send($mobiles, $message);
+
+                if ($ok['success']) {
+                    $c->update([
+                        'reminder_typ' => 2,  // mark as second reminder done
+                        'reminder_cnt' => 0,
+                    ]);
+                } else {
+                    $c->increment('reminder_cnt');
+                    Log::warning("Reminder2 SMS failed for {$c->puja_committee_name}");
+                }
+            } catch (\Exception $e) {
+                $c->increment('reminder_cnt');
+                Log::error("Reminder2 SMS error for {$c->puja_committee_name}: ".$e->getMessage());
+            }
+        }
+    }
+
 
 }
