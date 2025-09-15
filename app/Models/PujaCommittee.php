@@ -24,6 +24,8 @@ class PujaCommittee extends Model
         'team_members',
         'stat',
         'token',
+        'reminder_typ',
+        'reminder_cnt',
     ];
 
     // Hide sensitive fields in JSON

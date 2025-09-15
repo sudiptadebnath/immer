@@ -228,10 +228,17 @@ class ScanController extends Controller
         ]);
         $typNm = attDict()[$typ];
         //return $this->ok("Marked <b>" . $typNm . "</b> for " . $puja->secretary_mobile);
-        return $this->ok($cuser->role == "s" ? 
-			"Digital Pass successfully verified" : 
-			"Digital Pass successfully verified for Immersion"
-		);
+        if($cuser->role == "s") {
+            return $this->ok("Digital Pass successfully verified");
+        } else {
+            $pujacontroller = new PujaController;
+            $pujacontroller->sendSmsToPuja($puja,
+                "Welcome to NKDA Bisarjan Ghat for the Immersion of Durga Idol. "
+                ."We wish you a very safe and happy event With warm regards and "
+                ."advance Bijoya greetings!"
+            );
+            return $this->ok("Digital Pass successfully verified for Immersion");
+        }
     }
 
     public function mark_by_mob(Request $request)

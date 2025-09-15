@@ -84,7 +84,7 @@ class PujaController extends Controller
 		return response("true");
 	}
 
-    public function add(Request $request)
+    public function add(Request $request,SmsService $sms)
     {
 		//Log::info("aaa",["data"=>$request->all()]);
         $rules = [
@@ -167,6 +167,9 @@ class PujaController extends Controller
 
         $puja = PujaCommittee::create($pujaData);
 		$this->smsLink($puja->token);
+        if(setting('NKDA_MOBS')) {
+            $sms->send(explode("~~",setting('NKDA_MOBS')),"New puja committee ($nm) registered.");
+        }
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();
         $category   = PujaCategorie::where('name', $request->category)->first();
@@ -489,7 +492,7 @@ class PujaController extends Controller
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 	
-	private function sendSmsToPuja($puja,$msg) 
+	public function sendSmsToPuja($puja,$msg) 
 	{
 		$sms = new SmsService;
 		$mob = [];
@@ -578,16 +581,6 @@ class PujaController extends Controller
         $puja = $this->getUserObj();
         return view('puja.scan', compact('puja'));
     }
-
-    public function save_settings(Request $request)
-    {
-        Log::info("save_settings", $request->all());
-        foreach ($request->except(['_token', '_method']) as $key => $val) {
-            set_setting($key, $val);
-        }
-        return $this->ok("Saved Successfully");
-    }
-
 
 	/*
 	This method should not rely on $request, session, or middleware, 
