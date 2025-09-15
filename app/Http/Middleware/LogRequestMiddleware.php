@@ -13,6 +13,7 @@ class LogRequestMiddleware
 
     protected array $except = [
         'scanstat',
+        'logs',
     ];
 
     /**

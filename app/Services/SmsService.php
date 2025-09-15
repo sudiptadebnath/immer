@@ -38,12 +38,19 @@ class SmsService
 		*/
 
 		// Fake response for now
-		return [
+		$response = [
 			'success'  => true,
 			'to'      => $recipients,
 			'message' => $message,
 			'id'      => uniqid('sms_'),
 			'debug'   => true,
 		];
+
+		app_log('system.SMS',"SMS SEND >>".json_encode([
+			'to'      => $recipients,
+			'message' => $message,
+		]),"SMS API RESPONSE >>".json_encode($response));
+
+		return $response;
 	}
 }
