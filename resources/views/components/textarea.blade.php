@@ -25,7 +25,7 @@
             class="form-control"
             placeholder="{{ ucfirst($title) }}"
             title="{{ ucfirst($title) }}"
-            rows="4"
+            rows="3"
             @if($required) required @endif>{{ old($name, $value) }}</textarea>
     </div>
     <label class="error" for="{{ $name }}"></label>

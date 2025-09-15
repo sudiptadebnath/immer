@@ -51,6 +51,24 @@ function addValidators() {
         return vehicles.length === requiredCount;
     }, "Number of vehicles entered must match the selected count");
 
+    $.validator.addMethod("vehicleNoUnique", function(value, element) {
+        if (!value) return true;
+        let vehicles = value.split(",").map(v => v.trim().toUpperCase()).filter(v => v.length > 0);
+        let unique = new Set(vehicles);
+        return unique.size === vehicles.length;
+    }, "Duplicate vehicle numbers are not allowed");
+
+    $.validator.addMethod("timeRange", function(value, element) {
+		if (!value) return true;
+        let parts = value.split(":").slice(0,2);
+        if (parts.length !== 2) return false;
+        let hours = parseInt(parts[0], 10);
+        let minutes = parseInt(parts[1], 10);
+        if (isNaN(hours) || isNaN(minutes)) return false;
+        let totalMinutes = hours * 60 + minutes;
+        return totalMinutes >= 16 * 60 && totalMinutes <= (24 * 60);
+    }, "Please select a time between 16:00 and 23:59");
+
     $.validator.methods.mydate = function (value, element) {
         return (
             this.optional(element) ||

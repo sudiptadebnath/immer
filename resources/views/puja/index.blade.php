@@ -94,7 +94,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
 
 <div class="modal fade" id="pujaModal" tabindex="-1" aria-labelledby="pujaModalLabel" aria-hidden="true"
 data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
       <form id="register" onsubmit="return register_submt(event)" novalidate="novalidate">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white py-1">
@@ -142,9 +142,9 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         {{-- Common fields --}}
         <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
         <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" />
-        <x-number size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
+        <x-mobileotp size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
         <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" />
-        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
+        <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
 
         {{-- Immersion --}}
         <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
@@ -287,23 +287,59 @@ $(function () {
 
     $("#register").validate({
         rules: {
-            // in_newtown: {
-            //     required: true,
-            // },
-            // action_area: {
-            //     required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
-            // },
-            // category: {
-            //     required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
-            // },
-            puja_committee_name: {
-                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; }
+            in_newtown: {
+                 required: false,
             },
+            action_area: {
+                 required: false,
+            },
+            category: {
+                required: false,
+            },
+            puja_committee_name: {
+                required: function() { return $("input[name='in_newtown']:checked").val() == "1"; },
+				remote: {
+					url: "{{ url('/form_validate') }}",
+					type: "get",
+					data: {
+						name: function() {
+							return $("#puja_committee_name").val();
+						}
+					},
+					depends: function(element) {
+						return $('#id').val()=="";
+					}
+				}
+			},
             puja_committee_name_other: {
-                required: function() { return $("#puja_committee_name").val() === "Other"; }
+                required: function() { return $("#puja_committee_name").val() === "Other"; },
+				remote: {
+					url: "{{ url('/form_validate') }}",
+					type: "get",
+					data: {
+						name: function() {
+							return $("#puja_committee_name_other").val();
+						}
+					},
+					depends: function(element) {
+						return $('#id').val()=="";
+					}
+				}
             },
             puja_committee_name_text: {
-                required: function() { return $("input[name='in_newtown']:checked").val() == "0"; }
+                required: function() { return $("input[name='in_newtown']:checked").val() == "0"; },
+				remote: {
+					url: "{{ url('/form_validate') }}",
+					type: "get",
+					data: {
+						name: function() {
+							return $("#puja_committee_name_text").val();
+						}
+					},
+					depends: function(element) {
+						return $('#id').val()=="";
+					}
+				}
             },
             puja_committee_address: {
                 required: true,
@@ -314,14 +350,38 @@ $(function () {
             secretary_mobile: {
                 required: true,
                 indianMobile: true,
+				remote: {
+					url: "{{ url('/form_validate') }}",
+					type: "get",
+					data: {
+						name: function() {
+							return $("#secretary_mobile").val();
+						}
+					},
+					depends: function(element) {
+						return $('#id').val()=="";
+					}
+				}
             },
             // chairman_name: {
             //     required: true,
             // },
-            // chairman_mobile: {
-            //     required: true,
-            //     indianMobile: true,
-            // },
+            chairman_mobile: {
+                required: false,
+                indianMobile: true,
+				remote: {
+					url: "{{ url('/form_validate') }}",
+					type: "get",
+					data: {
+						name: function() {
+							return $("#chairman_mobile").val();
+						}
+					},
+					depends: function(element) {
+						return $('#id').val()=="";
+					}
+				}
+            },
             proposed_immersion_date: {
                 required: true,
             },
@@ -362,14 +422,14 @@ $(function () {
                 indianMobile: "Please enter a valid Indian mobile number"
             },
             // chairman_name: "Please enter the chairman/president's name",
-            // chairman_mobile: {
-            //     required: "Please enter the chairman's mobile number",
-            //     indianMobile: "Please enter a valid Indian mobile number"
-            // },
+            chairman_mobile: {
+                required: "Please enter the chairman's mobile number",
+                indianMobile: "Please enter a valid Indian mobile number"
+            },
             proposed_immersion_date: "Please select a proposed immersion date",
             proposed_immersion_time: {
                 required: "Please select a proposed immersion time",
-                timeRange: "Immersion time must be between 16:00 and 23:59"
+                timeRange: "Please select the Immersion time in between 4PM to 12AM"
             },
             vehicle_no: {
                 vehicleCountMatch: "Vehicle numbers count must match selected number",
@@ -399,6 +459,25 @@ function register_submt (e) {
     }
 }
 
+function setToday() {
+	const today = new Date();
+	const yyyy = today.getFullYear();
+	const mm = String(today.getMonth() + 1).padStart(2, '0');
+	const dd = String(today.getDate()).padStart(2, '0');
+	const formattedDate = `${yyyy}-${mm}-${dd}`;
+	if ($("#proposed_immersion_date option[value='" + formattedDate + "']").length > 0) {
+		$("#proposed_immersion_date").val(formattedDate).trigger('change');
+	}	
+}
+
+function setCurTime() {
+	const now = new Date();
+	const hh = String(now.getHours()).padStart(2, '0');
+	const mm = String(now.getMinutes()).padStart(2, '0');
+	const formattedTime = `${hh}:${mm}`;
+	$("#proposed_immersion_time").val(formattedTime).trigger('change');
+}
+
 function addPuja() {
     $("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
     $("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
@@ -406,6 +485,8 @@ function addPuja() {
     $('#register').find("input[type=text], input[type=number], input[type=password], textarea").val('');
     $('#register').find("select").prop('selectedIndex', 0); // reset all dropdowns
     $('#id').val(''); 
+	setToday(); setCurTime();
+	$('#secretary_mobile_otp').prop('required',true);
     $('#pujaModalLabel').text("Add Puja");
     $('.error').text('');
     $('#pujaModal').modal('show');
@@ -421,6 +502,7 @@ function editPuja(id) {
         $('#puja_committee_address').val(puja.puja_committee_address);
         $('#secretary_name').val(puja.secretary_name);
         $('#secretary_mobile').val(puja.secretary_mobile);
+		$('#secretary_mobile_otp').prop('required',false);
         $('#chairman_name').val(puja.chairman_name);
         $('#chairman_mobile').val(puja.chairman_mobile);
         $('#proposed_immersion_date').val(puja.proposed_immersion_date);
@@ -439,6 +521,9 @@ function editPuja(id) {
         } else {
             $("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
         }
+		
+		if(!puja.proposed_immersion_date) setToday(); 
+		if(!puja.proposed_immersion_time) setCurTime();
 
         $('#pujaModalLabel').text('Edit Puja');
         $('.error').text('');

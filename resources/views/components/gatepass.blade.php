@@ -38,7 +38,7 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: 0 auto; */
-            background-image: url(/public/resources/img/bg2.jpg);
+            background-image: url(/resources/img/bg2.jpg);
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -118,20 +118,65 @@
             margin-top: 20px;
         }
 
-        .btn-danger {
+        .btn {
             display: inline-block;
             padding: 8px 16px;
-            background: #dc3545;
+            background: #354edc;
             color: #fff;
             text-decoration: none;
             border-radius: 6px;
             font-size: 14px;
             font-family: DejaVu Sans, sans-serif;
+			cursor: pointer;
+			border: 0px;
         }
 
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
         .btn-danger:hover {
             background: #bb2d3b;
         }
+		
+        .btn-primary {
+            background: #354edc;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #2f3e94;
+        }
+
+
+#sms-result {
+	margin-top: 30px;
+}
+
+.alert {
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+  width: 100%; max-width: 450px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem auto;
+  border-radius: 0.375rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  border-left: 4px solid transparent;
+  text-align: left;
+}
+
+.success {
+  background: #e9f7ef;
+  color: #0f5132;
+  border-left-color: #198754;
+}
+
+.danger {
+  background: #f8d7da;
+  color: #842029;
+  border-left-color: #dc3545;
+}
+
+		
     </style>
 </head>
 

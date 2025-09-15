@@ -18,6 +18,9 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
+	<!------preload--------->
+	<link rel="preload" as="image" href="{{ asset('resources/img/bg.jpg') }}">
+
 	<!-- Tempus Dominus Styles -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
 

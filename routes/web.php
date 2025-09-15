@@ -19,10 +19,15 @@ Route::get('/', function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/register', fn() => view("register"));
+Route::get('/form_validate', [PujaController::class, 'form_validate']);
+Route::post('/send_otp', [PujaController::class, 'send_otp']);
+Route::get('/register', fn() => view("register"));
+Route::get('/register', fn() => view("register"));
 Route::get('/thanks/{token}',  [PujaController::class, 'thanks'])->name('puja.thanks');
 Route::post('/register', [PujaController::class, 'add']);
 Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
 Route::get('/gpass/pdf/{token}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
+Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
@@ -55,7 +60,6 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
         Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
         Route::get('/has_entryslip/{id}', [PujaController::class, 'has_entryslip'])->name('puja.has_entryslip');
         Route::get('/{id}', [PujaController::class, 'get']);
-        Route::put('/{id}', [PujaController::class, 'update']);
         Route::put('/editadmin/{id}', [PujaController::class, 'updateadmin']);
         Route::delete('/{id}', [PujaController::class, 'delete']);
     });

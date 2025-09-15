@@ -16,6 +16,9 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
+	<!------preload--------->
+	<link rel="preload" as="image" href="{{ asset('resources/img/bg.jpg') }}">
+
 	<!-- Tempus Dominus Styles -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css">
 
@@ -121,7 +124,7 @@
 				</div>
 
 				<div class="PCRegist_footer rounded-0">
-					<p class="text">Copyright © 2025 New Town Kolkata Development Authority</p>
+					<p class="text">Copyright &copy; 2025 New Town Kolkata Development Authority</p>
 				</div>
 			</div>
 		</div>

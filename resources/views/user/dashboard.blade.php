@@ -171,7 +171,7 @@
             <div class="col mb-3">
                 <div class="statcard card secondary">
                     <div class="card-body">
-                        <p class="nm">Average Immersion time</p>
+                        <p class="nm">Average Queue time</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt5" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">

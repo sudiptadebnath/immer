@@ -11,14 +11,14 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     <div class="container d-flex align-items-center justify-content-center login-container h-100">
         <div class="PCRegistpage_wrap position-relative">
             <div class="watermark_img">
-                <img src="{{asset('resources/img/happy-durga.png')}}" class="img-fluid" alt="image" />
+                <img src="{{asset('resources/img/happy-durga.png')}}" class="img-fluid" alt="image" loading="eager" />
             </div>
             <div class="PCRegist_form">
 
                 <div class="PCRegist_header">
                     <div class="left">
                         <div class="logo">
-                            <img src="{{asset('resources/img/logo-nkda.png')}}" alt="Logo">
+                            <img src="{{asset('resources/img/logo-nkda.png')}}" alt="Logo" loading="eager">
                         </div>
                         <div class="logo_desc">
                             <h2>NEW TOWN KOLKATA DEVELOPMENT AUTHORITY</h2>
@@ -26,7 +26,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                         </div>
                     </div>
                     <div class="right">
-                        <img src="{{asset('resources/img/durga-img.jpg')}}" class="img-fluid" alt="image" />
+                        <img src="{{asset('resources/img/durga-img.jpg')}}" class="img-fluid" alt="image" loading="lazy" />
                     </div>
 
                 </div>
@@ -74,19 +74,19 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 
                             {{-- Common fields --}}
                             <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
-                            <x-text size="8" name="secretary_name" icon="person" title="Secretary Name" required="true" />
-                            <x-number size="4" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
-                            <x-text size="8" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
-                            <x-number size="4" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
+                            <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
+                            <x-mobileotp size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
+                            <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
+                            <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
 
                             {{-- Immersion --}}
                             <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
                                 :value="$immer_dts" required="true" />
-                            <x-text size="6" typ="time" name="proposed_immersion_time" title="Immersion Time" icon="clock" required="true">
+                            <x-text size="6" typ="time" id="proposed_immersion_time" name="proposed_immersion_time" title="Immersion Time" icon="clock" required="true" min="16:00" max="23:59">
                                 Range 16:00 - 23:59
                             </x-text>
                             <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3']" />
-                            <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)"  icon="truck-front">
+                            <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)" icon="truck-front">
                                 Vehicle No(s) separated by comma
                             </x-text>
 
@@ -187,9 +187,9 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
             }
         });
 
-		$("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
-		$("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
-		
+        $("input[name='in_newtown'][value='1']").prop("checked", true).trigger("change");
+        $("input[name='dhunuchi'][value='0']").prop("checked", true).trigger("change");
+
         $("#register").validate({
             rules: {
                 in_newtown: {
@@ -208,17 +208,20 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 puja_committee_name: {
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "1";
-                    }
+                    },
+					remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_name_other: {
                     required: function() {
                         return $("#puja_committee_name").val() === "Other";
-                    }
+                    },
+					remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_name_text: {
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "0";
-                    }
+                    },
+					remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_address: {
                     required: true,
@@ -229,6 +232,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 secretary_mobile: {
                     required: true,
                     indianMobile: true,
+					remote: "{{ url('/form_validate') }}"
                 },
                 chairman_name: {
                     required: true,
@@ -236,6 +240,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 chairman_mobile: {
                     required: true,
                     indianMobile: true,
+					remote: "{{ url('/form_validate') }}"
                 },
                 proposed_immersion_date: {
                     required: true,
@@ -262,7 +267,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     },
                     digits: true,
                     min: 1,
-                    max: {{setting('DHUNUCHI_TEAM', 20)}}
+                    max: {{ setting('DHUNUCHI_TEAM', 20) }}
                 }
             },
             messages: {
@@ -286,7 +291,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 proposed_immersion_date: "Please select a proposed immersion date",
                 proposed_immersion_time: {
                     required: "Please select a proposed immersion time",
-                    timeRange: "Immersion time must be between 16:00 and 23:59"
+                    timeRange: "Please select the Immersion time in between 4PM to 12AM"
                 },
                 vehicle_no: {
                     vehicleCountMatch: "Vehicle numbers count must match selected number",
@@ -306,7 +311,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
             webserv("POST", "{{ url('/register') }}", "register",
                 function ok(d) {
                     myAlert(d["msg"], "success", "Ok", function() {
-						window.location.href = "{{ route('puja.thanks', ['token' => '___ID___']) }}".replace("___ID___", d.data);
+                        window.location.href = "{{ route('puja.thanks', ['token' => '___ID___']) }}".replace("___ID___", d.data);
                     });
                 });
         }

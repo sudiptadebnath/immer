@@ -29,7 +29,7 @@
             class="form-control"
             placeholder="{{ ucfirst($title) }}"
             title="{{ ucfirst($title) }}"
-            @if($required) required @endif>
+            @if($required) required @endif {{ $attributes }}>
         @if(trim($slot))
         <div class="compo-info" style="font-size:10px;">{{ $slot }}</div>
         @endif

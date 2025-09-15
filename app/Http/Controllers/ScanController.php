@@ -208,14 +208,16 @@ class ScanController extends Controller
         } else {
             if($lastAtt->typ === 'queue') { // 2ND SWIPE
                 if(!hasRole("ao")) { // MUST BE SCANNER POST
-                    return $this->err("Counter post required");
+                    //return $this->err("Counter post required");
+                    return $this->err("Already verified and in the Queue.");
                 } else $typ = 'in';
             } /*else if($lastAtt->typ === 'in') { // 3RD SWIPE
                 if($cuser->role != "s") { // MUST BE SCANNER POST
                     return $this->err("Scanner post required.");
                 } else $typ = 'out';
             }*/ else {
-                return $this->err("All scan completed.");
+                //return $this->err("All scan completed.");
+                return $this->err("Immersion already done.");
             }
         } 
         Attendance::create([
@@ -225,7 +227,11 @@ class ScanController extends Controller
             'typ'           => $typ,
         ]);
         $typNm = attDict()[$typ];
-        return $this->ok("Marked <b>" . $typNm . "</b> for " . $puja->secretary_mobile);
+        //return $this->ok("Marked <b>" . $typNm . "</b> for " . $puja->secretary_mobile);
+        return $this->ok($cuser->role == "s" ? 
+			"Digital Pass successfully verified" : 
+			"Digital Pass successfully verified for Immersion"
+		);
     }
 
     public function mark_by_mob(Request $request)
