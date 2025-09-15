@@ -15,6 +15,7 @@
   <!-- Settings (Collapsible) -->
   @php
     $settingsActive = in_array(Route::currentRouteName(), [
+      'conf.settings',
       'conf.action',
       'conf.category',
       'conf.committee',
@@ -37,6 +38,9 @@
       <i class="bi bi-chevron-down small transition-arrow"></i>
     </a>
     <ul class="collapse nav flex-column ms-3 {{ $settingsActive ? 'show' : '' }}" id="settingsMenu">
+      {{-- <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('conf.settings') ? 'active' : '' }}" href="{{ route('conf.settings') }}">Settings</a>
+      </li> --}}
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('conf.action') ? 'active' : '' }}" href="{{ route('conf.action') }}">Action Area</a>
       </li>
