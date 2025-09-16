@@ -155,7 +155,7 @@ class UserController extends Controller
         $rules = [
             'email'                 => 'required|email|unique:users,email',
             'name'                  => 'required|string|min:2|max:20|unique:users,name',
-            'phone'                  => 'nullable|string|min:10|max:20|unique:users,phone',
+            'phone'                  => 'nullable|string|min:10|max:100',
             'password'              => 'required|string|min:6',
             'password2'             => 'required|same:password',
             'role'                  => 'required|string',
@@ -182,7 +182,7 @@ class UserController extends Controller
         $err = $this->validate($request->all(), [
             'email'                 => 'required|email|unique:users,email,' . $id,
             'name'                  => 'required|string|min:2|max:20|unique:users,name,' . $id,
-            'phone'                  => 'nullable|string|min:10|max:20|unique:users,phone,' . $id,
+            'phone'                  => 'nullable|string|min:10|max:100',
             'password'              => 'nullable|string|min:6',
             'password2'             => 'nullable|same:password',
         ]);

@@ -17,6 +17,7 @@
     $tbldata = [
         [ 'data'=>'name', ], 
         [ 'data'=>'email', ], 
+        [ 'data'=>'phone', ], 
         [ 'data'=>'role','className'=>'text-center', ], 
         [ 'data'=>'stat','className'=>'text-center', ], 
         [ 'data'=>'logged_at', ], 
@@ -41,7 +42,7 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         <input type="hidden" name="id" id="id" />
         <x-text name="email" icon="envelope" title="Email" required="true" />
         <x-text name="name" icon="person" title="Name" required="true" />
-        <x-number name="phone" icon="telephone" title="Phone" />
+        <x-text name="phone" icon="telephone" title="Phone" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" />
         <x-password size="6" name="password" title="Password" required="true" />
         <x-password size="6" name="password2" title="Repeat Password" required="true" />
         <x-select size="6" icon="people" name="role" title="Role" :value="roleDict()" required="true" />
@@ -76,7 +77,8 @@ $(function () {
             },
             phone: {
                 required: false,
-                indianMobile: true,
+                indianMobileMulti: true,
+                indianMobileMultiUnique: true,
             },
             password: {
                 required: function() { return $("#id").val() == ""; },
@@ -104,7 +106,8 @@ $(function () {
                 minlength: "Name must be at least 2 characters long"
             },
             phone: {
-                indianMobile: "Enter a valid Indian mobile number (10 digits starting with 6–9)"
+                indianMobileMulti: "Each number must be a valid 10-digit Indian mobile number starting with 6–9.",
+                indianMobileMultiUnique: "Duplicate numbers are not allowed.",
             },
             password: {
                 required: "Password is required for new users",
