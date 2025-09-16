@@ -149,9 +149,9 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         {{-- Immersion --}}
         <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
          :value="$immer_dts" required="true" />
-        <x-text size="6" typ="time" name="proposed_immersion_time" title="Immersion Time"  icon="clock">
+        <x-flattime size="6" name="proposed_immersion_time" title="Immersion Time"  icon="clock">
             Range 16:00 - 23:59
-        </x-text>
+        </x-flattime>
         <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3']" />
         <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)"  icon="truck-front">
             Vehicle No(s) separated by comma
@@ -429,7 +429,7 @@ $(function () {
             proposed_immersion_date: "Please select a proposed immersion date",
             proposed_immersion_time: {
                 required: "Please select a proposed immersion time",
-                timeRange: "Please select the Immersion time in between 4PM to 12AM"
+				timeRange: "Please select the Immersion time in between 4PM to 11:59PM"
             },
             vehicle_no: {
                 vehicleCountMatch: "Vehicle numbers count must match selected number",

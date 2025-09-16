@@ -38,12 +38,17 @@ class PujaController extends Controller
         return $out;
     }
 
-    public function get($id)
-    {
-        $puja = PujaCommittee::find($id);
-        if (!$puja) return $this->err("No Such Puja");
-        return $this->ok("Puja Detail", ["data" => $puja]);
-    }
+	public function get($id)
+	{
+		$puja = PujaCommittee::find($id);
+		if (!$puja) return $this->err("No Such Puja");
+
+		$puja->proposed_immersion_time = $puja->proposed_immersion_time
+			? Carbon::parse($puja->proposed_immersion_time)->format('H:i')
+			: null;
+
+		return $this->ok("Puja Detail", ["data" => $puja]);
+	}
 	
 	public function form_validate(Request $request) {
 		if($request->query('puja_committee_name')) {

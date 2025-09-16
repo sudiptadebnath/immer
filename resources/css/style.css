@@ -970,3 +970,18 @@ table .btn-outline-primary:hover {
 /* .compo-info::before {
     content: "- ";
 } */
+
+
+/**********flatpickr***************/
+.flatpickr-calendar {
+    width: 220px !important;
+    color: #375e7b !important;
+    background-color: #e3f1f9 !important;
+    box-shadow: 0px 0px 5px 0px #6d6d6d;
+}
+
+.flatpickr-time input:focus,
+.flatpickr-time input:hover {
+    background: #fff !important;
+}
+

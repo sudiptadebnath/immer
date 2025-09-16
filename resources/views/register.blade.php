@@ -80,11 +80,10 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                             <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
 
                             {{-- Immersion --}}
-                            <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
-                                :value="$immer_dts" required="true" />
-                            <x-text size="6" typ="time" id="proposed_immersion_time" name="proposed_immersion_time" title="Immersion Time" icon="clock" required="true" min="16:00" max="23:59">
+                            <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date" :value="$immer_dts" required="true" />
+                            <x-flattime size="6" id="proposed_immersion_time" name="proposed_immersion_time" title="Immersion Time" icon="clock" required="true">
                                 Range 16:00 - 23:59
-                            </x-text>
+                            </x-flattime>
                             <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3']" />
                             <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)" icon="truck-front">
                                 Vehicle No(s) separated by comma
@@ -291,7 +290,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 proposed_immersion_date: "Please select a proposed immersion date",
                 proposed_immersion_time: {
                     required: "Please select a proposed immersion time",
-                    timeRange: "Please select the Immersion time in between 4PM to 12AM"
+                    timeRange: "Please select the Immersion time in between 4PM to 11:59PM"
                 },
                 vehicle_no: {
                     vehicleCountMatch: "Vehicle numbers count must match selected number",
