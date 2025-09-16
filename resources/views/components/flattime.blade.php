@@ -46,7 +46,7 @@ flatpickr("#{{ $name }}", {
     maxTime: "23:59",      // 11:59 PM
     minuteIncrement: 1,   // generates 4:00, 4:30, 5:00, ... 11:30 PM
     time_24hr: true,    // switch to true if you want 24-hour format
-    defaultDate: new Date(),
+    defaultDate: "16:00",
     disableMobile: true
 });
 </script>
