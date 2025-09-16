@@ -555,6 +555,7 @@ class PujaController extends Controller
 			return $this->ok("An OTP $otp has been sent to your mobile number ending with " 
 			. substr($mobile, -4) . ".");
 		} catch (\Exception $e) {
+            Log::error("sms error: " . $e->getMessage());
 			return $this->err("Failed to send OTP right now");
 		}
 	}

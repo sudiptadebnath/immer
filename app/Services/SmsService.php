@@ -46,10 +46,12 @@ class SmsService
 			'debug'   => true,
 		];
 
-		// app_log('system.SMS',"SMS SEND >>".json_encode([
-		// 	'to'      => $recipients,
-		// 	'message' => $message,
-		// ]),"SMS API RESPONSE >>".json_encode($response));
+		app_log('system.SMS',json_encode([
+			'to'      => $recipients,
+			'message' => $message,
+		]),json_encode([
+			'success'  => $response["success"],
+		]));
 
 		return $response;
 	}

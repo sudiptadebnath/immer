@@ -13,7 +13,6 @@ class LogRequestMiddleware
 
     protected array $except = [
         'scanstat',
-        'logs',
     ];
 
     /**
@@ -23,14 +22,14 @@ class LogRequestMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-
         // Check if current request matches excluded patterns
         foreach ($this->except as $pattern) {
             if ($request->is($pattern)) {
-                return $response; // skip logging
+                return $next($request); // just continue without logging
             }
         }
+
+        $response = $next($request);
 
         $start = microtime(true);
         $duration = round((microtime(true) - $start) * 1000, 2);

@@ -228,7 +228,7 @@ if (! function_exists('get_client_ip')) {
 }
 
 if (! function_exists('app_log')) {
-    function app_log($name, $action, $reaction="", $context = null, $user = "") {
+    function app_log($name, $action, $reaction="", $context = [], $user = "") {
         AppLog::create([
             'ip'       => get_client_ip(),
             'name'     => $name,
