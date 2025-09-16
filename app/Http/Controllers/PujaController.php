@@ -173,7 +173,7 @@ class PujaController extends Controller
         $puja = PujaCommittee::create($pujaData);
 		$this->smsLink($puja->token);
         if(setting('NKDA_MOBS')) {
-            $sms->send(explode("~~",setting('NKDA_MOBS')),"New puja committee ($nm) registered.");
+            $sms->send(explode(",",setting('NKDA_MOBS')),"New puja committee ($nm) registered.");
         }
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();

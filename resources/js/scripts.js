@@ -31,23 +31,6 @@ function addValidators() {
     $.validator.addMethod("indianMobile", function(value, element) {
         return this.optional(element) || /^[6-9]\d{9}$/.test(value);
     }, "Enter a valid mobile number");
-
-    $.validator.addMethod("indianMobileMulti", function(value, element) {
-        if (!value) return true; // allow empty
-        let numbers = value.split(",").map(num => num.trim());
-        let mobileRegex = /^[6-9]\d{9}$/;
-        for (let num of numbers) {
-            if (!mobileRegex.test(num)) return false;
-        }
-        return true;
-    }, "Each number must be a valid 10-digit Indian mobile number starting with 6–9.");
-    
-    $.validator.addMethod("indianMobileMultiUnique", function(value, element) {
-        if (!value) return true; // allow empty
-        let numbers = value.split(",").map(num => num.trim());
-        let uniqueNumbers = new Set(numbers);
-        return uniqueNumbers.size === numbers.length;
-    }, "Duplicate numbers are not allowed.");
     
     $.validator.addMethod("strongPassword", function(value, element) {
         return this.optional(element) || 

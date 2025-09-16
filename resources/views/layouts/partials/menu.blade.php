@@ -16,6 +16,7 @@
   @php
     $settingsActive = in_array(Route::currentRouteName(), [
       'conf.settings',
+	  'conf.general',
       'conf.action',
       'conf.category',
       'conf.committee',
@@ -41,6 +42,9 @@
       {{-- <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('conf.settings') ? 'active' : '' }}" href="{{ route('conf.settings') }}">Settings</a>
       </li> --}}
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('conf.general') ? 'active' : '' }}" href="{{ route('conf.general') }}">General</a>
+      </li>
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('conf.action') ? 'active' : '' }}" href="{{ route('conf.action') }}">Action Area</a>
       </li>

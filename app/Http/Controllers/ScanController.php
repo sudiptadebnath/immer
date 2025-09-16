@@ -232,11 +232,7 @@ class ScanController extends Controller
             return $this->ok("Digital Pass successfully verified");
         } else {
             $pujacontroller = new PujaController;
-            $pujacontroller->sendSmsToPuja($puja,
-                "Welcome to NKDA Bisarjan Ghat for the Immersion of Durga Idol. "
-                ."We wish you a very safe and happy event With warm regards and "
-                ."advance Bijoya greetings!"
-            );
+            $pujacontroller->sendSmsToPuja($puja,"98656");
             return $this->ok("Digital Pass successfully verified for Immersion");
         }
     }

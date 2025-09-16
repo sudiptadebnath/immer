@@ -33,16 +33,16 @@ class SmsService
 				"success"=>stripos($raw_response, 'ok') !== false,
 				"message"=>$raw_response,
 			];
-			$request["message"]=$this->templateMessages[$TempId] ?? $TempId;
+			$request["message"]=$this->templateMessages[$TempId];
 			app_log('system.SMS',json_encode($request),json_encode($response));
 			Log::info('SMS >>', [
 				'request' => $request,
 				'response' => $response,
 			]);
 		} else {
-			$request["message"]=$this->templateMessages[$TempId] ?? $TempId;
+			$request["message"]=$TempId;
 			$response = [
-				"success"=>false,
+				"success"=>true,
 				"message"=>"Template not supported",
 			];
 		}

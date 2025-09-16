@@ -373,7 +373,7 @@ table .btn-outline-primary:hover {
     height: 100%;
     padding: 20px 0;
     /* background-image: url(/resources/img/green-sky-bg.jpg); */
-    background-image: url(/resources/img/bg.jpg);
+    background-image: url(/resources/img/bg.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -586,7 +586,6 @@ table .btn-outline-primary:hover {
 
 .PCRegist_form .input-group {
     margin-bottom: 10px;
-    z-index: 1;
 }
 
 .PCRegist_form .input-group:focus .input-group-text,
@@ -957,31 +956,10 @@ table .btn-outline-primary:hover {
 
 .compo-info {
     font-size: 10px;
-    color: #375e7b !important;
-    background-color: #e3f1f9;
-    padding: 0.5px 5px;
-    border-radius: 20px;
+    color: #177f88 !important;
+    padding: 0px 0px 0px 50px;
     margin: 0px;
-    position: absolute;
-    left: 50px;
-    top: -23%;
-    z-index: 5;
 }
-/* .compo-info::before {
+.compo-info::before {
     content: "- ";
-} */
-
-
-/**********flatpickr***************/
-.flatpickr-calendar {
-    width: 220px !important;
-    color: #375e7b !important;
-    background-color: #e3f1f9 !important;
-    box-shadow: 0px 0px 5px 0px #6d6d6d;
 }
-
-.flatpickr-time input:focus,
-.flatpickr-time input:hover {
-    background: #fff !important;
-}
-
