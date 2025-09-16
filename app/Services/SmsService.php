@@ -2,57 +2,55 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SmsService
 {
     protected $apiUrl;
-    protected $apiKey;
-    protected $sender;
+
+	private $templateMessages = [
+		98656 => "Your Puja Immersion has been successfully completed. Wishing you a joyous Shubho Bijoya. – NKDAWB",
+	];
+
 
     public function __construct()
     {
         $this->apiUrl = config('services.sms.url');
-        $this->apiKey = config('services.sms.key');
-        $this->sender = config('services.sms.sender');
     }
 
-	public function send($to, $message)
+	public function send($numbers, $TempId)
 	{
-		$recipients = is_array($to) ? $to : [$to];
-		
-		Log::info('SMS >>', [
-			'to'      => $recipients,
-			'message' => $message,
-		]);
-
-		/* Example real call:
-		$response = Http::post($this->apiUrl, [
-			'api_key' => $this->apiKey,
-			'sender'  => $this->sender,
-			'to'      => implode(',', $recipients), // if provider expects comma-separated
-			'message' => $message,
-		]);
-		return $response->json();
-		*/
-
-		// Fake response for now
-		$response = [
-			'success'  => true,
-			'to'      => $recipients,
-			'message' => $message,
-			'id'      => uniqid('sms_'),
-			'debug'   => true,
+		$numbers = is_array($numbers) ? $numbers : [$numbers];
+		$request = [
+			'TempId'      => $TempId,
+			'phonenumber' => $numbers
 		];
-
-		app_log('system.SMS',json_encode([
-			'to'      => $recipients,
-			'message' => $message,
-		]),json_encode([
-			'success'  => $response["success"],
-		]));
-
+		if($this->templateMessages[$TempId]) {
+			$params = http_build_query($request);
+			$fullUrl = $this->apiUrl . '&' . $params;
+			$raw_response = file_get_contents($fullUrl);
+			$response = [
+				"success"=>stripos($raw_response, 'ok') !== false,
+				"message"=>$raw_response,
+			];
+			$request["message"]=$this->templateMessages[$TempId] ?? $TempId;
+			app_log('system.SMS',json_encode($request),json_encode($response));
+			Log::info('SMS >>', [
+				'request' => $request,
+				'response' => $response,
+			]);
+		} else {
+			$request["message"]=$this->templateMessages[$TempId] ?? $TempId;
+			$response = [
+				"success"=>false,
+				"message"=>"Template not supported",
+			];
+		}
+		app_log('system.SMS',json_encode($request),json_encode($response));
+		Log::info('SMS >>', [
+			'request' => $request,
+			'response' => $response,
+		]);
 		return $response;
 	}
 }

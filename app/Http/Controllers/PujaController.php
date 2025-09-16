@@ -545,15 +545,20 @@ class PujaController extends Controller
 		$otp = rand(100000, 999999);
 
 		try {
-			$sms->send($mobile, "Your OTP is $otp");
-			session()->put("{$nm}_otp", [
-				'mobile' => $mobile,
-				'otp'    => $otp,
-				'time'   => now(),
-			]);
-			session()->put($countKey, $count + 1);
-			return $this->ok("An OTP $otp has been sent to your mobile number ending with " 
-			. substr($mobile, -4) . ".");
+			$ans = $sms->send($mobile, "Your OTP is $otp");
+            if($ans["success"]) {
+                session()->put("{$nm}_otp", [
+                    'mobile' => $mobile,
+                    'otp'    => $otp,
+                    'time'   => now(),
+                ]);
+                session()->put($countKey, $count + 1);
+                return $this->ok("An OTP $otp has been sent to your mobile number ending with " 
+                . substr($mobile, -4) . ".");
+            } else {
+                Log::error("sms error: " . $ans["message"]);
+                return $this->err("Failed to send OTP right now");
+            }
 		} catch (\Exception $e) {
             Log::error("sms error: " . $e->getMessage());
 			return $this->err("Failed to send OTP right now");
