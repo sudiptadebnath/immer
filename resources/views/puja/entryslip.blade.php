@@ -199,14 +199,18 @@
                     <span>{{ $puja->puja_committee_address }}</span>
                 </div>
                 @endif
+                @if($puja->secretary_name)
                 <div class="info">
                     <span class="label">Secretary:</span>
                     <span>{{ $puja->secretary_name }} - <b>{{ $puja->secretary_mobile }}</b></span>
                 </div>
+                @endif
+                @if($puja->chairman_name)
                 <div class="info">
                     <span class="label">Chairman:</span>
                     <span>{{ $puja->chairman_name }} - <b>{{ $puja->chairman_mobile }}</b></span>
                 </div>
+                @endif
                 <div class="info">
                     <span class="label">Date of Immersion:</span>
                     <span>

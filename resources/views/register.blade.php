@@ -274,19 +274,30 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 in_newtown: "Please select whether the puja is in New Town area",
                 action_area: "Please select an action area",
                 category: "Please select a category",
-                puja_committee_name: "Please select a puja committee",
-                puja_committee_name_other: "Please enter the committee name",
-                puja_committee_name_text: "Please enter the puja committee name",
+                puja_committee_name: {
+					required: "Please select a puja committee",
+					remote: "❌ This puja committee is already registered",
+				},
+                puja_committee_name_other: {
+					required: "Please enter the committee name",
+					remote: "❌ This puja committee is already registered",
+				},
+                puja_committee_name_text: {
+					required: "Please enter the puja committee name",
+					remote: "❌ This puja committee is already registered",
+				},
                 puja_committee_address: "Please enter the committee address",
                 secretary_name: "Please enter the secretary's name",
                 secretary_mobile: {
                     required: "Please enter the secretary's mobile number",
-                    indianMobile: "Please enter a valid Indian mobile number"
+                    indianMobile: "Please enter a valid Indian mobile number",
+					remote: "❌ This Secretary Mobile is already taken",
                 },
                 chairman_name: "Please enter the chairman/president's name",
                 chairman_mobile: {
                     required: "Please enter the chairman's mobile number",
-                    indianMobile: "Please enter a valid Indian mobile number"
+                    indianMobile: "Please enter a valid Indian mobile number",
+					remote: "❌ This Chairman Mobile is already taken",
                 },
                 proposed_immersion_date: "Please select a proposed immersion date",
                 proposed_immersion_time: {

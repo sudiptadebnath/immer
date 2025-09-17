@@ -215,14 +215,18 @@
                             <td>{{ $puja->puja_committee_address }}</td>
                         </tr>
                         @endif
+                        @if($puja->secretary_name)
                         <tr>
                             <td><strong>Secretary</strong></td>
                             <td>{{ $puja->secretary_name }} - <b>{{ $puja->secretary_mobile }}</b></td>
                         </tr>
+                        @endif
+                        @if($puja->chairman_name)
                         <tr>
                             <td><strong>Chairman</strong></td>
                             <td>{{ $puja->chairman_name }} - <b>{{ $puja->chairman_mobile }}</b></td>
                         </tr>
+                        @endif
                         <tr>
                             <td><strong>Date of Immersion</strong></td>
                             <td>
