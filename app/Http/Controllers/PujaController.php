@@ -515,7 +515,7 @@ class PujaController extends Controller
 			$puja, "Please Download the Digital Pass from $link."
 		);
 		if($ans['success']) {
-			return $this->ok("Sent download link to ". implode(", ",$mob) ." through SMS.");
+			return $this->ok("Sent download link to $mob through SMS.");
 		} else {
 			return $this->err("Failed to send SMS: ".$ans['message']);
 		}
