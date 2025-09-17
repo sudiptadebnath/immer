@@ -75,8 +75,8 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                             <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
                             <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
                             <x-mobileotp size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
-                            <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" required="true" />
-                            <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" required="true" />
+                            <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" />
+                            <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
 
                             {{-- Immersion --}}
                             <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date" :value="$immer_dts" required="true" />
@@ -235,10 +235,10 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     remote: "{{ url('/form_validate') }}"
                 },
                 chairman_name: {
-                    required: true,
+                    required: false,
                 },
                 chairman_mobile: {
-                    required: true,
+                    required: false,
                     indianMobile: true,
                     remote: "{{ url('/form_validate') }}"
                 },
