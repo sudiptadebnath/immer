@@ -28,7 +28,6 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     <div class="right">
                         <img src="{{asset('resources/img/durga-img.jpg')}}" class="img-fluid" alt="image" loading="lazy" />
                     </div>
-
                 </div>
 
                 <x-card icon="person-plus" title="Puja Committee Registration for Immersion">

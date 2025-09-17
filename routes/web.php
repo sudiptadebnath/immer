@@ -35,8 +35,8 @@ Route::get('/register', fn() => view("register"));
 Route::get('/register', fn() => view("register"));
 Route::get('/thanks/{token}',  [PujaController::class, 'thanks'])->name('puja.thanks');
 Route::post('/register', [PujaController::class, 'add']);
+Route::get('/gpass/pdf', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
-Route::get('/gpass/pdf/{token}', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 

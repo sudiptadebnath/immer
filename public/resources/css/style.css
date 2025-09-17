@@ -216,6 +216,17 @@ a.nav-link:not(.collapsed) .transition-arrow {
 
 /*********************/
 
+.nkdaMobs_res .card-header {
+    background-color: #dff9fc !important;
+    color: #177f88 !important;
+    border-bottom: 1px solid #177f88 !important;
+}
+
+.card-header p {
+    font-size: 20px;
+    font-weight: 600;
+}
+
 table thead th {
     background-color: #dff9fc !important;
     color: #177f88 !important;

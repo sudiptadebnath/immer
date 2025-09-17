@@ -13,7 +13,7 @@
 
 @section('content')
 <div class="container-fluid m-0 p-3">
-<div class="row g-2">
+<div class="nkdaMobs_res row g-2">
     <x-card title="General" icon="gear">
         <form id="settings" onsubmit="return settings_submt()" novalidate="novalidate">
         <div class="row g-2">

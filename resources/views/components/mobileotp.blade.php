@@ -90,7 +90,7 @@
 
 @push('scripts')
 <script>
-    
+
 // Attach handler to ALL modals
 document.querySelectorAll(".otpverification_modal").forEach(function(modal) {
     modal.addEventListener("click", function(e) {
@@ -105,7 +105,6 @@ document.querySelectorAll(".otpverification_modal").forEach(function(modal) {
     });
 });
 
-	
 function {{ $name }}_resend(){
 	let mobileInput = $("#{{ $name }}");
 	let mobileVal = mobileInput.val();
