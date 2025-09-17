@@ -8,6 +8,7 @@ use App\Http\Controllers\RepoController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     if (userLogged()) {
@@ -18,7 +19,16 @@ Route::get('/', function () {
 
 Route::post('/login', [UserController::class, 'login']);
 
-Route::get('/register', fn() => view("register"));
+
+Route::get('/register', function () {
+    foreach (session()->all() as $key => $val) {
+        if (Str::contains($key, 'otp')) {
+            session()->forget($key);
+        }
+    }
+    return view("register");
+});
+
 Route::get('/form_validate', [PujaController::class, 'form_validate']);
 Route::post('/send_otp', [PujaController::class, 'send_otp']);
 Route::get('/register', fn() => view("register"));
@@ -84,6 +94,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
 
     Route::middleware('role:ao')->prefix('conf')->group(function () {
         Route::get('/settings', fn() => view("conf.settings"))->name('conf.settings');
+        Route::get('/general', fn() => view("conf.general"))->name('conf.general');
         Route::post('/save_settings', [ConfController::class, 'save_settings'])->name('conf.save_settings');
         Route::get('/data/logs', [ConfController::class, 'data_logs'])->name('conf.data.logs');
         Route::delete('/del/logs', [ConfController::class, 'del_logs'])->name('conf.del.logs');

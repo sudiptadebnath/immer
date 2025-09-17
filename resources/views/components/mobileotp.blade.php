@@ -90,19 +90,21 @@
 
 @push('scripts')
 <script>
-	
-	// Close modal only if clicking on the background
-  document.querySelector(".otpverification_modal").addEventListener("click", function (e) {
-    if (e.target === this) {
-      this.classList.remove("open");
-    }
-  });
-
-  // Prevent clicks inside modal-content from closing modal
-  document.querySelector(".otpverification_modal .otpverification_body")
-    .addEventListener("click", function (e) {
-      e.stopPropagation();
+    
+// Attach handler to ALL modals
+document.querySelectorAll(".otpverification_modal").forEach(function(modal) {
+    modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+            modal.classList.remove("open");
+        }
     });
+
+    // Prevent clicks inside modal body from bubbling
+    modal.querySelector(".otpverification_body").addEventListener("click", function(e) {
+        e.stopPropagation();
+    });
+});
+
 	
 function {{ $name }}_resend(){
 	let mobileInput = $("#{{ $name }}");
