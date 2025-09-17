@@ -35,7 +35,18 @@
 $(function () {
     $("#settings").validate({
         rules: {
-            NKDA_MOBS: { required: true, minlength: 10 },
+            NKDA_MOBS: { 
+                required: true, 
+                indianMobileMulti: true,
+                indianMobileMultiUnique: true,
+            },
+        },
+        messages: {
+            NKDA_MOBS: { 
+                required: true, 
+                indianMobileMulti: "Each number must be a valid 10-digit Indian mobile number starting with 6–9.",
+                indianMobileMultiUnique: "Duplicate numbers are not allowed.",
+            },
         }
     });
 });

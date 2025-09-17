@@ -106,7 +106,7 @@ $(function () {
                 minlength: "Name must be at least 2 characters long"
             },
             phone: {
-                indianMobileMulti: "Each number must be a valid 10-digit Indian mobile number starting with 6–9.",
+                indianMobileMulti: "Mobile no must be a valid 10-digit Indian mobile number starting with 6–9.",
                 indianMobileMultiUnique: "Duplicate numbers are not allowed.",
             },
             password: {

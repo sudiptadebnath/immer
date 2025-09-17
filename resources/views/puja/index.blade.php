@@ -142,9 +142,9 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         {{-- Common fields --}}
         <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
         <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" />
-        <x-mobileotp size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
+        <x-number size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
         <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" />
-        <x-mobileotp size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
+        <x-number size="6" name="chairman_mobile" icon="telephone" title="Chairman/President Mobile" />
 
         {{-- Immersion --}}
         <x-select size="6" icon="calendar-date" name="proposed_immersion_date" title="Proposed Immersion Date"
@@ -486,7 +486,7 @@ function addPuja() {
     $('#register').find("select").prop('selectedIndex', 0); // reset all dropdowns
     $('#id').val(''); 
 	setToday(); setCurTime();
-	$('#secretary_mobile_otp').prop('required',true);
+	//$('#secretary_mobile_otp').prop('required',true);
     $('#pujaModalLabel').text("Add Puja");
     $('.error').text('');
     $('#pujaModal').modal('show');
@@ -502,7 +502,7 @@ function editPuja(id) {
         $('#puja_committee_address').val(puja.puja_committee_address);
         $('#secretary_name').val(puja.secretary_name);
         $('#secretary_mobile').val(puja.secretary_mobile);
-		$('#secretary_mobile_otp').prop('required',false);
+		//$('#secretary_mobile_otp').prop('required',false);
         $('#chairman_name').val(puja.chairman_name);
         $('#chairman_mobile').val(puja.chairman_mobile);
         $('#proposed_immersion_date').val(puja.proposed_immersion_date);

@@ -152,11 +152,14 @@ class PujaController extends Controller
             'stat'                  => 'a', 
         ];
 
+        if($otpSession_secretary_mobile) $pujaData['verified_mobile'] = $request->secretary_mobile;
+        else if($otpSession_chairman_mobile) $pujaData['verified_mobile'] = $request->chairman_mobile;
+
         $puja = PujaCommittee::create($pujaData);
-		//$this->smsLink($puja->token);
-        /*if(setting('NKDA_MOBS')) {
-            $sms->send(explode(",",setting('NKDA_MOBS')),"New puja committee ($nm) registered.");
-        }*/
+		$this->smsLink($puja->token);
+        if(setting('NKDA_MOBS')) {
+            $sms->send(explode(",",setting('NKDA_MOBS')),"98658","".PujaCommittee::count());
+        }
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();
         $category   = PujaCategorie::where('name', $request->category)->first();
@@ -232,7 +235,7 @@ class PujaController extends Controller
         if ($err) return $err;
 
 		// ✅ Validate secretary OTP
-		$secretaryOtpSession = session("secretary_mobile_otp");
+		/*$secretaryOtpSession = session("secretary_mobile_otp");
 		if (!$secretaryOtpSession) {
 			return $this->err("Secretary OTP not verified. Please send and verify OTP first.");
 		}
@@ -244,9 +247,9 @@ class PujaController extends Controller
 		}
 		if ($secretaryOtpSession['time'] && now()->diffInMinutes($secretaryOtpSession['time']) > 5) {
 			return $this->err("Secretary OTP expired. Please resend OTP.");
-		}
+		}*/
 
-		if($request->chairman_mobile) {
+		/*if($request->chairman_mobile) {
 			// ✅ Validate chairman OTP
 			$chairmanOtpSession = session("chairman_mobile_otp");
 			if (!$chairmanOtpSession) {
@@ -261,7 +264,7 @@ class PujaController extends Controller
 			if ($chairmanOtpSession['time'] && now()->diffInMinutes($chairmanOtpSession['time']) > 5) {
 				return $this->err("Chairman OTP expired. Please resend OTP.");
 			}
-		}
+		}*/
 
         $pujaData = [
             'action_area'           => $request->in_newtown ? $request->action_area : null,
@@ -279,9 +282,11 @@ class PujaController extends Controller
             'team_members'          => $request->dhunuchi ? $request->team_members : null,
             'stat'                  => 'a', 
         ];
+        if($request->secretary_mobile) $pujaData['verified_mobile'] = $request->secretary_mobile;
+        else if($request->chairman_mobile) $pujaData['verified_mobile'] = $request->chairman_mobile;
 
         $puja = PujaCommittee::create($pujaData);
-		$this->smsLink($puja->token);
+		//$this->smsLink($puja->token);
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();
         $category   = PujaCategorie::where('name', $request->category)->first();
@@ -350,13 +355,13 @@ class PujaController extends Controller
             'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
-			'secretary_mobile_otp'     => 'nullable|string|size:6',
-			'chairman_mobile_otp'      => 'nullable|string|size:6',
+			//'secretary_mobile_otp'     => 'nullable|string|size:6',
+			//'chairman_mobile_otp'      => 'nullable|string|size:6',
         ]);
         if ($err) return $err;
 
 		// ✅ Validate secretary OTP
-		if($request->secretary_mobile && $puja->secretary_mobile !=$request->secretary_mobile) {
+		/*if($request->secretary_mobile && $puja->secretary_mobile !=$request->secretary_mobile) {
 			$secretaryOtpSession = session("secretary_mobile_otp");
 			if (!$secretaryOtpSession) {
 				return $this->err("Secretary OTP not verified. Please send and verify OTP first.");
@@ -387,10 +392,10 @@ class PujaController extends Controller
 			if ($chairmanOtpSession['time'] && now()->diffInMinutes($chairmanOtpSession['time']) > 5) {
 				return $this->err("Chairman OTP expired. Please resend OTP.");
 			}
-		}
+		}*/
 
-		$oldSecretaryMobile = $puja->secretary_mobile;
-		$oldChairmanMobile  = $puja->chairman_mobile;
+		//$oldSecretaryMobile = $puja->secretary_mobile;
+		//$oldChairmanMobile  = $puja->chairman_mobile;
 
         $puja->action_area            = $request->in_newtown ? $request->action_area : null;
         $puja->category               = $request->in_newtown ? $request->category : null;
@@ -405,11 +410,15 @@ class PujaController extends Controller
         $puja->no_of_vehicles          = $request->no_of_vehicles;
         $puja->vehicle_no             = $request->vehicle_no;
         $puja->team_members           = $request->dhunuchi ? $request->team_members : null;
+
+        if($request->secretary_mobile) $pujaData['verified_mobile'] = $request->secretary_mobile;
+        else if($request->chairman_mobile) $pujaData['verified_mobile'] = $request->chairman_mobile;
+
         $puja->save();
 
-		if (($oldSecretaryMobile !== $request->secretary_mobile) 
+		/*if (($oldSecretaryMobile !== $request->secretary_mobile) 
 		|| ($oldChairmanMobile !== $request->chairman_mobile)) 
-			$this->smsLink($puja->token);
+			$this->smsLink($puja->token);*/
 
         $actionArea = $request->in_newtown
             ? ActionArea::where('name', $request->action_area)->first()
@@ -486,9 +495,13 @@ class PujaController extends Controller
 	public function sendSmsToPuja($puja,$msg) 
 	{
 		$sms = new SmsService;
-		$mob = [];
-		if($puja->secretary_mobile) $mob[] = $puja->secretary_mobile;
-		if($puja->chairman_mobile) $mob[] = $puja->chairman_mobile;
+		$mob = $puja->verified_mobile;
+        if(!$mob) {
+            return [[
+                'success'=>false,
+                'message'=>"No verified mobile to send SMS"
+            ], $mob];
+        } 
 		$ans = $sms->send($mob,$msg);
 		return [$ans, $mob];
 	}
@@ -531,7 +544,7 @@ class PujaController extends Controller
 		$otp = rand(100000, 999999);
 
 		try {
-			$ans = $sms->send($mobile, "Your OTP is $otp");
+			$ans = $sms->send($mobile,"98657",$otp,substr($mobile, -4));
             if($ans["success"]) {
                 session()->put("{$nm}_{$mobile}_otp", [
                     'otp'    => $otp,

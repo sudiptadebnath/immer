@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('ip');
             $table->string('name');
-            $table->string('action');
-            $table->string('reaction');
+            $table->text('action');
+            $table->text('reaction');
             $table->string('user');
             $table->text('context');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
