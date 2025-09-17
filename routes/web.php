@@ -30,6 +30,7 @@ Route::get('/register', function () {
 });
 
 Route::get('/form_validate', [PujaController::class, 'form_validate']);
+Route::post('/verify_otp', [PujaController::class, 'verify_otp']);
 Route::post('/send_otp', [PujaController::class, 'send_otp']);
 Route::get('/register', fn() => view("register"));
 Route::get('/register', fn() => view("register"));
