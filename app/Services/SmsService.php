@@ -21,7 +21,6 @@ class SmsService
 
 	public function send($numbers, $TempId, ...$fields)
 	{
-		$numbers = is_array($numbers) ? $numbers : [$numbers];
 		$request = [
 			'TempId'      => $TempId,
 			'phonenumber' => $numbers
