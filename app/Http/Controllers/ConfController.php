@@ -297,7 +297,6 @@ class ConfController extends Controller
 
     public function save_settings(Request $request)
     {
-        Log::info("save_settings", $request->all());
         foreach ($request->except(['_token', '_method']) as $key => $val) {
             set_setting($key, $val);
         }
