@@ -17,7 +17,8 @@
     <x-card title="General" icon="gear">
         <form id="settings" onsubmit="return settings_submt()" novalidate="novalidate">
         <div class="row g-2">
-        <x-text name="NKDA_MOBS" title="NKDA Mobile No(s)" required="true" :value="setting('NKDA_MOBS')" />
+        <x-text name="NKDA_MOBS" title="NKDA Mobile No(s)" required="true" :value="setting('NKDA_MOBS')"
+			oninput="this.value = this.value.replace(/[^0-9,]/g, '')" />
 		<span class="text-danger">Separated by comma (,)</span>
         <div class="col-md-12 text-end">
             <x-button size="" type="submit" icon="save" title="Save" />

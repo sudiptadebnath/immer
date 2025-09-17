@@ -56,6 +56,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         [ 'data'=>'secretary_name',"th"=>"Secretary", 'render' => 'function (data, type, row) {
             let name = row.secretary_name ? row.secretary_name : "";
             let mobile = row.secretary_mobile ? row.secretary_mobile : "";
+            if(mobile==row.verified_mobile) mobile = "<b>"+ mobile + "<b>";
             if (name && mobile) return name + " (" + mobile + ")";
             else if (name) return name;
             else if (mobile) return mobile;
@@ -65,6 +66,7 @@ tr.admin .actbtn1,tr.operator .actbtn1,tr.scanner .actbtn1 {
         [ 'data'=>'chairman_name',"th"=>"Chairman", 'render' => 'function (data, type, row) {
             let name = row.chairman_name ? row.chairman_name : "";
             let mobile = row.chairman_mobile ? row.chairman_mobile : "";
+            if(mobile==row.verified_mobile) mobile = "<b>"+ mobile + "<b>";
             if (name && mobile) return name + " (" + mobile + ")";
             else if (name) return name;
             else if (mobile) return mobile;

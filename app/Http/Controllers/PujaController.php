@@ -158,7 +158,7 @@ class PujaController extends Controller
         $puja = PujaCommittee::create($pujaData);
 		$this->smsLink($puja->token);
         if(setting('NKDA_MOBS')) {
-            $sms->send(explode(",",setting('NKDA_MOBS')),"98658","".PujaCommittee::count());
+            $sms->send(setting('NKDA_MOBS'),"98658","".PujaCommittee::count());
         }
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();
@@ -551,7 +551,7 @@ class PujaController extends Controller
                     'time'   => now(),
                 ]);
                 session()->put($countKey, $count + 1);
-                return $this->ok("An OTP $otp has been sent to your mobile number ending with " 
+                return $this->ok("An OTP has been sent to your mobile number ending with " 
                 . substr($mobile, -4) . ".");
             } else {
                 Log::error("sms error: " . $ans["message"]);
