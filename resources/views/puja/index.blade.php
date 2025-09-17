@@ -473,11 +473,12 @@ function setToday() {
 }
 
 function setCurTime() {
-	const now = new Date();
-	const hh = String(now.getHours()).padStart(2, '0');
-	const mm = String(now.getMinutes()).padStart(2, '0');
-	const formattedTime = `${hh}:${mm}`;
-	$("#proposed_immersion_time").val(formattedTime).trigger('change');
+    const now = new Date();
+    let hh = now.getHours();
+    let mm = now.getMinutes();
+    if (hh < 16 || hh > 23) { hh = 16; mm = 0; }
+    const formattedTime = String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+    $("#proposed_immersion_time").val(formattedTime).trigger('change');
 }
 
 function addPuja() {
