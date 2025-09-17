@@ -121,9 +121,11 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
         </div>
     </div>
 </div>
+
 @endsection
 
 @section('scripts')
+
 <script>
     $(function() {
 
@@ -208,19 +210,19 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "1";
                     },
-					remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_name_other: {
                     required: function() {
                         return $("#puja_committee_name").val() === "Other";
                     },
-					remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_name_text: {
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "0";
                     },
-					remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}"
                 },
                 puja_committee_address: {
                     required: true,
@@ -231,7 +233,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 secretary_mobile: {
                     required: true,
                     indianMobile: true,
-					remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}"
                 },
                 chairman_name: {
                     required: true,
@@ -239,7 +241,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 chairman_mobile: {
                     required: true,
                     indianMobile: true,
-					remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}"
                 },
                 proposed_immersion_date: {
                     required: true,
@@ -266,7 +268,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     },
                     digits: true,
                     min: 1,
-                    max: {{ setting('DHUNUCHI_TEAM', 20) }}
+                    max: {{setting('DHUNUCHI_TEAM', 20)}}
                 }
             },
             messages: {

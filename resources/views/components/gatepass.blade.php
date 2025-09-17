@@ -38,7 +38,8 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: 0 auto; */
-            background-image: url(/resources/img/bg2.jpg);
+            background-image: url('resources/img/bg2.jpg'), 
+				url('{{ asset("resources/img/bg2.jpg") }}')	;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;

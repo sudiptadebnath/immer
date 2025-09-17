@@ -9,7 +9,7 @@ class SmsService
     protected $apiUrl;
 
 	private $templateMessages = [
-		98656 => "Your Puja Immersion has been successfully completed. Wishing you a joyous Shubho Bijoya. – NKDAWB",
+		"98656" => "Your Puja Immersion has been successfully completed. Wishing you a joyous Shubho Bijoya. – NKDAWB",
 	];
 
 
@@ -25,7 +25,7 @@ class SmsService
 			'TempId'      => $TempId,
 			'phonenumber' => $numbers
 		];
-		if($this->templateMessages[$TempId]) {
+		if($this->templateMessages[$TempId] ?? "") {
 			$params = http_build_query($request);
 			$fullUrl = $this->apiUrl . '&' . $params;
 			$raw_response = file_get_contents($fullUrl);

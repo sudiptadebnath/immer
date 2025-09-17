@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\SmsService;
 
 class UserController extends Controller
 {
@@ -72,9 +73,9 @@ class UserController extends Controller
         return $this->ok("User Detail", ["data" => $user]);
     }
 
-    public function login(Request $request)
+    public function login(Request $request/*,SmsService $sms*/)
     {
-
+		//$sms->send("9830371026","98656");
         /*for ($i = 10; $i <= 20; $i++) {
             User::create([
                 'name'     => "Aprator{$i}",

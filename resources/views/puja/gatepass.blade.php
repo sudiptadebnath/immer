@@ -1,7 +1,7 @@
 <x-gatepass :file="asset('qrs/'.$puja->token.'.png')" 
 	:puja="$puja" :pdf="false">
 <div class="download-container">
-    <a class="btn btn-danger" href="{{ route('puja.gpass.pdf', $puja->token) }}">
+	<a class="btn btn-danger" href="{{ route('puja.gpass.pdf', ['token' => $puja->token]) }}">
 		📄 Download PDF
     </a>
 	<button type="button" class="btn btn-primary send-sms-btn" onclick="sendSMS('{{ $puja->token }}')">

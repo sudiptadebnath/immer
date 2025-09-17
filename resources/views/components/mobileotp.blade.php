@@ -51,22 +51,9 @@
             @if($required) required @endif
         >
         <button type="button" 
-            class="btn btn-outline-primary"
-            id="{{ $name }}_sendotp"
-			title="Get OTP">
-			<i class="bi bi-shield-lock"></i>
+            class="verify_otp_btn btn badge btn-outline-primary"
+            id="{{ $name }}_sendotp" title="Verify Your Number">Verify Number
         </button>
-        <input 
-            type="text"
-            id="{{ $name }}_otp"
-            name="{{ $name }}_otp"
-            class="form-control otp-input"
-            placeholder="OTP"
-            maxlength="6"
-            inputmode="numeric"
-            oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)"
-            @if($required) required @endif
-        >
         {{ $slot }}
     </div>
     <label class="error mobotp" for="{{ $name }}"></label>
@@ -76,8 +63,138 @@
 @endif
 
 
+<div id="{{ $name }}_sendotp_modal" class="otpverification_modal">
+    <div class="otpverification_body">
+        <h2>Verify Your OTP</h2>
+        <p id="{{ $name }}_sendotp_msg">Enter the 6-digit OTP sent to your Phone No - ******8858</p>
+        <form>
+            <div id="{{ $name }}_sendotp_input" class="otp_inputs">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+            </div>
+            <button id="{{ $name }}_sendotp_verify" type="button">Verify OTP</button>
+        </form>
+        <p class="resend mb-0">
+            Didn’t receive the code? <a href="javascript:void(0)" onclick="{{ $name }}_resend()">Resend OTP</a>
+        </p>
+    </div>
+</div>
+
+
+
+
+
 @push('scripts')
 <script>
+	
+	// Close modal only if clicking on the background
+  document.querySelector(".otpverification_modal").addEventListener("click", function (e) {
+    if (e.target === this) {
+      this.classList.remove("open");
+    }
+  });
+
+  // Prevent clicks inside modal-content from closing modal
+  document.querySelector(".otpverification_modal .otpverification_body")
+    .addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+	
+function {{ $name }}_resend(){
+	let mobileInput = $("#{{ $name }}");
+	let mobileVal = mobileInput.val();
+	webserv("POST", "{{ url('/send_otp') }}", 
+		{ nm: "{{ $name }}" ,mobile: mobileVal },
+		function ok(d) {
+			$("#{{ $name }}_sendotp_msg").html(d["msg"]);
+		},
+		function err(d) {
+			myAlert(d["msg"], "danger");
+		}
+	);	
+}
+
+
+document.getElementById("{{ $name }}_sendotp").addEventListener("click", function() {
+	setTimeout(function () {
+		let errorLabel  = $("label.error[for='{{ $name }}']");
+		if (errorLabel.text().trim().length > 0) return;
+
+		let mobileInput = $("#{{ $name }}");
+		let mobileVal = mobileInput.val();
+		if (!/^[6-9]\d{9}$/.test(mobileVal)) {
+			myAlert("Enter valid 10 digit mobile number","danger");
+			return;
+		}
+
+		webserv("POST", "{{ url('/send_otp') }}", 
+			{ nm: "{{ $name }}" ,mobile: mobileVal },
+			function ok(d) {
+				//myAlert(d["msg"], "success");
+				$("#{{ $name }}_sendotp_msg").html(d["msg"]);
+				document.getElementById("{{ $name }}_sendotp_modal").classList.add("open");
+			},
+			function err(d) {
+				myAlert(d["msg"], "danger");
+			}
+		);
+	}, 200); 
+});
+
+// Close modal when clicking on modal background
+document.getElementById("{{ $name }}_sendotp_verify").addEventListener("click", function() {
+	let mobileInput = $("#{{ $name }}");
+	let mobileVal = mobileInput.val();
+	
+    let otp = "";
+    $("#{{ $name }}_sendotp_input input").each(function () {
+        otp += $(this).val();
+    });
+	
+    if (otp.length != 6) {
+		myAlert("Enter OTP","danger");
+		return;
+	}
+	
+	webserv("POST", "{{ url('/verify_otp') }}", 
+		{ nm: "{{ $name }}" ,mobile: mobileVal, otp  },
+		function ok(d) {
+			myAlert(d["msg"], "success");
+			document.getElementById("{{ $name }}_sendotp_modal").classList.remove("open");
+			$(".verify_otp_btn").prop("disabled",true);
+			$("#{{ $name }}").prop("readonly",true);
+			$("#{{ $name }}_sendotp").replaceWith(
+            '<span class="btn badge btn-outline-primary d-flex align-items-center justify-content-center gap-1"><i class="bi bi-check-circle-fill"></i> Verified</span>'
+            );
+            //Remove other verify buttons
+            $(".verify_otp_btn").not("#{{ $name }}_sendotp").remove();
+		},
+		function err(d) {
+			myAlert(d["msg"], "danger");
+		}
+	);
+});
+
+const {{ $name }}_inputs = $("#{{ $name }}_sendotp_input input");
+
+{{ $name }}_inputs.each(function(index) {
+    $(this).on("input", function() {
+        if ($(this).val().length === 1 && index < {{ $name }}_inputs.length - 1) {
+            {{ $name }}_inputs.eq(index + 1).focus();
+        }
+    });
+
+    $(this).on("keydown", function(e) {
+        if (e.key === "Backspace" && $(this).val() === "" && index > 0) {
+            {{ $name }}_inputs.eq(index - 1).focus();
+        }
+    });
+});
+/*
 $(function() {
     let otpClickCount_{{ $name }} = 0;
     let otpTimer_{{ $name }} = null;
@@ -129,6 +246,7 @@ $(function() {
 		);
     });
 });
+*/
 </script>
 @endpush
 

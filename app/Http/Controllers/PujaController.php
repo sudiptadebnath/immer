@@ -104,8 +104,6 @@ class PujaController extends Controller
             'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
-			'secretary_mobile_otp'     => 'required|string|size:6',
-			'chairman_mobile_otp'      => 'required|string|size:6',
         ];
 		if ($request->in_newtown) {
 			if (strtolower($request->input('puja_committee_name')) === 'other') {
@@ -123,34 +121,18 @@ class PujaController extends Controller
         $err = $this->validate($request->all(), $rules);
         if ($err) return $err;
 
-		// ✅ Validate secretary OTP
-		$secretaryOtpSession = session("secretary_mobile_otp");
-		if (!$secretaryOtpSession) {
-			return $this->err("Secretary OTP not verified. Please send and verify OTP first.");
+		$nm1 = "secretary_mobile";
+		$secretary_mobile = $request->secretary_mobile;
+		$otpSession_secretary_mobile = session("{$nm1}_{$secretary_mobile}_otp");
+		$nm2 = "chairman_mobile";
+		$chairman_mobile = $request->chairman_mobile;
+		$otpSession_chairman_mobile = session("{$nm2}_{$chairman_mobile}_otp");
+		if (!$otpSession_secretary_mobile && !$otpSession_chairman_mobile) {
+			return $this->err("OTP not verified.");
 		}
-		if ($secretaryOtpSession['mobile'] != $request->secretary_mobile) {
-			return $this->err("Secretary mobile number does not match.");
-		}
-		if ($request->secretary_mobile_otp != $secretaryOtpSession['otp']) {
-			return $this->err("Invalid Secretary OTP.");
-		}
-		if ($secretaryOtpSession['time'] && now()->diffInMinutes($secretaryOtpSession['time']) > 5) {
-			return $this->err("Secretary OTP expired. Please resend OTP.");
-		}
-
-		// ✅ Validate chairman OTP
-		$chairmanOtpSession = session("chairman_mobile_otp");
-		if (!$chairmanOtpSession) {
-			return $this->err("Chairman OTP not verified. Please send and verify OTP first.");
-		}
-		if ($chairmanOtpSession['mobile'] != $request->chairman_mobile) {
-			return $this->err("Chairman mobile number does not match.");
-		}
-		if ($request->chairman_mobile_otp != $chairmanOtpSession['otp']) {
-			return $this->err("Invalid Chairman OTP.");
-		}
-		if ($chairmanOtpSession['time'] && now()->diffInMinutes($chairmanOtpSession['time']) > 5) {
-			return $this->err("Chairman OTP expired. Please resend OTP.");
+		if (!($otpSession_secretary_mobile["verified"] ?? false) 
+		&& !($otpSession_chairman_mobile["verified"] ?? false)) {
+			return $this->err("OTP not verified.");
 		}
 
         $pujaData = [
@@ -171,10 +153,10 @@ class PujaController extends Controller
         ];
 
         $puja = PujaCommittee::create($pujaData);
-		$this->smsLink($puja->token);
-        if(setting('NKDA_MOBS')) {
+		//$this->smsLink($puja->token);
+        /*if(setting('NKDA_MOBS')) {
             $sms->send(explode(",",setting('NKDA_MOBS')),"New puja committee ($nm) registered.");
-        }
+        }*/
 		
         $actionArea = ActionArea::where('name', $request->action_area)->first();
         $category   = PujaCategorie::where('name', $request->category)->first();
@@ -208,7 +190,11 @@ class PujaController extends Controller
             }
 		} 
 		
-		session()->forget(['secretary_mobile_otp', 'chairman_mobile_otp']);
+		foreach (session()->all() as $key => $val) {
+			if (str_contains($key, 'otp')) {
+				session()->forget($key);
+			}
+		}
         return $this->ok('Registration Successful',["data"=>$puja->token]);
     }
 
@@ -228,8 +214,6 @@ class PujaController extends Controller
             'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
             'team_members'          => 'nullable|integer|min:1|max:100',
-			'secretary_mobile_otp'     => 'required|string|size:6',
-			'chairman_mobile_otp'      => 'nullable|string|size:6',
         ];
 		if ($request->in_newtown) {
 			if (strtolower($request->input('puja_committee_name')) === 'other') {
@@ -486,12 +470,14 @@ class PujaController extends Controller
         return view('puja.gatepass', compact('puja'));
     }
 
-    public function downloadPdf($token)
+    public function downloadPdf(Request $request)
     {
+		$token = $request->input('token');
         $puja = PujaCommittee::where('token', $token)->first();
         if (!$puja) abort(404, 'Puja not found');
         $file = public_path("qrs/{$puja->token}.png");
         $this->qrGen($file, $puja->secretary_mobile);
+		//return view('puja.gatepass-pdf', compact('puja', 'file'));
         $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'))
             ->setPaper([0,0,297,420],'landscape');// A4 quarter = A6
         return $pdf->download("{$puja->secretary_mobile}.pdf");
@@ -547,8 +533,7 @@ class PujaController extends Controller
 		try {
 			$ans = $sms->send($mobile, "Your OTP is $otp");
             if($ans["success"]) {
-                session()->put("{$nm}_otp", [
-                    'mobile' => $mobile,
+                session()->put("{$nm}_{$mobile}_otp", [
                     'otp'    => $otp,
                     'time'   => now(),
                 ]);
@@ -560,9 +545,40 @@ class PujaController extends Controller
                 return $this->err("Failed to send OTP right now");
             }
 		} catch (\Exception $e) {
-            Log::error("sms error: " . $e->getMessage());
+            Log::error("sms exception: " . $e->getMessage());
 			return $this->err("Failed to send OTP right now");
 		}
+	}	
+	
+	public function verify_otp(Request $request)
+	{
+        $err = $this->validate($request->all(), [
+			'nm'     => 'required|string',
+			'mobile' => ['required','regex:/^[6-9]\d{9}$/'],
+			'otp'      => 'required|string|size:6',
+        ], [
+			'nm.required'     => 'Field identifier is missing.',
+			'mobile.required' => 'Mobile number is required.',
+			'mobile.regex'    => 'Please enter a valid 10-digit Indian mobile number.',
+			'otp.required'    => 'OTP is missing.',
+		]);
+        if ($err) return $err;
+		$nm = $request->input('nm');
+		$mobile = $request->input('mobile');
+		$otp = $request->input('otp');
+		$otpSession = session("{$nm}_{$mobile}_otp");
+		if (!$otpSession) {
+			return $this->err("OTP not verified. Please verify first.");
+		}
+		if ($otp != $otpSession['otp']) {
+			return $this->err("Invalid OTP.");
+		}
+		if ($otpSession['time'] && now()->diffInMinutes($otpSession['time']) > 5) {
+			return $this->err("Secretary OTP expired. Please resend OTP.");
+		}
+		$otpSession["verified"] = true;
+		session()->put("{$nm}_{$mobile}_otp", $otpSession);
+		return $this->ok("OTP verified Successfully");
 	}
 
     public function has_entryslip($id) 
