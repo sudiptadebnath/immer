@@ -272,7 +272,7 @@ class ScanController extends Controller
 			];
 			$puja = PujaCommittee::create($pujaData);
 		} else {
-            return $this->err("Can't register. Already registered mobile.");
+            //return $this->err("Can't register. Already registered mobile.");
 			/*if ($puja->proposed_immersion_date && !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 				return $this->err("GatePass not valid for today");
 			}*/
@@ -295,7 +295,7 @@ class ScanController extends Controller
             'typ'           => $typ,
         ]);
         $typNm = attDict()[$typ];
-        return $this->ok("Mobile verified and <br>Marked <b>$typNm</b> for " . $mob);
+        return $this->ok("Digital Pass successfully verified");
     }
 
 }
