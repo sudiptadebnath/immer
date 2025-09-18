@@ -33,12 +33,9 @@ Route::get('/form_validate', [PujaController::class, 'form_validate']);
 Route::post('/verify_otp', [PujaController::class, 'verify_otp']);
 Route::post('/send_otp', [PujaController::class, 'send_otp']);
 Route::get('/register', fn() => view("register"));
-Route::get('/register', fn() => view("register"));
 Route::get('/thanks/{token}',  [PujaController::class, 'thanks'])->name('puja.thanks');
 Route::post('/register', [PujaController::class, 'add']);
 Route::get('/gpass/pdf', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
-Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
-Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
@@ -65,6 +62,8 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->gr
 
     Route::middleware('role:ao')->prefix('puja')->group(function () {
         Route::view('/','puja.index');
+        Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
+        Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
         Route::post('/add', [PujaController::class, 'add']);
         Route::post('/addadmin', [PujaController::class, 'addadmin']);
