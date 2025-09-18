@@ -11,7 +11,6 @@
     $required = filter_var($required, FILTER_VALIDATE_BOOLEAN);
 @endphp
 
-
 @push("styles")
 <style>
 .otp-input {
@@ -19,11 +18,14 @@
     font-size: 16px;
     font-weight: 500;
     letter-spacing: 4px;
-	text-align:center;
-	max-width: 100px;
-	color: blue;
+    text-align:center;
+    max-width: 100px;
+    color: blue;
 }
-
+#secretary_mobile_resend_timer,
+#chairman_mobile_resend_timer {
+    color: red;
+}
 </style>
 @endpush
 
@@ -79,18 +81,18 @@
             <button id="{{ $name }}_sendotp_verify" type="button">Verify OTP</button>
         </form>
         <p class="resend mb-0">
-            Didn’t receive the code? <a href="javascript:void(0)" onclick="{{ $name }}_resend()">Resend OTP</a>
+            <span id="{{ $name }}_resend_text" style="display:none;">Didn’t get your OTP? </span>
+            <span id="{{ $name }}_resend_wrap">
+                <a id="{{ $name }}_resend_link" href="javascript:void(0)" onclick="{{ $name }}_resend()" style="display:none;">Resend OTP</a>
+                <span id="{{ $name }}_resend_timer"></span>
+            </span>
         </p>
     </div>
 </div>
 
 
-
-
-
 @push('scripts')
 <script>
-
 // Attach handler to ALL modals
 document.querySelectorAll(".otpverification_modal").forEach(function(modal) {
     modal.addEventListener("click", function(e) {
@@ -98,156 +100,130 @@ document.querySelectorAll(".otpverification_modal").forEach(function(modal) {
             modal.classList.remove("open");
         }
     });
-
-    // Prevent clicks inside modal body from bubbling
     modal.querySelector(".otpverification_body").addEventListener("click", function(e) {
         e.stopPropagation();
     });
 });
 
-function {{ $name }}_resend(){
-	let mobileInput = $("#{{ $name }}");
-	let mobileVal = mobileInput.val();
-	webserv("POST", "{{ url('/send_otp') }}", 
-		{ nm: "{{ $name }}" ,mobile: mobileVal },
-		function ok(d) {
-			$("#{{ $name }}_sendotp_msg").html(d["msg"]);
-		},
-		function err(d) {
-			myAlert(d["msg"], "danger");
-		}
-	);	
+// ==== TIMER FUNCTION ====
+function startResendTimer_{{ $name }}() {
+    let countdown = 60; // 1 minute
+    let timerSpan = document.getElementById("{{ $name }}_resend_timer");
+    let resendLink = document.getElementById("{{ $name }}_resend_link");
+    let resendText = document.getElementById("{{ $name }}_resend_text");
+
+    // hide text + link at start
+    resendLink.style.display = "none"; 
+    resendText.style.display = "none"; 
+    timerSpan.innerHTML = "Time remaining: 1:00";
+
+    let interval = setInterval(() => {
+        countdown--;
+
+        let minutes = Math.floor(countdown / 60);
+        let seconds = countdown % 60;
+        let formattedTime = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+        if (countdown > 0) {
+            timerSpan.innerHTML = "Time remaining: " + formattedTime;
+        } else {
+            clearInterval(interval);
+            timerSpan.innerHTML = "";
+            resendLink.style.display = "inline";
+            resendText.style.display = "inline"; // show text only after time ends
+        }
+    }, 1000);
 }
 
+// ==== RESEND FUNCTION ====
+function {{ $name }}_resend(){
+    let mobileInput = $("#{{ $name }}");
+    let mobileVal = mobileInput.val();
+    webserv("POST", "{{ url('/send_otp') }}", 
+        { nm: "{{ $name }}" ,mobile: mobileVal },
+        function ok(d) {
+            $("#{{ $name }}_sendotp_msg").html(d["msg"]);
+            startResendTimer_{{ $name }}(); // restart timer on resend
+        },
+        function err(d) {
+            myAlert(d["msg"], "danger");
+        }
+    ); 
+}
 
+// ==== SEND OTP BUTTON CLICK ====
 document.getElementById("{{ $name }}_sendotp").addEventListener("click", function() {
-	setTimeout(function () {
-		let errorLabel  = $("label.error[for='{{ $name }}']");
-		if (errorLabel.text().trim().length > 0) return;
+    setTimeout(function () {
+        let errorLabel  = $("label.error[for='{{ $name }}']");
+        if (errorLabel.text().trim().length > 0) return;
 
-		let mobileInput = $("#{{ $name }}");
-		let mobileVal = mobileInput.val();
-		if (!/^[6-9]\d{9}$/.test(mobileVal)) {
-			myAlert("Enter valid 10 digit mobile number","danger");
-			return;
-		}
+        let mobileInput = $("#{{ $name }}");
+        let mobileVal = mobileInput.val();
+        if (!/^[6-9]\d{9}$/.test(mobileVal)) {
+            myAlert("Enter valid 10 digit mobile number","danger");
+            return;
+        }
 
-		webserv("POST", "{{ url('/send_otp') }}", 
-			{ nm: "{{ $name }}" ,mobile: mobileVal },
-			function ok(d) {
-				//myAlert(d["msg"], "success");
-				$("#{{ $name }}_sendotp_msg").html(d["msg"]);
-				document.getElementById("{{ $name }}_sendotp_modal").classList.add("open");
-			},
-			function err(d) {
-				myAlert(d["msg"], "danger");
-			}
-		);
-	}, 200); 
+        webserv("POST", "{{ url('/send_otp') }}", 
+            { nm: "{{ $name }}" ,mobile: mobileVal },
+            function ok(d) {
+                $("#{{ $name }}_sendotp_msg").html(d["msg"]);
+                document.getElementById("{{ $name }}_sendotp_modal").classList.add("open");
+                startResendTimer_{{ $name }}(); // start 1 min timer
+            },
+            function err(d) {
+                myAlert(d["msg"], "danger");
+            }
+        );
+    }, 200); 
 });
 
-// Close modal when clicking on modal background
+// ==== VERIFY OTP ====
 document.getElementById("{{ $name }}_sendotp_verify").addEventListener("click", function() {
-	let mobileInput = $("#{{ $name }}");
-	let mobileVal = mobileInput.val();
-	
+    let mobileInput = $("#{{ $name }}");
+    let mobileVal = mobileInput.val();
+    
     let otp = "";
     $("#{{ $name }}_sendotp_input input").each(function () {
         otp += $(this).val();
     });
-	
+    
     if (otp.length != 6) {
-		myAlert("Enter OTP","danger");
-		return;
-	}
-	
-	webserv("POST", "{{ url('/verify_otp') }}", 
-		{ nm: "{{ $name }}" ,mobile: mobileVal, otp  },
-		function ok(d) {
-			myAlert(d["msg"], "success");
-			document.getElementById("{{ $name }}_sendotp_modal").classList.remove("open");
-			$(".verify_otp_btn").prop("disabled",true);
-			$("#{{ $name }}").prop("readonly",true);
-			$("#{{ $name }}_sendotp").replaceWith(
-            '<span class="btn badge btn-outline-primary d-flex align-items-center justify-content-center gap-1"><i class="bi bi-check-circle-fill"></i> Verified</span>'
+        myAlert("Enter OTP","danger");
+        return;
+    }
+    
+    webserv("POST", "{{ url('/verify_otp') }}", 
+        { nm: "{{ $name }}" ,mobile: mobileVal, otp  },
+        function ok(d) {
+            myAlert(d["msg"], "success");
+            document.getElementById("{{ $name }}_sendotp_modal").classList.remove("open");
+            $(".verify_otp_btn").prop("disabled",true);
+            $("#{{ $name }}").prop("readonly",true);
+            $("#{{ $name }}_sendotp").replaceWith(
+                '<span class="btn badge btn-outline-primary d-flex align-items-center justify-content-center gap-1"><i class="bi bi-check-circle-fill"></i> Verified</span>'
             );
-            //Remove other verify buttons
             $(".verify_otp_btn").not("#{{ $name }}_sendotp").remove();
-		},
-		function err(d) {
-			myAlert(d["msg"], "danger");
-		}
-	);
+        },
+        function err(d) {
+            myAlert(d["msg"], "danger");
+        }
+    );
 });
 
+// ==== OTP INPUT NAVIGATION ====
 const {{ $name }}_inputs = $("#{{ $name }}_sendotp_input input");
-
 {{ $name }}_inputs.each(function(index) {
     $(this).on("input", function() {
         if ($(this).val().length === 1 && index < {{ $name }}_inputs.length - 1) {
             {{ $name }}_inputs.eq(index + 1).focus();
         }
     });
-
     $(this).on("keydown", function(e) {
         if (e.key === "Backspace" && $(this).val() === "" && index > 0) {
             {{ $name }}_inputs.eq(index - 1).focus();
         }
     });
 });
-/*
-$(function() {
-    let otpClickCount_{{ $name }} = 0;
-    let otpTimer_{{ $name }} = null;
-	
-    $("#{{ $name }}_sendotp").on("click", function() {
-		let errorLabel  = $("label.error[for='{{ $name }}']");
-		if (errorLabel.text().trim().length > 0) return;
-		
-        let mobileInput = $("#{{ $name }}");
-        let sendBtn = $(this);
-        let otpInput = $("#{{ $name }}_otp");
-
-        let mobileVal = mobileInput.val();
-
-        // validate mobile
-        if (!/^[6-9]\d{9}$/.test(mobileVal)) {
-            myAlert("Enter valid 10 digit mobile number","danger");
-            return;
-        }
-
-        otpClickCount_{{ $name }}++;
-        if (otpClickCount_{{ $name }} > 3) {
-            sendBtn.prop("disabled", true).html("<i class='bi bi-shield-lock'></i>");
-            return;
-        }
-
-        // disable mobile field after first attempt
-        if (otpClickCount_{{ $name }} === 1) {
-            mobileInput.prop("readonly", true);
-        }
-		
-		sendBtn.prop("disabled", true).html("<i class='bi bi-hourglass-split'></i>");
-		webserv("POST", "{{ url('/send_otp') }}", 
-			{ nm: "{{ $name }}" ,mobile: mobileVal },
-			function ok(d) {
-				myAlert(d["msg"], "success");
-				if (otpClickCount_{{ $name }} < 3) {
-					setTimeout(() => sendBtn.prop("disabled", false).html("<i class='bi bi-shield-lock'></i>"), 5000);
-				}
-				otpInput.focus();
-			},
-			function err(d) {
-				myAlert(d["msg"], "danger");
-				if (otpClickCount_{{ $name }} < 3) {
-					setTimeout(() => sendBtn.prop("disabled", false).html("<i class='bi bi-shield-lock'></i>"), 5000);
-				}
-				otpInput.focus();
-			}
-		);
-    });
-});
-*/
 </script>
 @endpush
-
