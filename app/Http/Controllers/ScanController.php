@@ -140,14 +140,14 @@ class ScanController extends Controller
         foreach ($immersionData as $row) {
             $first = Carbon::parse($row->first_scan);
             $last  = Carbon::parse($row->last_scan);
-            $diffMinutes = $last->diffInMinutes($first);
+            $diffMinutes = $first->diffInMinutes($last);
 
             if ($diffMinutes > 0) { // ignore 0-diff cases
                 $totalDuration += $diffMinutes;
                 $committeeCount++;
             }
         }
-
+		
         $avgImmersionTime = 0;
 
         if ($committeeCount > 0) {
@@ -203,7 +203,7 @@ class ScanController extends Controller
             ->first();
         if(!$lastAtt) { // FIRST SWIPE
             if($cuser->role != "s") { // MUST BE SCANNER POST
-                return $this->err("Scanner post required.");
+                return $this->err("You are not in queue.");
             } else $typ = 'queue';
         } else {
             if($lastAtt->typ === 'queue') { // 2ND SWIPE
@@ -254,7 +254,7 @@ class ScanController extends Controller
 		$today = Carbon::today();
 
         $cuser = $this->getUserObj();
-		if($cuser->role != "s") return $this->err("Not a scanner post");
+		if($cuser->role != "s") return $this->err("You are not in queue.");
 		$request->validate([
 			'mobile' => [
 				'required',
@@ -283,7 +283,7 @@ class ScanController extends Controller
             ->first();
         if(!$lastAtt) { // FIRST SWIPE
             if($cuser->role != "s") { // MUST BE SCANNER POST
-                return $this->err("Scanner post required.");
+                return $this->err("You are not in queue.");
             } else $typ = 'queue';
         } else {
             return $this->err("Already Marked this mobile.");

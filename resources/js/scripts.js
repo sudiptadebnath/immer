@@ -313,6 +313,7 @@ function webserv(typ, api, dt, f1 = null, f2 = null) {
             }
         }
     }
+	loading(true);
     $.ajax(params);
 }
 

@@ -5,6 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use \App\Http\Controllers\PujaController;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,13 +14,25 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-		$schedule->call(function (PujaController $controller) {
-			$controller->sendPujaReminders1(); // FOR REMINDER AT IMMERSION DAY
+		
+		/*$schedule->call(function () {
+			\Log::info("schedular test running");
+		})->everyMinute();*/
+
+		/*$schedule->call(function () {
+			Log::info("schedular1 running");
+			//app(PujaController::class)->sendPujaReminders1(); // FOR REMINDER AT IMMERSION DAY
         })->dailyAt('00:01')->timezone('Asia/Kolkata')->withoutOverlapping();
         
-		$schedule->call(function (PujaController $controller) {
+		$schedule->call(function () {
+			Log::info("schedular2 running");
+			//app(PujaController::class)->sendPujaReminders2(); // FOR REMINDER AT BEFORE 2 HR OF IMMERSION TIME
+		})->everyMinute()->withoutOverlapping();*/
+		
+		/*$schedule->call(function (PujaController $controller) {
+			Log::info("schedular2");
 			$controller->sendPujaReminders2(); // FOR REMINDER AT BEFORE 2 HR OF IMMERSION TIME
-        })->everyMinute()->withoutOverlapping();
+        })->everyMinute()->withoutOverlapping();*/
 
         // })->everyThirtyMinutes()->withoutOverlapping();
 		// })->dailyAt('09:00')->timezone('Asia/Kolkata');

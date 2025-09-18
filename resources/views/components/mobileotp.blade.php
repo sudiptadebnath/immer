@@ -54,7 +54,7 @@
         >
         <button type="button" 
             class="verify_otp_btn btn badge btn-outline-primary"
-            id="{{ $name }}_sendotp" title="Verify Your Number">Verify Number
+            id="{{ $name }}_sendotp" title="Verify Your Number">Verify
         </button>
         {{ $slot }}
     </div>
@@ -71,12 +71,12 @@
         <p id="{{ $name }}_sendotp_msg">Enter the 6-digit OTP sent to your Phone No - ******8858</p>
         <form>
             <div id="{{ $name }}_sendotp_input" class="otp_inputs">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
+				<input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1">
             </div>
             <button id="{{ $name }}_sendotp_verify" type="button">Verify OTP</button>
         </form>
@@ -196,7 +196,7 @@ document.getElementById("{{ $name }}_sendotp_verify").addEventListener("click", 
     webserv("POST", "{{ url('/verify_otp') }}", 
         { nm: "{{ $name }}" ,mobile: mobileVal, otp  },
         function ok(d) {
-            myAlert(d["msg"], "success");
+			toastr.success(d["msg"]);
             document.getElementById("{{ $name }}_sendotp_modal").classList.remove("open");
             $(".verify_otp_btn").prop("disabled",true);
             $("#{{ $name }}").prop("readonly",true);

@@ -240,7 +240,8 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 chairman_mobile: {
                     required: false,
                     indianMobile: true,
-                    remote: "{{ url('/form_validate') }}"
+                    remote: "{{ url('/form_validate') }}",
+					notEqualTo: "#secretary_mobile",
                 },
                 proposed_immersion_date: {
                     required: true,
@@ -298,6 +299,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     required: "Please enter the chairman's mobile number",
                     indianMobile: "Please enter a valid Indian mobile number",
 					remote: "❌ This Chairman Mobile is already taken",
+					notEqualTo: "Chairman Mobile cannot be the same as Secretary Mobile",
                 },
                 proposed_immersion_date: "Please select a proposed immersion date",
                 proposed_immersion_time: {
@@ -321,9 +323,10 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
         if ($("#register").valid()) {
             webserv("POST", "{{ url('/register') }}", "register",
                 function ok(d) {
-                    myAlert(d["msg"], "success", "Ok", function() {
-                        window.location.href = "{{ route('puja.thanks', ['token' => '___ID___']) }}".replace("___ID___", d.data);
-                    });
+					toastr.success(d["msg"]);
+					setTimeout(function () {
+						window.location.href = "{{ route('puja.thanks', ['token' => '___ID___']) }}".replace("___ID___", d.data);
+					}, 2000); 
                 });
         }
         return false;

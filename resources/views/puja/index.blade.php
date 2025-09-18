@@ -382,7 +382,8 @@ $(function () {
 					depends: function(element) {
 						return $('#id').val()=="";
 					}
-				}
+				},
+				notEqualTo: "#secretary_mobile",
             },
             proposed_immersion_date: {
                 required: true,
@@ -438,6 +439,7 @@ $(function () {
                 required: "Please enter the chairman's mobile number",
                 indianMobile: "Please enter a valid Indian mobile number",
 				remote: "❌ This Chairman Mobile is already taken",
+				notEqualTo: "Chairman Mobile cannot be the same as Secretary Mobile",
             },
             proposed_immersion_date: "Please select a proposed immersion date",
             proposed_immersion_time: {

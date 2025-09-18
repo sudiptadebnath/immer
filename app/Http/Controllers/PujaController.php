@@ -20,6 +20,8 @@ class PujaController extends Controller
 {
     public function data()
     {
+        //$this->sendPujaReminders1();
+        //$this->sendPujaReminders2();
         $out = DataTables::of(PujaCommittee::query())
             ->editColumn('proposed_immersion_date', function ($row) {
                 return $row->proposed_immersion_date
@@ -99,7 +101,7 @@ class PujaController extends Controller
             'secretary_mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile',
             'chairman_name'         => 'nullable|string|min:3|max:100',
             'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile',
-            'proposed_immersion_date' => 'required|date',
+			'proposed_immersion_date' => 'required|date|exists:puja_immersion_dates,idate',
             'proposed_immersion_time' => 'required|string',
             'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
@@ -212,7 +214,7 @@ class PujaController extends Controller
             'secretary_mobile'      => 'required|string|min:8|max:20|unique:puja_committees,secretary_mobile',
             'chairman_name'         => 'nullable|string|min:3|max:100',
             'chairman_mobile'       => 'nullable|string|min:8|max:20|unique:puja_committees,chairman_mobile',
-            'proposed_immersion_date' => 'required|date',
+			'proposed_immersion_date' => 'required|date|exists:puja_immersion_dates,idate',
             'proposed_immersion_time' => 'nullable|string',
             'no_of_vehicles'            => 'nullable|integer|min:1|max:3',
             'vehicle_no'            => 'nullable|string|min:3|max:50',
@@ -633,27 +635,21 @@ class PujaController extends Controller
 
         $committees = PujaCommittee::whereDate('proposed_immersion_date', $today)
             ->where(function ($q) {
-                $q->whereNotNull('secretary_mobile')
-                  ->orWhereNotNull('chairman_mobile');
+                $q->whereNotNull('secretary_mobile');
+                  //->orWhereNotNull('chairman_mobile');
             })
             ->where('reminder_typ', 0)
-            ->where('reminder_cnt', '<', 3)
+            ->where('reminder_cnt', '<', 1)
             ->get();
 
         foreach ($committees as $c) {
             try {
                 // Collect mobiles
-                $mobiles = array_filter([
-                    $c->secretary_mobile,
-                    $c->chairman_mobile,
-                ]);
-
-                // ---- Send SMS here ----
-                $message = "Dear {$c->puja_committee_name}, "
-                    ."please remember your immersion today at {$c->proposed_immersion_time}. "
-                    ."Wishing you a safe and happy event.";
-                
-                $ok = $sms->send($mobiles, $message);
+                $ok = $sms->send(
+                    $c->verified_mobile, 
+                    "98660", 
+                    Carbon::parse($c->proposed_immersion_date)->format('d-m-Y'), 
+                    $c->token);
 
                 // If sent successfully
                 if ($ok['success']) {
@@ -682,27 +678,21 @@ class PujaController extends Controller
 
         $committees = PujaCommittee::whereDate('proposed_immersion_date', Carbon::today())
             ->where(function ($q) {
-                $q->whereNotNull('secretary_mobile')
-                ->orWhereNotNull('chairman_mobile');
+                $q->whereNotNull('verified_mobile');
+                //->orWhereNotNull('chairman_mobile');
             })
             ->where('reminder_typ', 1)
-            ->where('reminder_cnt', '<', 3)
+            ->where('reminder_cnt', '<', 1)
             ->whereBetween('proposed_immersion_time', [$from->toTimeString(), $to->toTimeString()])
             ->get();
 
         foreach ($committees as $c) {
             try {
-                $mobiles = array_filter([
-                    $c->secretary_mobile,
-                    $c->chairman_mobile,
-                ]);
-
-                $message = "Dear {$c->puja_committee_name}, "
-                    ."your idol immersion is scheduled at {$c->proposed_immersion_time} today. "
-                    ."This is a gentle reminder from NKDA. "
-                    ."Wishing you a safe and happy event.";
-
-                $ok = $sms->send($mobiles, $message);
+                $ok = $sms->send(
+                    $c->verified_mobile, 
+                    "98660", 
+                    Carbon::parse($c->proposed_immersion_date)->format('d-m-Y'), 
+                    $c->token);
 
                 if ($ok['success']) {
                     $c->update([
