@@ -492,9 +492,9 @@ class PujaController extends Controller
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 	
-	public function sendSmsToPuja($puja,$msg) 
+	public function sendSmsToPuja($puja,$msg, ...$prms) 
 	{
-		$sms = new SmsService;
+		$sms = new SmsService();
 		$mob = $puja->verified_mobile;
         if(!$mob) {
             return [[
@@ -502,7 +502,7 @@ class PujaController extends Controller
                 'message'=>"No verified mobile to send SMS"
             ], $mob];
         } 
-		$ans = $sms->send($mob,$msg);
+		$ans = $sms->send($mob,$msg,...$prms);
 		return [$ans, $mob];
 	}
 	
@@ -512,7 +512,7 @@ class PujaController extends Controller
         if (!$puja) return $this->err("No Such Puja");
 		$link = route('puja.gpass.pdf', ['token' => $puja->token]);
 		list($ans,$mob) = $this->sendSmsToPuja(
-			$puja, "Please Download the Digital Pass from $link."
+			$puja,"98659",date("Y"),"token=".$puja->token
 		);
 		if($ans['success']) {
 			return $this->ok("Sent download link to $mob through SMS.");
@@ -628,7 +628,7 @@ class PujaController extends Controller
 	*/
 	public function sendPujaReminders1()
 	{
-        $sms = new SmsService;
+        $sms = new SmsService();
         $today = Carbon::today()->toDateString();
 
         $committees = PujaCommittee::whereDate('proposed_immersion_date', $today)
@@ -675,7 +675,7 @@ class PujaController extends Controller
 
     public function sendPujaReminders2()
     {
-        $sms = new SmsService;
+        $sms = new SmsService();
         $now = Carbon::now('Asia/Kolkata');
         $from = $now;                       // current time
         $to   = $now->copy()->addHours(2);  // next 2 hours
