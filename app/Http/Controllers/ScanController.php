@@ -254,7 +254,7 @@ class ScanController extends Controller
 		$today = Carbon::today();
 
         $cuser = $this->getUserObj();
-		if($cuser->role != "s") return $this->err("You are not in queue.");
+		//if($cuser->role != "s") return $this->err("You are not in queue.");
 		$request->validate([
 			'mobile' => [
 				'required',
@@ -286,7 +286,19 @@ class ScanController extends Controller
                 return $this->err("You are not in queue.");
             } else $typ = 'queue';
         } else {
-            return $this->err("Already Marked this mobile.");
+            if($lastAtt->typ === 'queue') { // 2ND SWIPE
+                if(!hasRole("ao")) { // MUST BE SCANNER POST
+                    //return $this->err("Counter post required");
+                    return $this->err("Already verified and in the Queue.");
+                } else $typ = 'in';
+            } /*else if($lastAtt->typ === 'in') { // 3RD SWIPE
+                if($cuser->role != "s") { // MUST BE SCANNER POST
+                    return $this->err("Scanner post required.");
+                } else $typ = 'out';
+            }*/ else {
+                //return $this->err("All scan completed.");
+                return $this->err("Immersion already done.");
+            }
         } 
         Attendance::create([
             'scan_datetime' => now(),

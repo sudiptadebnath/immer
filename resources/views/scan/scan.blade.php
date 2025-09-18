@@ -169,7 +169,15 @@ function markByMob() {
     webserv("POST", "{{ route('att.mark_by_mob') }}", 
     { mobile: $('#mobile').val() }, 
     function ok(resp) {
+		@if(hasRole("ao"))
+		myAlert(resp.msg+"<br>Go for Print","success","Ok",function() {
+			const printUrl = "{{ route('puja.entryslip', ['id' => '___ID___']) }}".replace('___ID___', mobile);
+			const w = window.open(printUrl, '_blank');
+			w.onload = function() { w.print(); };
+		},"",null,true);
+		@else
 		toastr.success(resp.msg);
+		@endif
         $('#mobile').val("");
         /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
