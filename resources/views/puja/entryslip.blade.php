@@ -187,12 +187,12 @@
                     <span class="label">Name:</span>
                     <span>{{ $puja->puja_committee_name }}</span>
                 </div>
-                @if($puja->action_area)
+                <!-- @if($puja->action_area)
                 <div class="info">
                     <span class="label">Location:</span>
                     <span>{{ $puja->action_area }}, {{ $puja->category }}</span>
                 </div>
-                @endif
+                @endif -->
                 @if($puja->puja_committee_address)
                 <div class="info">
                     <span class="label">Address:</span>

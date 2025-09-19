@@ -490,7 +490,8 @@ class PujaController extends Controller
         $this->qrGen($file, $puja->secretary_mobile);
 		//return view('puja.gatepass-pdf', compact('puja', 'file'));
         $pdf = Pdf::loadView('puja.gatepass-pdf', compact('puja', 'file'))
-            ->setPaper([0,0,297,420],'landscape');// A4 quarter = A6
+            // ->setPaper([0,0,297,420],'landscape');// A4 quarter = A6
+            ->setPaper('a6', 'portrait');// A4 portrait
         return $pdf->download("{$puja->secretary_mobile}.pdf");
     }
 	

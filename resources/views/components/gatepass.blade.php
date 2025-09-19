@@ -23,7 +23,7 @@
         .card {
             @if($pdf) padding: 5px;
             margin: 0 auto;
-            @else max-width: 500px;
+            @else max-width: 350px;
             padding: 5px;
             margin: 0 auto;
             box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
@@ -38,17 +38,25 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: 0 auto; */
-            background-image: url('resources/img/bg2.jpg'), 
-				url('{{ asset("resources/img/bg2.jpg") }}')	;
+            background-image: url('resources/img/bg-mobile.jpg'), 
+				url('{{ asset("resources/img/bg-mobile.jpg") }}')	;
             background-repeat: no-repeat;
             background-size: cover;
-            background-position: center;
+            background-position: top center;
             z-index: 1;
         }
 
-        .Registration_card .head {
+        /* .Registration_card .head {
             text-align: center;
             margin: 5px 0 10px 0;
+        } */
+
+        .Registration_card .head {
+            font-size: 14px;
+            width: 100%;
+            max-width: 95%;
+            text-align: center;
+            margin: 15px auto 20px;
         }
 
         .Registration_card::before {
@@ -64,21 +72,30 @@
             margin: 5px 0 10px 0;
         }
 
-        .content {
+        /* .content {
             display: table;
+            width: 100%;
+        } */
+         .content {
+            display: block;
             width: 100%;
         }
 
         .qr-cell,
         .details-cell {
-            display: table-cell;
+            /* display: table-cell; */
             vertical-align: top;
         }
 
-        .qr-cell {
+        /* .qr-cell {
             width: 35%;
             text-align: center;
-            /* padding-right: 2px; */
+        } */
+
+        .qr-cell {
+            width: 100%;
+            text-align: center;
+           margin: 0 auto 20px;
         }
 
         .qr-cell img {
@@ -87,9 +104,14 @@
             object-fit: contain;
         }
 
-        .details-cell {
+        /* .details-cell {
             width: 65%;
             padding-left: 5px;
+        } */
+
+        .details-cell {
+            width: 96%;
+           margin: 0 auto 15px;
         }
 
         table.details {
@@ -149,36 +171,34 @@
         }
 
 
-#sms-result {
-	margin-top: 30px;
-}
+        #sms-result {
+            margin-top: 30px;
+        }
 
-.alert {
-  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
-  width: 100%; max-width: 450px;
-  padding: 0.75rem 1rem;
-  margin: 0.5rem auto;
-  border-radius: 0.375rem;
-  font-family: system-ui, sans-serif;
-  font-size: 0.95rem;
-  border-left: 4px solid transparent;
-  text-align: left;
-}
+        .alert {
+        box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+        width: 100%; max-width: 450px;
+        padding: 0.75rem 1rem;
+        margin: 0.5rem auto;
+        border-radius: 0.375rem;
+        font-family: system-ui, sans-serif;
+        font-size: 0.95rem;
+        border-left: 4px solid transparent;
+        text-align: left;
+        }
 
-.success {
-  background: #e9f7ef;
-  color: #0f5132;
-  border-left-color: #198754;
-}
+        .success {
+        background: #e9f7ef;
+        color: #0f5132;
+        border-left-color: #198754;
+        }
 
-.danger {
-  background: #f8d7da;
-  color: #842029;
-  border-left-color: #dc3545;
-}
-
-		
-    </style>
+        .danger {
+        background: #f8d7da;
+        color: #842029;
+        border-left-color: #dc3545;
+        }
+</style>
 </head>
 
 <body>
@@ -203,12 +223,12 @@
                             <td><strong>Name</strong></td>
                             <td>{{ $puja->puja_committee_name }}</td>
                         </tr>
-                        @if($puja->action_area)
+                        <!-- @if($puja->action_area)
                         <tr>
                             <td><strong>Location</strong></td>
                             <td>{{ $puja->action_area }}, {{ $puja->category }}</td>
                         </tr>
-                        @endif
+                        @endif -->
                         @if($puja->puja_committee_address)
                         <tr>
                             <td><strong>Address</strong></td>
