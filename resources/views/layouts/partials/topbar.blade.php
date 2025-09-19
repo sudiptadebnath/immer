@@ -17,10 +17,10 @@
 		<i class="bi bi-person-circle me-2"></i> {{ getUsrProp("name") ?? 'User' }}
 		</a>
 		<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-		<li><a class="dropdown-item" href="{{ url('/user/users/profile') }}">
+		<li><a class="dropdown-item" href="{{ route('user.profile') }}">
 			<i class="bi bi-gear me-2"></i>Profile</a></li>
 		<li><hr class="dropdown-divider"></li>
-		<li><a class="dropdown-item" href="{{ url('/user/logout') }}">
+		<li><a class="dropdown-item" href="{{ route('logout') }}">
 			<i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
 		</ul>
 	</div> 

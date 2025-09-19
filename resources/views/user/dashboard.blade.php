@@ -214,7 +214,7 @@
             }
             if (resp.dt) $("#today").html(resp.dt);
 
-        }, function fail() {});
+        }, null, false);
 
     }
     $(function() {

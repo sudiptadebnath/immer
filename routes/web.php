@@ -10,14 +10,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
-Route::get('/', function () {
+Route::get('/admin', function () {
     if (userLogged()) {
         return redirect()->route('user.dashboard');
     }
-    return view('index');
-});
-
-Route::post('/login', [UserController::class, 'login']);
+    return view('login');
+})->name('login');
+Route::post('/login', [UserController::class, 'login'])->name('login.check');
 
 
 Route::get('/register', function () {
@@ -29,49 +28,48 @@ Route::get('/register', function () {
     return view("register");
 });
 
-Route::get('/form_validate', [PujaController::class, 'form_validate']);
-Route::post('/verify_otp', [PujaController::class, 'verify_otp']);
-Route::post('/send_otp', [PujaController::class, 'send_otp']);
-Route::get('/register', fn() => view("register"));
+Route::get('/form_validate', [PujaController::class, 'form_validate'])->name('form_validate');
+Route::post('/verify_otp', [PujaController::class, 'verify_otp'])->name('verify_otp');
+Route::post('/send_otp', [PujaController::class, 'send_otp'])->name('send_otp');
+Route::get('/register', fn() => view("register"))->name('register');
 Route::get('/thanks/{token}',  [PujaController::class, 'thanks'])->name('puja.thanks');
-Route::post('/register', [PujaController::class, 'add']);
+Route::post('/register', [PujaController::class, 'add'])->name('register.save');
 Route::get('/gpass/pdf', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
 Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
 Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
 
-Route::middleware(['check.user.session','request.sanitize'])->prefix('user')->group(function () {
+Route::middleware(['check.user.session','request.sanitize'])->prefix('admin')->group(function () {
 
     Route::get("/logout", function () {
         Session::flush();
-        return redirect('/');
-    });
+        return redirect('/admin');
+    })->name('logout');
 
     Route::get("/dashboard", fn() => view('user.dashboard',["live"=>false]))->name('user.dashboard');
 
     Route::middleware('role:a')->prefix('users')->group(function () {
         Route::get('/', fn() => view("user.users"))->name('user.users');
-        Route::post('/add', [UserController::class, 'add']);
         Route::get('/data', [UserController::class, 'data'])->name('users.data');
-        Route::view('/profile','user.profile');
-        Route::get('/{id}', [UserController::class, 'get']);
-        Route::put('/{id}', [UserController::class, 'update']);
-        Route::delete('/{id}', [UserController::class, 'delete']);
+        Route::post('/add', [UserController::class, 'add'])->name('user.add');
+        Route::view('/profile','user.profile')->name('user.profile');
+        Route::get('/{id}', [UserController::class, 'get'])->name('user.get');
+        Route::put('/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/{id}', [UserController::class, 'delete'])->name('user.del');
     });
 
     Route::middleware('role:ao')->prefix('puja')->group(function () {
-        Route::view('/','puja.index');
-        Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
-        Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
+        Route::view('/','puja.index')->name('puja.index');
         Route::get('/data', [PujaController::class, 'data'])->name('puja.data');
-        Route::post('/add', [PujaController::class, 'add']);
-        Route::post('/addadmin', [PujaController::class, 'addadmin']);
+        Route::get('/get/{id}', [PujaController::class, 'get'])->name('puja.get');
+        Route::post('/addadmin', [PujaController::class, 'addadmin'])->name('puja.addadmin');
+        Route::put('/editadmin/{id}', [PujaController::class, 'updateadmin'])->name('puja.editadmin');
+        Route::delete('/{id}', [PujaController::class, 'delete'])->name('puja.del');
+        Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
         Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
         Route::get('/has_entryslip/{id}', [PujaController::class, 'has_entryslip'])->name('puja.has_entryslip');
-        Route::get('/{id}', [PujaController::class, 'get']);
-        Route::put('/editadmin/{id}', [PujaController::class, 'updateadmin']);
-        Route::delete('/{id}', [PujaController::class, 'delete']);
+        Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
     });
 
     Route::middleware('role:ao')->prefix('repo')->group(function () {

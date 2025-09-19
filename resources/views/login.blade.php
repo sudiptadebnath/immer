@@ -47,9 +47,9 @@
 
   function signin_submt() {
     if ($("#signin").valid()) {
-      webserv("POST", "{{ url('/login') }}", "signin",
+      webserv("POST", "{{ route('login.check') }}", "signin",
         function ok(d) {
-          goLnk("{{ url('/user/dashboard') }}");
+          goLnk("{{ route('user.dashboard') }}");
         });
     }
     return false;

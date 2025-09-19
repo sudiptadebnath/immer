@@ -94,7 +94,9 @@ function form_committee_submt (e) {
     if($("#form_committee").valid()) {
         const id = $("#form_committee").find('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/conf/edit/committee') }}/${id}` : `{{ url('user/conf/add/committee') }}`;
+        const url = isEdit 
+            ? "{{ route('conf.edit.committee', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('conf.add.committee') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "form_committee", function ok(d) {
             toastr.success(d["msg"]);
@@ -110,7 +112,7 @@ function addData_committee() {
     $('#modal_committee').modal('show');
 }
 function editData_committee(id) {
-    webserv("GET", `{{ url('user/conf/get/committee') }}/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('conf.get.committee', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let data = d["data"];
 		
         $('#id').val(data.id);
@@ -126,7 +128,7 @@ function editData_committee(id) {
 }
 function delData_committee(id) {
     myAlert("Are you sure you want to delete this record ?","danger","Yes", function() {
-        webserv("DELETE",  `{{ url('user/conf/del/committee') }}/${id}`, {}, function (d) {
+        webserv("DELETE", "{{ route('conf.del.committee', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
             toastr.success(d["msg"]);
             $('#table_committee').DataTable().ajax.reload(null, false);
         });        

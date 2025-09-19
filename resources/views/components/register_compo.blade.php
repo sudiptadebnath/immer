@@ -93,7 +93,7 @@
         <x-button type="submit" title="Submit Registration" icon="send" />
 
         <div class="col-md-12 text-center">
-            Already Registered ? <a href="{{ url('/') }}">Sign in</a>
+            Already Registered ? <a href="{{ route('login') }}">Sign in</a>
         </div>
         @endif
 

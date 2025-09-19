@@ -209,19 +209,19 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "1";
                     },
-                    remote: "{{ url('/form_validate') }}"
+                    remote: "{{ route('form_validate') }}"
                 },
                 puja_committee_name_other: {
                     required: function() {
                         return $("#puja_committee_name").val() === "Other";
                     },
-                    remote: "{{ url('/form_validate') }}"
+                    remote: "{{ route('form_validate') }}"
                 },
                 puja_committee_name_text: {
                     required: function() {
                         return $("input[name='in_newtown']:checked").val() == "0";
                     },
-                    remote: "{{ url('/form_validate') }}"
+                    remote: "{{ route('form_validate') }}"
                 },
                 puja_committee_address: {
                     required: true,
@@ -232,7 +232,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 secretary_mobile: {
                     required: true,
                     indianMobile: true,
-                    remote: "{{ url('/form_validate') }}"
+                    remote: "{{ route('form_validate') }}"
                 },
                 chairman_name: {
                     required: false,
@@ -240,7 +240,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                 chairman_mobile: {
                     required: false,
                     indianMobile: true,
-                    remote: "{{ url('/form_validate') }}",
+                    remote: "{{ route('form_validate') }}",
 					notEqualTo: "#secretary_mobile",
                 },
                 proposed_immersion_date: {
@@ -321,7 +321,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     function register_submt(e) {
         e.preventDefault(); // stop default form submission
         if ($("#register").valid()) {
-            webserv("POST", "{{ url('/register') }}", "register",
+            webserv("POST", "{{ route('register.save') }}", "register",
                 function ok(d) {
 					toastr.success(d["msg"]);
 					setTimeout(function () {

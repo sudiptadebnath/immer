@@ -47,7 +47,9 @@ function form_immerdt_submt (e) {
     if($("#form_immerdt").valid()) {
         const id = $("#form_immerdt").find('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/conf/edit/immerdt') }}/${id}` : `{{ url('user/conf/add/immerdt') }}`;
+        const url = isEdit 
+            ? "{{ route('conf.edit.immerdt', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('conf.add.immerdt') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "form_immerdt", function ok(d) {
             toastr.success(d["msg"]);
@@ -63,7 +65,7 @@ function addData_immerdt() {
     $('#modal_immerdt').modal('show');
 }
 function editData_immerdt(id) {
-    webserv("GET", `{{ url('user/conf/get/immerdt') }}/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('conf.get.immerdt', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let data = d["data"];
         $('#id').val(data.id);
         $('#name').val(data.name);
@@ -75,7 +77,7 @@ function editData_immerdt(id) {
 }
 function delData_immerdt(id) {
     myAlert("Are you sure you want to delete this record ?","danger","Yes", function() {
-        webserv("DELETE",  `{{ url('user/conf/del/immerdt') }}/${id}`, {}, function (d) {
+        webserv("DELETE", "{{ route('conf.del.immerdt', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
             toastr.success(d["msg"]);
             $('#table_immerdt').DataTable().ajax.reload(null, false);
         });        

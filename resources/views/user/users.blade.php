@@ -134,7 +134,9 @@ function adduser_submt (e) {
     if($("#adduser").valid()) {
         const id = $('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/users') }}/${id}` : `{{ url('user/users/add') }}`;
+        const url = isEdit
+            ? "{{ route('user.update', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('user.add') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "adduser", function ok(d) {
             toastr.success(d["msg"]);
@@ -153,7 +155,7 @@ function addUser() {
 }
 
 function editUser(id) {
-    webserv("GET",`users/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('user.get', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let user = d["data"];
         $('#id').val(user.id);
         $('#name').val(user.name);
@@ -171,7 +173,7 @@ function editUser(id) {
 
 function delUser(id) {
     myAlert("Are you sure you want to delete this user ?","danger","Yes", function() {
-        webserv("DELETE", `users/${id}`, {}, function (d) {
+        webserv("DELETE", "{{ route('user.del', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
             toastr.success(d["msg"]);
             $('#userTable').DataTable().ajax.reload();
         });        

@@ -72,7 +72,7 @@ function profile_submt(e) {
     e.preventDefault(); // stop default form submission
     if($("#profile").valid()) {
         const id = $('#id').val();
-        webserv("PUT", `{{ url('user/users') }}/${id}`, "profile", function ok(d) {
+        webserv("PUT", "{{ route('users.update', ['id' => '__id__']) }}".replace('__id__', id), "profile", function ok(d) {
             myAlert(d["msg"],"success","Ok",function() {
                 loadVals();
             });
@@ -83,7 +83,7 @@ function profile_submt(e) {
 
 function loadVals() {
     const id = $('#id').val();
-    webserv("GET", "{{ url('user/users') }}/" + id, {}, function (d) {
+    webserv("GET", "{{ route('users.get', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let user = d["data"];
         $('#id').val(user.id);
         $('#name').val(user.name);

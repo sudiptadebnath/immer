@@ -239,7 +239,7 @@ function xFocus(elm) {
         .scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-function webserv(typ, api, dt, f1 = null, f2 = null) {
+function webserv(typ, api, dt, f1 = null, f2 = null, lodng=true) {
     let isFormData = dt instanceof FormData;
 
     if (!isFormData && typeof dt === "string") {
@@ -313,7 +313,7 @@ function webserv(typ, api, dt, f1 = null, f2 = null) {
             }
         }
     }
-	loading(true);
+	if(lodng) loading(true);
     $.ajax(params);
 }
 

@@ -139,7 +139,7 @@ function startResendTimer_{{ $name }}() {
 function {{ $name }}_resend(){
     let mobileInput = $("#{{ $name }}");
     let mobileVal = mobileInput.val();
-    webserv("POST", "{{ url('/send_otp') }}", 
+    webserv("POST", "{{ route('send_otp') }}", 
         { nm: "{{ $name }}" ,mobile: mobileVal },
         function ok(d) {
             $("#{{ $name }}_sendotp_msg").html(d["msg"]);
@@ -164,7 +164,7 @@ document.getElementById("{{ $name }}_sendotp").addEventListener("click", functio
             return;
         }
 
-        webserv("POST", "{{ url('/send_otp') }}", 
+        webserv("POST", "{{ route('send_otp') }}", 
             { nm: "{{ $name }}" ,mobile: mobileVal },
             function ok(d) {
                 $("#{{ $name }}_sendotp_msg").html(d["msg"]);
@@ -193,7 +193,7 @@ document.getElementById("{{ $name }}_sendotp_verify").addEventListener("click", 
         return;
     }
     
-    webserv("POST", "{{ url('/verify_otp') }}", 
+    webserv("POST", "{{ route('verify_otp') }}", 
         { nm: "{{ $name }}" ,mobile: mobileVal, otp  },
         function ok(d) {
 			toastr.success(d["msg"]);

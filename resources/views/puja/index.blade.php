@@ -199,7 +199,7 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 <script>
 
 function getGatepass(id) {
-    webserv("GET",`puja/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('puja.get', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let puja = d["data"];
         let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
             .replace("___TOKEN___", puja['token']);
@@ -208,8 +208,8 @@ function getGatepass(id) {
 }
 
 function getEntrySlip(id) {
-    webserv("GET", "{{ url('user/puja/has_entryslip') }}/" + id, {}, function (resp) {
-        const printUrl = "{{ url('user/puja/entryslip') }}/" + resp.data;
+    webserv("GET", "{{ route('puja.has_entryslip', ['id' => '__id__']) }}".replace('__id__', id), {}, function (resp) {
+        const printUrl = "{{ route('puja.entryslip', ['id' => '__id__']) }}".replace('__id__', resp.data);
         const w = window.open(printUrl, '_blank');
         w.onload = function() { w.print(); };
     });
@@ -301,7 +301,7 @@ $(function () {
             puja_committee_name: {
                 required: function() { return $("input[name='in_newtown']:checked").val() == "1"; },
 				remote: {
-					url: "{{ url('/form_validate') }}",
+					url: "{{ route('form_validate') }}",
 					type: "get",
 					data: {
 						name: function() {
@@ -316,7 +316,7 @@ $(function () {
             puja_committee_name_other: {
                 required: function() { return $("#puja_committee_name").val() === "Other"; },
 				remote: {
-					url: "{{ url('/form_validate') }}",
+					url: "{{ route('form_validate') }}",
 					type: "get",
 					data: {
 						name: function() {
@@ -331,7 +331,7 @@ $(function () {
             puja_committee_name_text: {
                 required: function() { return $("input[name='in_newtown']:checked").val() == "0"; },
 				remote: {
-					url: "{{ url('/form_validate') }}",
+					url: "{{ route('form_validate') }}",
 					type: "get",
 					data: {
 						name: function() {
@@ -353,7 +353,7 @@ $(function () {
                 required: true,
                 indianMobile: true,
 				remote: {
-					url: "{{ url('/form_validate') }}",
+					url: "{{ route('form_validate') }}",
 					type: "get",
 					data: {
 						name: function() {
@@ -372,7 +372,7 @@ $(function () {
                 required: false,
                 indianMobile: true,
 				remote: {
-					url: "{{ url('/form_validate') }}",
+					url: "{{ route('form_validate') }}",
 					type: "get",
 					data: {
 						name: function() {
@@ -464,7 +464,9 @@ function register_submt (e) {
     if($("#register").valid()) {
         const id = $('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/puja/editadmin') }}/${id}` : `{{ url('user/puja/addadmin') }}`;
+        const url = isEdit 
+            ? "{{ route('puja.editadmin', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('puja.addadmin') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "register", function ok(d) {
             toastr.success(d["msg"]);
@@ -480,9 +482,16 @@ function setToday() {
 	const mm = String(today.getMonth() + 1).padStart(2, '0');
 	const dd = String(today.getDate()).padStart(2, '0');
 	const formattedDate = `${yyyy}-${mm}-${dd}`;
-	if ($("#proposed_immersion_date option[value='" + formattedDate + "']").length > 0) {
-		$("#proposed_immersion_date").val(formattedDate).trigger('change');
-	}	
+
+	const $select = $("#proposed_immersion_date");
+	if ($select.find("option[value='" + formattedDate + "']").length > 0) {
+		$select.val(formattedDate).trigger('change');
+	} else {
+		const $firstValid = $select.find("option:not([value='']):not(:contains('select'))").first();
+		if ($firstValid.length) {
+			$select.val($firstValid.val()).trigger('change');
+		}
+	}
 }
 
 function setCurTime() {
@@ -509,7 +518,7 @@ function addPuja() {
 }
 
 function editPuja(id) {
-    webserv("GET",`puja/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('puja.get', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let puja = d["data"];
         $('#id').val(puja.id);
         $('#action_area').val(puja.action_area);

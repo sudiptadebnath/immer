@@ -47,7 +47,9 @@ function form_action_submt (e) {
     if($("#form_action").valid()) {
         const id = $("#form_action").find('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/conf/edit/action') }}/${id}` : `{{ url('user/conf/add/action') }}`;
+        const url = isEdit 
+            ? "{{ route('conf.edit.action', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('conf.add.action') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "form_action", function ok(d) {
             toastr.success(d["msg"]);
@@ -63,7 +65,7 @@ function addData_action() {
     $('#modal_action').modal('show');
 }
 function editData_action(id) {
-    webserv("GET", `{{ url('user/conf/get/action') }}/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('conf.get.action', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let data = d["data"];
         $('#id').val(data.id);
         $('#name').val(data.name);
@@ -74,7 +76,7 @@ function editData_action(id) {
 }
 function delData_action(id) {
     myAlert("Are you sure you want to delete this record ?","danger","Yes", function() {
-        webserv("DELETE",  `{{ url('user/conf/del/action') }}/${id}`, {}, function (d) {
+        webserv("DELETE", "{{ route('conf.del.action', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
             toastr.success(d["msg"]);
             $('#table_action').DataTable().ajax.reload(null, false);
         });        

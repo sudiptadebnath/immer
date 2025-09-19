@@ -47,7 +47,9 @@ function form_category_submt (e) {
     if($("#form_category").valid()) {
         const id = $("#form_category").find('#id').val();
         const isEdit = id !== "";
-        const url = isEdit ? `{{ url('user/conf/edit/category') }}/${id}` : `{{ url('user/conf/add/category') }}`;
+        const url = isEdit 
+            ? "{{ route('conf.edit.category', ['id' => '__id__']) }}".replace('__id__', id)
+            : "{{ route('conf.add.category') }}";
         const method = isEdit ? 'PUT' : 'POST';
         webserv(method, url, "form_category", function ok(d) {
             toastr.success(d["msg"]);
@@ -63,7 +65,7 @@ function addData_category() {
     $('#modal_category').modal('show');
 }
 function editData_category(id) {
-    webserv("GET", `{{ url('user/conf/get/category') }}/${id}`, {}, function (d) {
+    webserv("GET", "{{ route('conf.get.category', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let data = d["data"];
         $('#id').val(data.id);
         $('#name').val(data.name);
@@ -74,7 +76,7 @@ function editData_category(id) {
 }
 function delData_category(id) {
     myAlert("Are you sure you want to delete this record ?","danger","Yes", function() {
-        webserv("DELETE",  `{{ url('user/conf/del/category') }}/${id}`, {}, function (d) {
+        webserv("DELETE", "{{ route('conf.del.category', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
             toastr.success(d["msg"]);
             $('#table_category').DataTable().ajax.reload(null, false);
         });        

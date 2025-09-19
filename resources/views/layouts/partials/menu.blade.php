@@ -71,7 +71,7 @@
 
   @if (hasRole('ao'))
   <li class="nav-item">
-    <a class="nav-link {{ request()->is('user/puja*') ? 'active' : '' }}" href="{{ url('user/puja') }}">
+    <a class="nav-link {{ request()->is('user/puja*') ? 'active' : '' }}" href="{{ route('puja.index') }}">
       <i class="bi bi-brightness-high me-2"></i>Pujas
     </a>
   </li>
