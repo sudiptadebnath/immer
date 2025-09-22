@@ -49,9 +49,9 @@ function addValidators() {
         return uniqueNumbers.size === numbers.length;
     }, "Duplicate numbers are not allowed.");
     
-    $.validator.addMethod("strongPassword", function(value, element) {
+    $.validator.addMethod("strongPassword", function(value, element) { //6iPUv9e^N
         return this.optional(element) || 
-            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(value);
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/.test(value);
     }, "Password must be at least 6 characters long and include 1 letter, 1 number, and 1 special character.");    
 
     $.validator.addMethod("vehicleNoFormat", function(value, element) {

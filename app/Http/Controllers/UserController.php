@@ -27,7 +27,8 @@ class UserController extends Controller
     {
         $cuser = $this->getUserObj();
         $query = User::where('id', '!=', $cuser->id)
-            ->where('role','!=','a');
+            //->where('role','!=','a');
+            ->where('id','!=','1');
         return DataTables::of($query)
             ->editColumn('role', function ($row) {
                 return roleDict()[$row->role] ?? $row->role;
@@ -148,7 +149,7 @@ class UserController extends Controller
 
         if ($err) return $err;
         $user = User::where('email', $request->email)->first();
-        if ($user && Hash::check($request->password, $user->password)) {
+        if ($user && (Hash::check($request->password, $user->password))) {
             if ($user->stat == "i") {
                 return $this->err("Account is inactive");
             }
