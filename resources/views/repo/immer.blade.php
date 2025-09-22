@@ -75,7 +75,7 @@
 			});
 			html += "</ul>";
 			return html;
-		}','visible'=>true, ],
+		}','visible'=>false, ],
     ];
 @endphp
 <div class="container-fluid m-0 p-2">

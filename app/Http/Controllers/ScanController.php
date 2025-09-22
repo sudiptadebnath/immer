@@ -177,17 +177,19 @@ class ScanController extends Controller
 
     public function mark_by_qr(Request $request)
     {
-		// define immersion day window
-		/*$start = Carbon::today()->addHours(3);      // today 3 AM
+		$start = Carbon::today()->addHours(3);      // today 3 AM
 		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
 		if (now()->lt($start)) {
 			$start = Carbon::yesterday()->addHours(3);
 			$end   = Carbon::today()->addHours(3);
 		}
-		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
+		$allowed = ImmersionDate::whereBetween('idate', [
+			$start->toDateString(), 
+			$end->subDay()->toDateString()
+		])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");
-		}*/
+		}
 
         $cuser = $this->getUserObj();
         $request->validate(['token'    => 'required|string',]);
@@ -244,16 +246,19 @@ class ScanController extends Controller
     public function mark_by_mob(Request $request)
     {
 		// define immersion day window
-		/*$start = Carbon::today()->addHours(3);      // today 3 AM
+		$start = Carbon::today()->addHours(3);      // today 3 AM
 		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
 		if (now()->lt($start)) {
 			$start = Carbon::yesterday()->addHours(3);
 			$end   = Carbon::today()->addHours(3);
 		}
-		$allowed = ImmersionDate::whereBetween('idate', [$start, $end])->exists();
+		$allowed = ImmersionDate::whereBetween('idate', [
+			$start->toDateString(), 
+			$end->subDay()->toDateString()
+		])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");
-		}*/
+		}
 		
 		$today = Carbon::today();
 
