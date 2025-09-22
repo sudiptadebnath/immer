@@ -2,21 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActionArea;
-use App\Models\ImmersionDate;
-use App\Models\PujaCategorie;
 use App\Models\PujaCommittee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
 class RepoController extends Controller
 {
-    public function regsdata()
+    public function regsdata(Request $request)
     {
-        $out = DataTables::of(PujaCommittee::orderBy('proposed_immersion_date'))
+        $query = PujaCommittee::orderBy('proposed_immersion_date');
+
+        $typ = $request->typ ?? '';
+        if($typ) {
+            if($typ==='nt') {
+                $query->whereNotNull('action_area')
+                ->where('action_area', '!=', '');
+            }
+            if($typ==='ont') {
+                $query->whereNull('action_area')
+                ->orWhere('action_area', '');
+            }
+        }
+
+        $out = DataTables::of($query)
             ->editColumn('proposed_immersion_date', function ($row) {
                 return $row->proposed_immersion_date
                     ? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y')

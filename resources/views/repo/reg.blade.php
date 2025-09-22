@@ -9,6 +9,7 @@
 @php
     $opts = [
         //"imp"=>[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+		"ajaxdata"=>"getajaxdata",
     ];
 
     $tbldata = [
@@ -58,10 +59,18 @@
         }', ], 
         [ 'data'=>'chairman_mobile','visible'=>false ], 
     ];
+
+    $is_newtown = [
+        'nt'=>'Newtown',
+        'ont'=>'Outside Newtown'
+    ]
 @endphp
 <div class="container-fluid m-0 p-2">
 
-<x-table name="pujaTable" title="Registrations" :url="route('repo.regsdata')" :data=$tbldata :opts=$opts />
+<x-table name="pujaTable" title="Registrations" :url="route('repo.regsdata')" :data=$tbldata :opts=$opts>
+    <x-select size="" icon="info-circle" name="is_newtown" title="Puja Type"
+	 :value="$is_newtown" />	
+</x-table>
 
 </div>
 
@@ -70,9 +79,14 @@
 @section('scripts')
 
 <script>
-$(function () {
+function getajaxdata(d) {
+	d.typ = $("#is_newtown").val();
+}
 
-
+$(document).ready(function ($) {
+	$('#is_newtown').change(function () {
+		$("#pujaTable").DataTable().ajax.reload();
+	});
 });
 </script>
 @endsection
