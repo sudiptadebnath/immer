@@ -73,6 +73,7 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
 
                             {{-- Common fields --}}
                             <x-textarea name="puja_committee_address" icon="house" title="Puja Committee Address" />
+                            <p class="text-center fw-bold p-0 m-0" style="color: #375e7b;">Please verify either the Secretary’s or the Chairman/President’s mobile number.</p>
                             <x-text size="6" name="secretary_name" icon="person" title="Secretary Name" required="true" />
                             <x-mobileotp size="6" name="secretary_mobile" icon="telephone" title="Secretary Mobile" required="true" />
                             <x-text size="6" name="chairman_name" icon="person-circle" title="Chairman/President Name" />

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
+Route::get('/', function () {
+    return redirect()->route('register');
+});
+
 Route::get('/admin', function () {
     if (userLogged()) {
         return redirect()->route('user.dashboard');

@@ -246,7 +246,7 @@ table thead th {
 }
 
 table tbody td {
-    text-transform: capitalize !important;
+    /* text-transform: capitalize !important; */
     padding: 3px 6px !important;
 }
 

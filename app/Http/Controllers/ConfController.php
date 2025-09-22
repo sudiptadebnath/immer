@@ -148,7 +148,7 @@ class ConfController extends Controller
 				$sub->where('name', $request->category);
 			});
 		}
-		$committees = $q->orderBy('view_order', 'asc')->get();
+		$committees = $q->orderBy('name', 'asc')->get();
 		return $this->ok("Records",["data"=>$committees]);
     }
     public function updateorder_committee(Request $request)

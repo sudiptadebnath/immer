@@ -10,38 +10,36 @@
 	
 	<div id="sms-result" class="alert success" style="display:none;"></div>
 	
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-
-function sendSMS(token) {
-    $.ajax({
-        url: "{{ route('puja.gpass.sms', $puja->token) }}",
-        type: "POST",
-        data: { _token: "{{ csrf_token() }}" },
-        success: function (resp) {
-            showAlert(resp.success ? "success" : "danger", resp.msg);
-        },
-        error: function (xhr) {
-            let msg = "❌ Failed to send SMS.";
-            showAlert("danger", msg);
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        function sendSMS(token) {
+            $.ajax({
+                url: "{{ route('puja.gpass.sms', $puja->token) }}",
+                type: "POST",
+                data: { _token: "{{ csrf_token() }}" },
+                success: function (resp) {
+                    showAlert(resp.success ? "success" : "danger", resp.msg);
+                },
+                error: function (xhr) {
+                    let msg = "❌ Failed to send SMS.";
+                    showAlert("danger", msg);
+                }
+            });
         }
-    });
-}
 
-function showAlert(type, message, timeout = 5000) {
-    let box = $("#sms-result");
-    box.stop(true, true)
-       .removeClass()
-       .addClass("alert " + type)
-       .text(message)
-       .fadeIn(200);
-    if (timeout > 0) {
-        setTimeout(function() {
-            box.fadeOut(400);
-        }, timeout);
-    }
-}
-
-</script>	
+        function showAlert(type, message, timeout = 5000) {
+            let box = $("#sms-result");
+            box.stop(true, true)
+            .removeClass()
+            .addClass("alert " + type)
+            .text(message)
+            .fadeIn(200);
+            if (timeout > 0) {
+                setTimeout(function() {
+                    box.fadeOut(400);
+                }, timeout);
+            }
+        }
+    </script>	
 </div>
 </x-gatepass>
