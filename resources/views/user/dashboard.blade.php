@@ -125,7 +125,7 @@ use Carbon\Carbon;
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt1" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-people"></i>
+                                <i class="bi bi-person-check"></i>
                             </div>
                         </div>
                     </div>
@@ -207,7 +207,7 @@ use Carbon\Carbon;
             <i class="bi bi-graph-up"></i>
             <span id="today">Registration Details</span>
         </div>
-        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
         @php
         $cardColors = ["primary", "success", "info", "danger", "info", "warning"];
         @endphp
@@ -222,7 +222,7 @@ use Carbon\Carbon;
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt1" class="cnt">{{ $item->total }}</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
-                                <i class="bi bi-123"></i>
+                                <i class="bi bi-people"></i>
                             </div>
                         </div>
                     </div>

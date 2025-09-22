@@ -31,7 +31,7 @@ class LogRequestMiddleware
 
         $response = $next($request);
 
-        $start = microtime(true);
+        /*$start = microtime(true);
         $duration = round((microtime(true) - $start) * 1000, 2);
         try {
             app_log(
@@ -44,7 +44,7 @@ class LogRequestMiddleware
             );
         } catch (\Exception $e) {
             Log::error('app_log failed: ' . $e->getMessage());
-        }
+        }*/
         return $response;
     }
 }

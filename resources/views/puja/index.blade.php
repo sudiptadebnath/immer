@@ -198,8 +198,13 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
 <script>
 
+document.addEventListener("DOMContentLoaded", function () {
+	let editId = "{{ request('edit_id') }}"; 
+	if (editId) editPuja(editId);
+});
+
 function getGatepass(id) {
-    webserv("GET", "{{ route('puja.get', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
+    webserv("GET", "{{ route('puja.has_mandetory_ok', ['id' => '__id__']) }}".replace('__id__', id), {}, function (d) {
         let puja = d["data"];
         let url = "{{ route('puja.gpass', ['token' => '___TOKEN___']) }}"
             .replace("___TOKEN___", puja['token']);

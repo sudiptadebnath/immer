@@ -193,6 +193,10 @@ class ScanController extends Controller
         $request->validate(['token'    => 'required|string',]);
         $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
         if (!$puja) return $this->err("GatePass not found");
+		if (!$puja->hasAllMandatoryFields()) {
+			return $this->err("Please Fill the registration form",["data"=>$puja->id]);
+		}
+		
         $today = Carbon::today();
 		/*if (!$puja->proposed_immersion_date || !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 			return $this->err("GatePass not valid for today");
@@ -265,6 +269,9 @@ class ScanController extends Controller
 		]);
         $puja = PujaCommittee::where('secretary_mobile', $request->mobile)->first();
         if (!$puja) {
+            if($cuser->role != "s") { // MUST BE SCANNER POST
+                return $this->err("You are not in queue.");
+            }
 			$mob = $request->mobile;
 			$pujaData = [
 				'secretary_mobile'      => $mob,
@@ -272,6 +279,9 @@ class ScanController extends Controller
 			];
 			$puja = PujaCommittee::create($pujaData);
 		} else {
+			if ($cuser->role != "s" && !$puja->hasAllMandatoryFields()) {
+				return $this->err("Please Fill the registration form",["data"=>$puja->id]);
+			}
             //return $this->err("Can't register. Already registered mobile.");
 			/*if ($puja->proposed_immersion_date && !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 				return $this->err("GatePass not valid for today");

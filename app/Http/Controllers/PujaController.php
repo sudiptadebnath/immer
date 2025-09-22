@@ -607,6 +607,15 @@ class PujaController extends Controller
         return $this->ok("Ok",["data"=>$puja->secretary_mobile,"repoAtt"=>$repoAtt]);
     }
 
+    public function has_mandetory_ok($id) 
+    {
+        $puja = PujaCommittee::find($id);
+        if (!$puja) return $this->err("No Such Puja");
+        if (!$puja->hasAllMandatoryFields()) 
+			return $this->err("Please Fill the registration form");
+        return $this->ok("Ok",["data"=>$puja]);
+    }
+
     public function entryslip($id) 
     {
         $puja = PujaCommittee::where('secretary_mobile', $id)->first();

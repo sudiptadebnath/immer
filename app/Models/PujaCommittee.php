@@ -41,4 +41,25 @@ class PujaCommittee extends Model
             $rec->token = Str::random(6);
         });
     }
+
+    protected static $mandatoryFields = [
+        'puja_committee_name',
+        'puja_committee_address',
+        'proposed_immersion_date',
+        'proposed_immersion_time',
+        'secretary_mobile',
+    ];
+    /**
+     * Check if all mandatory fields are filled.
+     */
+    public function hasAllMandatoryFields(): bool
+    {
+        foreach (self::$mandatoryFields as $field) {
+            if (empty($this->{$field})) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

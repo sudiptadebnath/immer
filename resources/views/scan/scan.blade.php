@@ -185,8 +185,14 @@ function markByMob() {
             .html(resp.msg)
             .show();*/
     }, function fail(resp) {
-		toastr.error(resp.msg);
         $('#mobile').val("");
+		if (resp.msg.toLowerCase().includes("fill")) {
+			myAlert(resp.msg,"danger","Ok",function() {
+				window.open("{{ route('puja.index') }}?edit_id=" + resp.data, "_blank");
+			},"",null,true);
+			return;
+		} 
+		toastr.error(resp.msg);
         /*$('#qr-result')
             .removeClass('d-none alert-danger alert-success alert-primary')
             .addClass('alert-danger')

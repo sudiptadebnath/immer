@@ -73,6 +73,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('admin')->g
         Route::get('/gpass/{token}', [PujaController::class, 'gpass'])->name('puja.gpass');
         Route::get('/entryslip/{id}', [PujaController::class, 'entryslip'])->name('puja.entryslip');
         Route::get('/has_entryslip/{id}', [PujaController::class, 'has_entryslip'])->name('puja.has_entryslip');
+        Route::get('/has_mandetory_ok/{id}', [PujaController::class, 'has_mandetory_ok'])->name('puja.has_mandetory_ok');
         Route::post('/gpass/sms/{token}', [PujaController::class, 'smsLink'])->name('puja.gpass.sms');
     });
 

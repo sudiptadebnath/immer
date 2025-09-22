@@ -7,7 +7,7 @@
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('user.dashboard_live') ? 'active' : '' }}" href="{{ route('user.dashboard_live') }}">
+    <a class="nav-link {{ request()->routeIs('user.dashboard_live') ? 'active' : '' }}" href="{{ route('user.dashboard_live') }}" target="_blank">
       <i class="bi bi-record-circle me-2"></i>Dashboard-Live
     </a>
   </li>
