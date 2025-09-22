@@ -1,5 +1,7 @@
 @extends($live ? 'layouts.blankwithheader' : 'layouts.app')
-
+@php
+use Carbon\Carbon;
+@endphp
 @push("styles")
 <style>
     .statcard {
@@ -197,6 +199,41 @@
         </div>
     </div>
 </div>
+
+@if(!$live && $datewiseCounts && $datewiseCounts->count() > 0)
+<div class="dashboard_sec">
+    <div class="container-fluid m-0 p-4">
+        <div class="h5 mb-3 border-bottom p-2">
+            <i class="bi bi-graph-up"></i>
+            <span id="today">Registration Details</span>
+        </div>
+        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        @php
+        $cardColors = ["primary", "success", "info", "danger", "info", "warning"];
+        @endphp
+        @foreach($datewiseCounts as $sl=>$item)
+        @php
+        $colorClass = $cardColors[$sl % count($cardColors)];
+        @endphp
+            <div class="col mb-3">
+                <div class="statcard card {{ $colorClass }}">
+                    <div class="card-body">
+                        <p class="nm">{{ Carbon::parse($item->proposed_immersion_date)->format('d-m-Y') }}</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4 id="cnt1" class="cnt">{{ $item->total }}</h4>
+                            <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-123"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+        </div>
+    </div>
+</div>
+@endif
+
 @endsection
 
 @push('scripts')

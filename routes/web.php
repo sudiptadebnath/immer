@@ -41,7 +41,7 @@ Route::post('/register', [PujaController::class, 'add'])->name('register.save');
 Route::get('/gpass/pdf', [PujaController::class, 'downloadPdf'])->name('puja.gpass.pdf');
 Route::get('/get/committees', [ConfController::class, 'get_committees'])->name('conf.get.committees');
 
-Route::get("/dashboard_live", fn() => view('user.dashboard',["live"=>true]))->name('user.dashboard_live');
+Route::get("/dashboard_live",[UserController::class, 'dashboard'])->defaults('live', true)->name('user.dashboard_live');
 Route::get('/scanstat', [ScanController::class, 'scanstat'])->name('att.scanstat');
 
 Route::middleware(['check.user.session','request.sanitize'])->prefix('admin')->group(function () {
@@ -51,7 +51,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('admin')->g
         return redirect('/admin');
     })->name('logout');
 
-    Route::get("/dashboard", fn() => view('user.dashboard',["live"=>false]))->name('user.dashboard');
+    Route::get("/dashboard",[UserController::class, 'dashboard'])->defaults('live', false)->name('user.dashboard');
 
     Route::middleware('role:a')->prefix('users')->group(function () {
         Route::get('/', fn() => view("user.users"))->name('user.users');

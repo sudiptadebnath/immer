@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PujaCommittee;
 use App\Models\User;
-use App\Models\PujaCommitteeRepo;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
-use App\Services\SmsService;
 
 class UserController extends Controller
 {
+    public function dashboard($live = false)
+    {
+        $datewiseCounts = PujaCommittee::select('proposed_immersion_date')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('proposed_immersion_date')
+            ->orderBy('proposed_immersion_date')
+            ->get();
+        return view('user.dashboard', ['live' => $live,'datewiseCounts'=>$datewiseCounts]);
+    }
+    
+    
     public function data()
     {
         $cuser = $this->getUserObj();
