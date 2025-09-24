@@ -65,7 +65,7 @@
 
 			let html = "<ul class=\'list-unstyled mb-0\'>";
 			data.forEach(function(item, i) {
-				let badgeClass = (item.typ === "out") ? "success" : (item.typ === "in" ? "danger" : "primary"); 
+				let badgeClass = (item.typ === "Reported" ? "success" : "primary"); 
 				// highlight first (latest) record
 				let latest = (i === 0) ? "fw-bold" : "text-muted";
 				html += "<li class=\'" + latest + "\'>" +

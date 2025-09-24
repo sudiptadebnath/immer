@@ -12,7 +12,7 @@ class RepoController extends Controller
 {
     public function regsdata(Request $request)
     {
-        $query = PujaCommittee::orderBy('proposed_immersion_date');
+        $query = PujaCommittee::query();//orderBy('proposed_immersion_date');
 
         $typ = $request->typ ?? '';
         if($typ) {
@@ -45,55 +45,62 @@ class RepoController extends Controller
         return $out;
     }
 	
-    public function immerdata(Request $request)
-    {
-        $query = PujaCommittee::orderBy('proposed_immersion_date');
+	public function immerdata(Request $request)
+	{
+		[$start, $end] = getStEnDt($request->dt);
 
-        $date = $request->filled('dt') ? Carbon::parse($request->dt) : now();
+		$query = PujaCommittee::/*orderBy('proposed_immersion_date')
+			->*/whereExists(function ($q) use ($start, $end) {
+				$q->select(DB::raw(1))
+					->from('attendance')
+					->whereColumn('attendance.puja_committee_id', 'puja_committees.id')
+					->whereBetween('attendance.scan_datetime', [
+						$start->copy()->setTimezone('UTC'),
+						$end->copy()->setTimezone('UTC'),
+					]);
+			});
 
-        // Immersion window based on given date
-        $start = $date->copy()->startOfDay()->addHours(3);
-        $end   = $start->copy()->addDay();
+		return DataTables::of($query)
+			->editColumn('proposed_immersion_date', function ($row) {
+				return $row->proposed_immersion_date
+					? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y')
+					: null;
+			})
+			->editColumn('proposed_immersion_time', function ($row) {
+				return $row->proposed_immersion_time
+					? Carbon::parse($row->proposed_immersion_time)->format('h:i A')
+					: null;
+			})
+			->editColumn('stat', function ($row) {
+				return statDict()[$row->stat] ?? $row->stat;
+			})
+			->addColumn('attendance', function ($row) use ($start, $end) {
+				$att = DB::table('attendance')
+					->where('puja_committee_id', $row->id)
+					->whereBetween('scan_datetime', [
+						$start->copy()->setTimezone('UTC'),
+						$end->copy()->setTimezone('UTC'),
+					])
+					->orderByDesc('scan_datetime') // latest first
+					->get()
+					->map(function ($att) {
+						return [
+							'typ'  => attDict()[$att->typ],
+							'time' => Carbon::parse($att->scan_datetime, 'UTC')
+								->setTimezone('Asia/Kolkata')
+								->format('d M h:i A'),
+						];
+					});
+				return $att->toArray(); 
+			})
+			->make(true);
+	}
 
-        if ($request->filled('dt')) {
-            $query->whereDate('proposed_immersion_date', $request->dt);
-        }
-
-        return DataTables::of($query)
-            ->editColumn('proposed_immersion_date', function ($row) {
-                return $row->proposed_immersion_date
-                    ? Carbon::parse($row->proposed_immersion_date)->format('d/m/Y')
-                    : null;
-            })
-            ->editColumn('proposed_immersion_time', function ($row) {
-                return $row->proposed_immersion_time
-                    ? Carbon::parse($row->proposed_immersion_time)->format('h:i A')
-                    : null;
-            })
-            ->editColumn('stat', function ($row) {
-                return statDict()[$row->stat] ?? $row->stat;
-            })
-            ->addColumn('attendance', function ($row) use ($start, $end) {
-                $att = DB::table('attendance')
-                    ->where('puja_committee_id', $row->id)
-                    ->whereBetween('scan_datetime', [$start, $end])
-                    ->orderByDesc('scan_datetime') // <- latest first
-                    ->get()
-                    ->map(function ($att) {
-                        return [
-                            'typ'  => $att->typ,
-                            'time' => Carbon::parse($att->scan_datetime)->format('d/m/Y h:i A'),
-                        ];
-                    });
-                return $att->toArray(); 
-            })          
-            ->make(true);
-    }
 	
     public function dhundata(Request $request)
     {
-        $query = PujaCommittee::whereNotNull('team_members')
-            ->orderBy('proposed_immersion_date');
+        $query = PujaCommittee::whereNotNull('team_members');
+           // ->orderBy('proposed_immersion_date');
 
         if ($request->filled('dt')) {
             $query->whereDate('proposed_immersion_date', $request->dt);

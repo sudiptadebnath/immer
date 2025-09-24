@@ -110,12 +110,18 @@ use Carbon\Carbon;
 </style>
 @endpush
 
+
+@php
+    [$start, $end] = getStEnDt();
+@endphp
+
+
 @section('content')
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
         <div class="h5 mb-3 border-bottom p-2">
             <i class="bi bi-calendar-check"></i>
-            <span id="today">25-sep-2026</span>
+            <span id="today">{{ $start->format('d-M-Y') }}</span>
         </div>
         <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
             <div class="col mb-3">
@@ -218,7 +224,7 @@ use Carbon\Carbon;
             <div class="col mb-3">
                 <div class="statcard card {{ $colorClass }}">
                     <div class="card-body">
-                        <p class="nm">{{ Carbon::parse($item->proposed_immersion_date)->format('d-m-Y') }}</p>
+                        <p class="nm">{{ Carbon::parse($item->proposed_immersion_date)->format('d-M-Y') }}</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt1" class="cnt">{{ $item->total }}</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">

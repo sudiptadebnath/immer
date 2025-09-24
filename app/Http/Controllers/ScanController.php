@@ -18,18 +18,12 @@ class ScanController extends Controller
     public function getcomm_bydt(Request $request) {
         $date = $request->input('date');
         $typ  = $request->input('typ', "1");
-        //Log::info("xxx",["data"=>$request->all()]);
+        //Log::info("111",["data"=>$request->all()]);
         if (!$date) return $this->err("Date is required");
         try {
             // immersion window = 3 AM → next day 3 AM
-            $start = Carbon::parse($date)->addHours(3);
-            $end   = Carbon::parse($date)->addDay()->addHours(3);
-
-            // adjust if date is today but before 3 AM
-            if (now()->lt($start)) {
-                $start = Carbon::parse($date)->subDay()->addHours(3);
-                $end   = Carbon::parse($date)->addHours(3);
-            }
+			[$start, $end] = getStEnDt($date);
+			//Log::info("222",["data"=>[$start,$end, now()]]);
 
             if ($typ == "1") {
                 // all committees registered that day
@@ -40,7 +34,10 @@ class ScanController extends Controller
                 $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
                     ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
                     ->where('a.typ', 'in')
-                    ->whereBetween('a.scan_datetime', [$start, $end])
+					->whereBetween('a.scan_datetime', [
+						$start->copy()->setTimezone('UTC'),
+						$end->copy()->setTimezone('UTC'),
+					])
                     ->distinct()
                     ->orderBy('a.scan_datetime');
             } else {
@@ -62,14 +59,7 @@ class ScanController extends Controller
 
         try {
             // Start of the immersion day = selected date at 3 AM
-            $start = Carbon::parse($date)->addHours(3);
-            $end   = Carbon::parse($date)->addDay()->addHours(3);
-
-            // if selected date is today and now < 3 AM, shift to yesterday
-            if (now()->lt($start)) {
-                $start = Carbon::parse($date)->subDay()->addHours(3);
-                $end   = Carbon::parse($date)->addHours(3);
-            }
+			[$start, $end] = getStEnDt($date);
 
             // Registered committees (by proposed immersion date falling in this day-window)
 			$registered = DB::table('puja_committees')
@@ -79,7 +69,10 @@ class ScanController extends Controller
             // Immersed committees (attendance "out" between 3AM→3AM)
             $immersed = DB::table('attendance')
                 ->where('typ', 'in')
-                ->whereBetween('scan_datetime', [$start, $end])
+				->whereBetween('scan_datetime', [
+					$start->copy()->setTimezone('UTC'),
+					$end->copy()->setTimezone('UTC'),
+				])
                 ->distinct('puja_committee_id')
                 ->count('puja_committee_id');
 
@@ -96,13 +89,7 @@ class ScanController extends Controller
 
     public function scanStat()
     {
-		$start = Carbon::today()->addHours(3);      // 03:00 today
-		$end   = Carbon::tomorrow()->addHours(3);   // 03:00 tomorrow
-
-		if (now()->lt($start)) {
-			$start = Carbon::yesterday()->addHours(3);
-			$end   = Carbon::today()->addHours(3);
-		}
+		[$start, $end] = getStEnDt();
 
 		$scans = DB::table('attendance as s')
 			->select('s.puja_committee_id', 's.typ')
@@ -117,7 +104,10 @@ class ScanController extends Controller
 						 ->on('s.scan_datetime', '=', 'latest.max_dt');
 				}
 			)
-			->whereBetween('s.scan_datetime', [$start, $end])
+			->whereBetween('s.scan_datetime', [
+				$start->copy()->setTimezone('UTC'),
+				$end->copy()->setTimezone('UTC'),
+			])
 			->get();
 
 		$qCount = (clone $scans)->where('typ', 'queue')->count();
@@ -130,7 +120,10 @@ class ScanController extends Controller
                 DB::raw('MIN(scan_datetime) as first_scan'),
                 DB::raw('MAX(scan_datetime) as last_scan')
             )
-            ->whereBetween('scan_datetime', [$start, $end])
+			->whereBetween('scan_datetime', [
+				$start->copy()->setTimezone('UTC'),
+				$end->copy()->setTimezone('UTC'),
+			])
             ->groupBy('puja_committee_id')
             ->get();
 
@@ -177,15 +170,10 @@ class ScanController extends Controller
 
     public function mark_by_qr(Request $request)
     {
-		$start = Carbon::today()->addHours(3);      // today 3 AM
-		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
-		if (now()->lt($start)) {
-			$start = Carbon::yesterday()->addHours(3);
-			$end   = Carbon::today()->addHours(3);
-		}
+		[$start, $end] = getStEnDt();
 		$allowed = ImmersionDate::whereBetween('idate', [
 			$start->toDateString(), 
-			$end->subDay()->toDateString()
+			$end->copy()->subDay()->toDateString()
 		])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");
@@ -246,15 +234,11 @@ class ScanController extends Controller
     public function mark_by_mob(Request $request)
     {
 		// define immersion day window
-		$start = Carbon::today()->addHours(3);      // today 3 AM
-		$end   = Carbon::tomorrow()->addHours(3);   // tomorrow 3 AM
-		if (now()->lt($start)) {
-			$start = Carbon::yesterday()->addHours(3);
-			$end   = Carbon::today()->addHours(3);
-		}
+		[$start, $end] = getStEnDt();
+
 		$allowed = ImmersionDate::whereBetween('idate', [
 			$start->toDateString(), 
-			$end->subDay()->toDateString()
+			$end->copy()->subDay()->toDateString()
 		])->exists();
 		if (!$allowed) {
 			return $this->err("Today is Not immersion date");

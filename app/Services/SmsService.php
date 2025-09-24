@@ -38,7 +38,8 @@ class SmsService
 				"success"=>stripos($raw_response, 'ok') !== false,
 				"message"=>$raw_response,
 			];
-			$request["message"]=$fullUrl;
+			$request["template"]=$this->templateMessages[$TempId];
+			$request["url"]=$fullUrl;
 		} else {
 			$request["message"]=$TempId;
 			$response = [

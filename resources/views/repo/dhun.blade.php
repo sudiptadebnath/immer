@@ -24,6 +24,7 @@
             return "";
         }', ], 
         [ 'data'=>'proposed_immersion_time','visible'=>false ], 
+        [ 'data'=>'team_members' ], 		
         [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
             let aa = row.action_area ? row.action_area : "";
             let cat = row.category ? row.category : "";

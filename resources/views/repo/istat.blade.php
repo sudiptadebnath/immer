@@ -74,9 +74,6 @@ function showRecs(typ) {
     if (!dt) return;
 
     webserv("GET", "{{ route('att.getcomm_bydt') }}", { date: dt, typ }, function (resp) {
-        $("#cnt1").text(resp.registered ?? 0);
-        $("#cnt2").text(resp.immersed ?? 0);
-
         let pujas = resp.data || [];
         let html = "";
 
