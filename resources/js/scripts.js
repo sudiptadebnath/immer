@@ -293,7 +293,7 @@ function webserv(typ, api, dt, f1 = null, f2 = null, lodng=true) {
         error: function (req, stat, err) {
             loading(false);
             if (f2) f2("service fail");
-            else toastr.error(objS([req, stat, err], 200));
+            else if(err) toastr.error(objS([req, stat, err], 200));
         },
     };
 
