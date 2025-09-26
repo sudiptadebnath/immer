@@ -23,6 +23,7 @@ class PujaCommittee extends Model
         'no_of_vehicles',
         'vehicle_no',
         'team_members',
+        'dhun_done',
         'stat',
         'token',
         'reminder_typ',

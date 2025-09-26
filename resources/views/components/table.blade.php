@@ -67,7 +67,7 @@
 
 @if(!$plain)
 <div class="container-fluid m-0 p-3 fullwidth">
-    <div class="d-flex align-items-center justify-content-between border-1 border-bottom pb-1 mb-2">
+    <div class="d-flex flex-wrap align-items-center justify-content-between border-1 border-bottom pb-1 mb-2 gap-1">
         <h3 class="d-flex flex-wrap gap-1">
             {{ $title }}
             @if(!empty($imp))
@@ -222,11 +222,13 @@ $(document).ready(function () {
         @foreach ($data as $col)
         {
             @foreach ($col as $key => $val)
-                @if ($key === 'render')
-                    {{ $key }}: {!! $val !!},
-                @else
-                    {{ $key }}: '{{ $val }}',
-                @endif
+				@if ($key === 'render' || is_array($val) || is_object($val))
+					{{ $key }}: {!! is_string($val) ? $val : json_encode($val) !!},
+				@elseif (is_bool($val))
+					{{ $key }}: {{ $val ? 'true' : 'false' }},
+				@else
+					{{ $key }}: '{{ $val }}',
+				@endif
                 @if(strpos($col["th"], "...") !== false )
                     render: function(data, type, row) {
                         return "<div class='bigtxt'>"+data+"</div>";

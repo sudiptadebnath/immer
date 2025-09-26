@@ -9,11 +9,11 @@ class SmsService
     protected $apiUrl;
 
 	private $templateMessages = [
-		"98656" => "Your Puja Immersion has been successfully completed. Wishing you a joyous Shubho Bijoya. – NKDAWB",
+		/*"98656" => "Your Puja Immersion has been successfully completed. Wishing you a joyous Shubho Bijoya. – NKDAWB",
 		"98657" => "An OTP F1 has been sent to your mobile number ending with F2 . NKDAWB",
 		"98658" => "Number of Puja Committee Registrations: F1 . NKDAWB",
 		"98659" => "Thank you for registering for the NKDA Durga Puja F1 Immersion Programme. Please use the link below to download your QR Code.https://puja.nkdamar.org/gpass/pdf?F2. NKDAWB",
-		"98660" => "Your Puja Immersion is scheduled for F1. Please use the link below to download your QR Code.https://puja.nkdamar.org/gpass/pdf?F2. NKDAWB",
+		"98660" => "Your Puja Immersion is scheduled for F1. Please use the link below to download your QR Code.https://puja.nkdamar.org/gpass/pdf?F2. NKDAWB",*/
 	];
 
     public function __construct()

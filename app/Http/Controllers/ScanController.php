@@ -14,9 +14,16 @@ use Yajra\DataTables\DataTables;
 class ScanController extends Controller
 {
 
-    
+    public function dhunuchi_done(Request $request) {
+		$puja = PujaCommittee::find($request->id);
+		if (!$puja) return $this->err("No Such Puja");		
+        $puja->dhun_done          = 1;
+        $puja->save();
+		return $this->ok("Marked as dhunuchi done");
+	}
+	
     public function getcomm_bydt(Request $request) {
-        $date = $request->input('date');
+		$date = $request->input('date') ?? Carbon::today()->toDateString();
         $typ  = $request->input('typ', "1");
         //Log::info("111",["data"=>$request->all()]);
         if (!$date) return $this->err("Date is required");
@@ -33,6 +40,19 @@ class ScanController extends Controller
                 // only immersed committees (attendance out)
                 $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
                     ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
+                    ->where('a.typ', 'in')
+					->whereBetween('a.scan_datetime', [
+						$start->copy()->setTimezone('UTC'),
+						$end->copy()->setTimezone('UTC'),
+					])
+                    ->distinct()
+                    ->orderBy('a.scan_datetime');
+            } elseif ($typ == "3") {
+                // only immersed committees (attendance out)
+                $query = PujaCommittee::select('puja_committees.*', 'a.scan_datetime as immersion_time')
+                    ->join('attendance as a', 'puja_committees.id', '=', 'a.puja_committee_id')
+                    ->whereNotNull('team_members')
+                    ->where('dhun_done', 0)
                     ->where('a.typ', 'in')
 					->whereBetween('a.scan_datetime', [
 						$start->copy()->setTimezone('UTC'),
@@ -92,27 +112,41 @@ class ScanController extends Controller
 		[$start, $end] = getStEnDt();
 
 		$scans = DB::table('attendance as s')
-			->select('s.puja_committee_id', 's.typ')
+			->select(
+				's.puja_committee_id',
+				's.typ',
+				'p.team_members',
+				'p.dhun_done'
+			)
 			->join(
 				DB::raw('(SELECT puja_committee_id, MAX(scan_datetime) as max_dt 
-						  FROM attendance 
-						  WHERE scan_datetime >= "'.$start.'" 
-							AND scan_datetime < "'.$end.'" 
-						  GROUP BY puja_committee_id) as latest'),
+					FROM attendance 
+					WHERE scan_datetime >= "'.$start.'" 
+					AND scan_datetime < "'.$end.'" 
+					GROUP BY puja_committee_id) as latest'),
 				function ($join) {
 					$join->on('s.puja_committee_id', '=', 'latest.puja_committee_id')
 						 ->on('s.scan_datetime', '=', 'latest.max_dt');
 				}
 			)
+			->join('puja_committees as p', 'p.id', '=', 's.puja_committee_id')
 			->whereBetween('s.scan_datetime', [
 				$start->copy()->setTimezone('UTC'),
 				$end->copy()->setTimezone('UTC'),
 			])
 			->get();
 
-		$qCount = (clone $scans)->where('typ', 'queue')->count();
-		$iCount = (clone $scans)->where('typ', 'in')->count();
-		//$oCount = (clone $scans)->where('typ', 'out')->count();
+		$queuememb = (clone $scans)->where('typ', 'queue');
+		$inmemb = (clone $scans)->where('typ', 'in');
+		//$outmemb = (clone $scans)->where('typ', 'out');
+
+		$qCount = $queuememb->count();
+		$iCount = $inmemb->count();
+		//$oCount = $outmemb->count();
+				
+		$qWithTeam = $queuememb->filter(fn($x) => !is_null($x->team_members))->count();
+		$iWithTeam = $inmemb->filter(fn($x) => !is_null($x->team_members))->count();
+		$iWithTeamDone = $inmemb->filter(fn($x) => !is_null($x->team_members) && $x->dhun_done)->count();
             
         $immersionData = DB::table('attendance')
             ->select(
@@ -154,7 +188,13 @@ class ScanController extends Controller
         
 		$totalOut = DB::table('attendance')->where('typ', 'in')->count();
 
-		$stats = [ $qCount, $iCount, 0, /*$oCount,*/ $qCount + $iCount /*+ $oCount*/, $avgImmersionTime, $totalOut ];
+		$stats = [ $qCount, $iCount, 0, /*$oCount,*/ 
+			$qCount + $iCount /*+ $oCount*/, 
+			$avgImmersionTime, $totalOut,
+			$qWithTeam, $iWithTeam, $iWithTeamDone,
+		];
+		
+		//Log::info("xxx",["stats"=>$stats]);
 
 		return $this->ok("ok", [
 			"data" => $stats, 
@@ -183,9 +223,6 @@ class ScanController extends Controller
         $request->validate(['token'    => 'required|string',]);
         $puja = PujaCommittee::where('secretary_mobile', $request->token)->first();
         if (!$puja) return $this->err("GatePass not found");
-		if (!$puja->hasAllMandatoryFields()) {
-			return $this->err("Please Fill the registration form",["data"=>$puja->id]);
-		}
 		
         $today = Carbon::today();
 		/*if (!$puja->proposed_immersion_date || !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
@@ -214,6 +251,9 @@ class ScanController extends Controller
                 return $this->err("Immersion already done.");
             }
         } 
+		if (!$puja->hasAllMandatoryFields()) {
+			return $this->err("Please Fill the registration form",["data"=>$puja->id]);
+		}
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,
@@ -268,9 +308,6 @@ class ScanController extends Controller
 			];
 			$puja = PujaCommittee::create($pujaData);
 		} else {
-			if ($cuser->role != "s" && !$puja->hasAllMandatoryFields()) {
-				return $this->err("Please Fill the registration form",["data"=>$puja->id]);
-			}
             //return $this->err("Can't register. Already registered mobile.");
 			/*if ($puja->proposed_immersion_date && !Carbon::parse($puja->proposed_immersion_date)->isSameDay($today)) {
 				return $this->err("GatePass not valid for today");
@@ -299,6 +336,9 @@ class ScanController extends Controller
                 return $this->err("Immersion already done.");
             }
         } 
+		if ($cuser->role != "s" && !$puja->hasAllMandatoryFields()) {
+			return $this->err("Please Fill the registration form",["data"=>$puja->id]);
+		}
         Attendance::create([
             'scan_datetime' => now(),
             'scan_by'       => $cuser->id,
@@ -306,7 +346,13 @@ class ScanController extends Controller
             'typ'           => $typ,
         ]);
         $typNm = attDict()[$typ];
-        return $this->ok("Digital Pass successfully verified");
+        if($cuser->role == "s") {
+            return $this->ok("Digital Pass successfully verified");
+        } else {
+            $pujacontroller = new PujaController;
+            $pujacontroller->sendSmsToPuja($puja,"98656");
+            return $this->ok("Digital Pass successfully verified for Immersion");
+        }
     }
 
 }

@@ -109,6 +109,7 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         {{-- Puja in New Town --}}
         <div class="col-md-12">
             <input type="hidden" name="id" id="id" />
+            <input type="hidden" name="editid" id="editid" />
             <div class="d-flex flex-wrap align-items-center">
                 <label class="me-3 form-label">Puja in New Town Area ?</label><br>
                 <div class="form-check form-check-inline">
@@ -198,8 +199,10 @@ data-bs-backdrop="static" data-bs-keyboard="false">
 
 <script>
 
+let editId;
+
 document.addEventListener("DOMContentLoaded", function () {
-	let editId = "{{ request('edit_id') }}"; 
+	editId = "{{ request('edit_id') }}"; 
 	if (editId) editPuja(editId);
 });
 
@@ -467,6 +470,7 @@ $(function () {
 function register_submt (e) {
     e.preventDefault(); // stop default form submission
     if($("#register").valid()) {
+		$("#editid").val(editId ? editId : "");
         const id = $('#id').val();
         const isEdit = id !== "";
         const url = isEdit 
@@ -477,6 +481,7 @@ function register_submt (e) {
             toastr.success(d["msg"]);
             $('#pujaModal').modal('hide');
             $('#pujaTable').DataTable().ajax.reload();
+			if(editId) getEntrySlip(id);
         });
     }
 }

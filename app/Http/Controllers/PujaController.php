@@ -442,6 +442,19 @@ class PujaController extends Controller
             }
             $repo->save();
         }
+		
+		if($request->editid) {
+			$cuser = $this->getUserObj();
+			Attendance::create([
+				'scan_datetime' => now(),
+				'scan_by'       => $cuser->id,
+				'puja_committee_id'       => $puja->id,
+				'typ'           => "in",
+			]);
+			$pujacontroller = new PujaController;
+			$pujacontroller->sendSmsToPuja($puja,"98656");
+			return $this->ok('Saved Successfully and Digital Pass verified for Immersion');
+		}
 
         return $this->ok('Puja Saved Successfully');
     }

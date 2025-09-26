@@ -95,18 +95,19 @@ $immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
                                     <label class="me-3 form-label">Participating in Dhunuchi Nach Competition ?</label><br>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
-                                            name="dhunuchi" value="1" required="true"> Yes
+                                            name="dhunuchi" value="1" required="true">Yes
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" title="Participating in Dhunuchi Nach"
-                                            name="dhunuchi" value="0" required="true"> No
+                                            name="dhunuchi" value="0" required="true">No
                                     </div>
                                 </div>
                                 <label id="dhunuchi-error" class="error text-danger" for="dhunuchi"></label>
                             </div>
 
-                            <div id="ifDhunuchiYes" class="d-none col-md-12">
-                                <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" required="true" />
+                            <div id="ifDhunuchiYes" class="d-none col-md-12 mt-0">
+                                <div style="font-size: 12px; color: #375e7b; font-weight:600; padding: 0; margin: 0;">[ <span style="color: green;">*</span>NKDA Will provide max 6 no of Dhunuchies ]</div>
+                                <x-number name="team_members" title="No of Team Members" icon="person-lines-fill" digcount="2" required="true"/>
                             </div>
 
                             <x-button type="submit" title="Submit Registration" icon="send" />

@@ -9,10 +9,12 @@ use Carbon\Carbon;
         border: none !important;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        height: 100%;
     }
 
     .statcard .card-body {
-        padding: 10px 12px;
+        padding: 4px 12px 10px;
+        height: 100%;
     }
 
     .statcard.success {
@@ -66,6 +68,62 @@ use Carbon\Carbon;
         margin: 0px;
     }
 
+    .statcard .cntMulti {
+        font-size: .8rem;
+        color: #212529;
+        font-weight: normal;
+    }
+
+    .statcard .cntMulti div {
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        align-items: center;
+    }
+
+    .statcard .cntMulti .live {
+        padding: 0px;
+        margin: 0px;
+        font-size: 12px;
+        font-weight: bold;
+        color: red;
+    }
+
+    .blinking {
+        font-size: 8px;
+        margin-right: 5px;
+        animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+        0%,
+        100% {
+            opacity: 0;
+        }
+
+        50% {
+            opacity: 1;
+        }
+    }
+
+    .statcard .cntMulti .text {
+        margin-right: 5px;
+    }
+
+
+    .statcard .cntMulti .done {
+        padding: 0px;
+        margin: 0px;
+        font-size: 12px;
+        font-weight: bold;
+        color: green;
+    }
+    .statcard .cntMulti .done i {
+        font-size: 12px;
+        margin-right: 3px;
+    }
+
     .statcard .card-icon {
         font-size: 24px;
         line-height: 0;
@@ -101,18 +159,16 @@ use Carbon\Carbon;
         color: #5a287d;
     }
 
-      .statcard.info .card-icon {
-        background:rgb(206, 248, 255);
+    .statcard.info .card-icon {
+        background: rgb(206, 248, 255);
         color: #17a2b8;
     }
-
-    
 </style>
 @endpush
 
 
 @php
-    [$start, $end] = getStEnDt();
+[$start, $end] = getStEnDt();
 @endphp
 
 
@@ -123,7 +179,7 @@ use Carbon\Carbon;
             <i class="bi bi-calendar-check"></i>
             <span id="today">{{ $start->format('d-M-Y') }}</span>
         </div>
-        <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <div id="stats-cards" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-6">
             <div class="col mb-3">
                 <div class="statcard card warning">
                     <div class="card-body">
@@ -144,6 +200,31 @@ use Carbon\Carbon;
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 id="cnt2" class="cnt">0</h4>
                             <div class="card-icon d-flex align-items-center justify-content-center">
+                                <i class="bi bi-card-checklist"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="statcard card success">
+                    <div class="card-body">
+                        <p class="nm">Dhunuchi Count</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="cntMulti">
+                                <div class="live">
+                                    <i class="bi bi-circle-fill blinking"></i>
+                                    <span class="text">Live :</span>
+                                    <span id="cnt7">0</span>
+                                </div>
+
+                                <div class="done">
+                                    <i class="bi bi-check2-circle"></i>
+                                    <span class="text">Done :</span>
+                                    <span id="cnt8">0</span>
+                                </div>
+                            </div>
+                            <div class="card-icon d-flex align-items-center justify-content-center" @if(!$live) style="cursor:pointer;" onclick="showMemb();" @endif>
                                 <i class="bi bi-card-checklist"></i>
                             </div>
                         </div>
@@ -206,6 +287,25 @@ use Carbon\Carbon;
     </div>
 </div>
 
+@if(!$live)
+<div class="modal fade" id="commModal2" tabindex="-1" aria-labelledby="commModal2Label" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white py-1">
+                <h5 class="modal-title" id="commModal2Label">Dhunuchi Pending</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="pujasItems" class="pujas-items"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+
+
 @if(!$live && $datewiseCounts && $datewiseCounts->count() > 0)
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
@@ -214,13 +314,13 @@ use Carbon\Carbon;
             <span id="today">Registration Details</span>
         </div>
         <div id="stats-cards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
-        @php
-        $cardColors = ["primary", "success", "info", "danger", "info", "warning"];
-        @endphp
-        @foreach($datewiseCounts as $sl=>$item)
-        @php
-        $colorClass = $cardColors[$sl % count($cardColors)];
-        @endphp
+            @php
+            $cardColors = ["primary", "success", "info", "danger", "info", "warning"];
+            @endphp
+            @foreach($datewiseCounts as $sl=>$item)
+            @php
+            $colorClass = $cardColors[$sl % count($cardColors)];
+            @endphp
             <div class="col mb-3">
                 <div class="statcard card {{ $colorClass }}">
                     <div class="card-body">
@@ -234,7 +334,7 @@ use Carbon\Carbon;
                     </div>
                 </div>
             </div>
-        @endforeach
+            @endforeach
         </div>
     </div>
 </div>
@@ -244,6 +344,47 @@ use Carbon\Carbon;
 
 @push('scripts')
 <script>
+    @if(!$live)
+
+    function showMemb() {
+        webserv("GET", "{{ route('att.getcomm_bydt') }}", {
+            typ: "3"
+        }, function(resp) {
+            let pujas = resp.data || [];
+            let html = "";
+            pujas.forEach(puja => {
+                html += `
+					<div class="mb-3">
+						<strong>Name:</strong> ${puja.puja_committee_name ?? '-'}<br>
+						${(puja.action_area || puja.category) ? `<strong>Location:</strong> ${puja.action_area ?? ''}${puja.category ? ', ' + puja.category : ''}<br>` : ''}
+						${puja.puja_committee_address ? `<strong>Address:</strong> ${puja.puja_committee_address}<br>` : ''}
+						<strong>Secretary:</strong> ${puja.secretary_name ?? ''} (${puja.secretary_mobile ?? '-'})<br>
+						<strong>Chairman:</strong> ${puja.chairman_name ?? ''} (${puja.chairman_mobile ?? '-'})<br>
+						${puja.immersion_time ? `<strong>Reported At:</strong> ${puja.immersion_time}<br>` : ''}
+						${puja.vehicle_no ? `<strong>Vehicle No:</strong> ${puja.vehicle_no}<br>` : ''}
+						<button class="btn btn-sm btn-success mt-2" onclick="markDone(${puja.id})">Done</button>
+					</div>
+					<hr>
+				`;
+            });
+            $("#pujasItems").html(html || "<p class='text-muted'>No records found.</p>");
+            $("#commModal2").modal("show");
+        }, function(err) {
+            toastr.error(err.msg || "Failed to fetch stats");
+            $("#pujasItems").html("<p class='text-danger'>Error loading data</p>");
+        });
+    }
+
+    function markDone(id) {
+        webserv("POST", "{{ route('att.dhunuchi_done') }}", {
+            id
+        }, function(resp) {
+            toastr.success(resp.msg || "Done");
+            loadStats();
+        });
+    }
+    @endif
+
     function loadStats() {
         webserv("GET", "{{ route('att.scanstat') }}", {}, function ok(resp) {
             if (!resp) return;
@@ -254,6 +395,9 @@ use Carbon\Carbon;
                 $("#cnt4").html(resp.data[3]);
                 $("#cnt5").html(resp.data[4]);
                 $("#cnt6").html(resp.data[5]);
+                $("#cnt7").html(resp.data[7] - resp.data[8]);
+                $("#cnt8").html(resp.data[8]);
+                //$("#cnt8").html(resp.data[7]);
             }
             if (resp.dt) $("#today").html(resp.dt);
 

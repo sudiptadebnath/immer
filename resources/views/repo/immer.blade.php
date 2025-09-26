@@ -23,6 +23,7 @@
             return "";
         }', ], 
         [ 'data'=>'proposed_immersion_time','visible'=>false ], 
+        [ 'data'=>'team_members' ], 		
         [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
             let aa = row.action_area ? row.action_area : "";
             let cat = row.category ? row.category : "";
@@ -59,7 +60,7 @@
             return "";
         }', ], 
         [ 'data'=>'chairman_mobile','visible'=>false ], 
-		[ 'data'=>'attendance',"th"=>"Status", 'orderable' => false, 'searchable' => false, 'render' => 'function (data, type, row) {
+		[ 'data'=>'attendance',"th"=>"Status",'orderData'=>[12],'searchable' => false, 'render' => 'function (data, type, row) {
 			if (!data || data.length === 0) 
 				return "<span class=\'text-muted\'>No Records</span>";
 
@@ -75,14 +76,21 @@
 			});
 			html += "</ul>";
 			return html;
-		}','visible'=>false, ],
+		}','visible'=>true, ],
+		[ 'data'=>'latest_attendance_typ', 'visible'=>false ],
     ];
 @endphp
 <div class="container-fluid m-0 p-2">
 
 <x-table name="pujaTable" title="Immersion By Date - " :url="route('repo.immerdata')" :data=$tbldata :opts=$opts>
-	<x-select size="" icon="calendar-date" name="immersion_date" title="Date"
+	<x-select size="2 col-12" icon="calendar-date" name="immersion_date" title="Date"
 	 :value="$immer_dts" required="true" />	
+    <x-select size="2 col-12" icon="geo" name="is_newtown" title="Area"
+	 :value="['nt'=>'Newtown','ont'=>'Outside Newtown']" />	
+	<x-select size="2 col-12" icon="list" name="immersion_stat" title="Queue Status"
+	 :value="['queue'=>'Queued','in'=>'Reported']" required="true" />	
+	<x-select size="2 col-12" icon="info-circle" name="dhunuchi_stat" title="Dhunuchi"
+	 :value="['1'=>'Dhunuchi','0'=>'No Dhunuchi']" required="true" />	
 </x-table>
 
 </div>
@@ -93,10 +101,13 @@
 <script>
 function getajaxdata(d) {
 	d.dt = $("#immersion_date").val();
+	d.typ = $("#is_newtown").val();
+	d.istat = $("#immersion_stat").val();
+	d.dstat = $("#dhunuchi_stat").val();
 	//console.log(d.dt);
 }
 $(document).ready(function ($) {
-	$('#immersion_date').change(function () {
+	$('#immersion_date, #is_newtown, #immersion_stat, #dhunuchi_stat').change(function () {
 		$("#pujaTable").DataTable().ajax.reload();
 	});
 });

@@ -92,6 +92,7 @@ Route::middleware(['check.user.session','request.sanitize'])->prefix('admin')->g
         Route::post('/mark_by_mob', [ScanController::class, 'mark_by_mob'])->name('att.mark_by_mob');
         Route::get('/scanstat_bydt', [ScanController::class, 'scanstat_bydt'])->name('att.scanstat_bydt');
         Route::get('/getcomm_bydt', [ScanController::class, 'getcomm_bydt'])->name('att.getcomm_bydt');
+        Route::post('/dhunuchi_done', [ScanController::class, 'dhunuchi_done'])->name('att.dhunuchi_done');
         Route::post('/mark_by_qr', [ScanController::class, 'mark_by_qr'])->name('att.mark_by_qr');
     });
 
