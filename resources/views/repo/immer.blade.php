@@ -67,11 +67,12 @@
 			let html = "<ul class=\'list-unstyled mb-0\'>";
 			data.forEach(function(item, i) {
 				let badgeClass = (item.typ === "Reported" ? "success" : "primary"); 
+				let badgeText = (item.typ === "Reported" ? "Immersion Done" : "Queued"); 
 				// highlight first (latest) record
-				let latest = (i === 0) ? "fw-bold" : "text-muted";
+				let latest = (i === 0) ? "text-sm" : "text-muted";
 				html += "<li class=\'" + latest + "\'>" +
-						  "<span class=\'badge bg-" + badgeClass + " me-1\'>" + item.typ + "</span>" +
-						  "<span>" + item.time + "</span>" +
+						  "<div class=\'badge bg-" + badgeClass + " me-1\'>" + badgeText + "</div>" +
+						  "<div style=\'font-size:10px;\'>" + item.time + "</div>" +
 						"</li>";
 			});
 			html += "</ul>";
@@ -88,7 +89,7 @@
     <x-select size="2 col-12" icon="geo" name="is_newtown" title="Area"
 	 :value="['nt'=>'Newtown','ont'=>'Outside Newtown']" />	
 	<x-select size="2 col-12" icon="list" name="immersion_stat" title="Queue Status"
-	 :value="['queue'=>'Queued','in'=>'Reported']" required="true" />	
+	 :value="['queue'=>'Queued','in'=>'Immersion Done']" required="true" />	
 	<x-select size="2 col-12" icon="info-circle" name="dhunuchi_stat" title="Dhunuchi"
 	 :value="['1'=>'Dhunuchi','0'=>'No Dhunuchi']" required="true" />	
 </x-table>

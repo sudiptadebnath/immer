@@ -7,9 +7,11 @@
 @section('content')
 
 @php
+	$immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     $opts = [
-        //"imp"=>[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+        "imp"=>[0,2,3,5,7,9],
 		"ajaxdata"=>"getajaxdata",
+		"scrollY"=>"600px",
     ];
 
     $tbldata = [
@@ -22,6 +24,7 @@
             return "";
         }', ], 
         [ 'data'=>'proposed_immersion_time','visible'=>false ], 
+        [ 'data'=>'last_attendance_status', "th"=>"Immersion Status" ], 
         [ 'data'=>'action_area',"th"=>"Action Area", 'render' => 'function (data, type, row) {
             let aa = row.action_area ? row.action_area : "";
             let cat = row.category ? row.category : "";
@@ -68,7 +71,11 @@
 <div class="container-fluid m-0 p-2">
 
 <x-table name="pujaTable" title="Registrations" :url="route('repo.regsdata')" :data=$tbldata :opts=$opts>
-    <x-select size="" icon="info-circle" name="is_newtown" title="Puja Type"
+	<x-select size="3 col-12" icon="calendar-date" name="immersion_date" title="Date"
+	 :value="$immer_dts" required="true" />	
+	<x-select size="3 col-12" icon="list" name="immersion_stat" title="Immersion Status"
+	 :value="['not_done'=>'Not Done','done'=>'Done']" required="true" />	
+    <x-select size="3 col-12" icon="info-circle" name="is_newtown" title="Puja Type"
 	 :value="$is_newtown" />	
 </x-table>
 
@@ -80,11 +87,13 @@
 
 <script>
 function getajaxdata(d) {
+	d.dt = $("#immersion_date").val();
+	d.istat = $("#immersion_stat").val();
 	d.typ = $("#is_newtown").val();
 }
 
 $(document).ready(function ($) {
-	$('#is_newtown').change(function () {
+	$('#immersion_date, #immersion_stat, #is_newtown').change(function () {
 		$("#pujaTable").DataTable().ajax.reload();
 	});
 });

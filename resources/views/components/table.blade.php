@@ -70,20 +70,6 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between border-1 border-bottom pb-1 mb-2 gap-1">
         <h3 class="d-flex flex-wrap gap-1">
             {{ $title }}
-            @if(!empty($imp))
-            <div class="dropdown mb-0 ms-auto exportmenu">
-                <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
-                    Export
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="exportMenu-{{ $name }}">
-                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="copy"><i class="bi bi-clipboard me-2"></i>Copy</a></li>
-                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="csv"><i class="bi bi-file-earmark-text me-2"></i>CSV</a></li>
-                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="excel"><i class="bi bi-file-earmark-excel me-2"></i>Excel</a></li>
-                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="pdf"><i class="bi bi-file-earmark-pdf me-2"></i>PDF</a></li>
-                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="print"><i class="bi bi-printer me-2"></i>Print</a></li>
-                </ul>
-            </div>
-            @endif
         </h3>
         {{ $slot }}
         @if($act)
@@ -102,6 +88,21 @@
 			</button>
 		@endif
 		@endif
+		
+            @if(!empty($imp))
+            <div class="dropdown mb-0 ms-auto exportmenu">
+                <button class="btn btn-sm btn-outline-{{$style}} dropdown-toggle" type="button" id="exportMenu-{{ $name }}" data-bs-toggle="dropdown" aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="exportMenu-{{ $name }}">
+                    <!-- <li><a class="dropdown-item export-btn-{{ $name }}" data-type="copy"><i class="bi bi-clipboard me-2"></i>Copy</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="csv"><i class="bi bi-file-earmark-text me-2"></i>CSV</a></li> -->
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="excel"><i class="bi bi-file-earmark-excel me-2"></i>Excel</a></li>
+                    <!-- <li><a class="dropdown-item export-btn-{{ $name }}" data-type="pdf"><i class="bi bi-file-earmark-pdf me-2"></i>PDF</a></li>
+                    <li><a class="dropdown-item export-btn-{{ $name }}" data-type="print"><i class="bi bi-printer me-2"></i>Print</a></li> -->
+                </ul>
+            </div>
+            @endif
     </div>
 @endif
 
@@ -154,9 +155,10 @@ $(document).ready(function () {
         format: {
           body: function (data, row, column, node) {
 			return String(data || '')
-				.replace(/<br\s*\/?>/gi, '\n')
-				.replace(/<\/p>/gi, '\n')
-				.replace(/<\/div>/gi, '\n')
+				.replace(/<br\s*\/?>/gi, ' \n')
+				.replace(/<hr\s*\/?>/gi, ' \n')
+				.replace(/<\/p>/gi, ' \n')
+				.replace(/<\/div>/gi, ' \n')
 				.replace(/<\/?p[^>]*>/gi, '')
 				.replace(/<\/?div[^>]*>/gi, '')
 				.replace(/<img[^>]*>/gi, '') 
@@ -185,6 +187,8 @@ $(document).ready(function () {
     @endif
         processing: true,
         serverSide: true,
+		lengthMenu: [[ -1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+		pageLength: 10, // default page size
         ajax: {
 			url: "{{ $url }}",
     @if($ajaxdata)

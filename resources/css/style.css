@@ -1103,6 +1103,7 @@ OTP css start this line
 
     .PCRegist_sec {
         padding: 15px 0;
+		height: auto;
         background-image: url(/resources/img/bg-mobile.jpg);
     }
 

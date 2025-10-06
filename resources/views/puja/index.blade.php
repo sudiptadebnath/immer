@@ -155,7 +155,7 @@ data-bs-backdrop="static" data-bs-keyboard="false">
         <x-flattime size="6" name="proposed_immersion_time" title="Immersion Time"  icon="clock">
             Range 16:00 - 23:59
         </x-flattime>
-        <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3']" />
+        <x-select size="4" icon="people" name="no_of_vehicles" title="No of Vehicles" :value="['1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5']" />
         <x-text size="8" name="vehicle_no" title="Vehicle No(s) (optional)"  icon="truck-front">
             Vehicle No(s) separated by comma
         </x-text>

@@ -86,7 +86,7 @@ use Carbon\Carbon;
         margin: 0px;
         font-size: 12px;
         font-weight: bold;
-        color: red;
+        color: #df8903;
     }
 
     .blinking {
@@ -163,6 +163,29 @@ use Carbon\Carbon;
         background: rgb(206, 248, 255);
         color: #17a2b8;
     }
+
+    #last_pujas{
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border-top: 5px solid #997404 !important;
+    }
+
+    #last_pujas table {        
+       
+    }
+
+    #last_pujas table thead th {
+        background: rgb(56 139 69 / 50%);
+	}
+	
+	#last_pujas .table tbody td {
+        /* background: rgb(224 245 248 / 50%); */
+        background: transparent;
+	}
+
+    #last_pujas .pujacommittee{
+        font-size: 85%;
+    }
 </style>
 @endpush
 
@@ -175,7 +198,7 @@ use Carbon\Carbon;
 @section('content')
 <div class="dashboard_sec">
     <div class="container-fluid m-0 p-4">
-        <div class="h5 mb-3 border-bottom p-2">
+        <div class="h5 mb-1 p-2">
             <i class="bi bi-calendar-check"></i>
             <span id="today">{{ $start->format('d-M-Y') }}</span>
         </div>
@@ -209,7 +232,7 @@ use Carbon\Carbon;
             <div class="col mb-3">
                 <div class="statcard card success">
                     <div class="card-body">
-                        <p class="nm">Dhunuchi Count</p>
+                        <p class="nm">Dhunuchi Count</p>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="cntMulti">
                                 <div class="live">
@@ -305,6 +328,17 @@ use Carbon\Carbon;
 @endif
 
 
+<div id="last_pujas_container" class="dashboard_sec">
+    <div class="container-fluid m-0 p-4">
+        <div class="h5 mb-1 p-2">
+            <i class="bi bi-people"></i>
+            <span id="today">Last 5 Pujas for Immersion</span>
+        </div>
+        <div id="last_pujas" class=""></div>
+    </div>
+</div>
+
+
 
 @if(!$live && $datewiseCounts && $datewiseCounts->count() > 0)
 <div class="dashboard_sec">
@@ -345,36 +379,52 @@ use Carbon\Carbon;
 @push('scripts')
 <script>
     @if(!$live)
+	function showMemb() {
+		webserv("GET", "{{ route('att.getcomm_bydt') }}", { typ: "3" }, function(resp) {
+			let pujas = resp.data || [];
+			let html = "";
 
-    function showMemb() {
-        webserv("GET", "{{ route('att.getcomm_bydt') }}", {
-            typ: "3"
-        }, function(resp) {
-            let pujas = resp.data || [];
-            let html = "";
-            pujas.forEach(puja => {
-                html += `
-					<div class="mb-3">
-						<strong>Name:</strong> ${puja.puja_committee_name ?? '-'}<br>
-						${(puja.action_area || puja.category) ? `<strong>Location:</strong> ${puja.action_area ?? ''}${puja.category ? ', ' + puja.category : ''}<br>` : ''}
-						${puja.puja_committee_address ? `<strong>Address:</strong> ${puja.puja_committee_address}<br>` : ''}
-						<strong>Secretary:</strong> ${puja.secretary_name ?? ''} (${puja.secretary_mobile ?? '-'})<br>
-						<strong>Chairman:</strong> ${puja.chairman_name ?? ''} (${puja.chairman_mobile ?? '-'})<br>
-						${puja.immersion_time ? `<strong>Reported At:</strong> ${puja.immersion_time}<br>` : ''}
-						${puja.vehicle_no ? `<strong>Vehicle No:</strong> ${puja.vehicle_no}<br>` : ''}
-						<button class="btn btn-sm btn-success mt-2" onclick="markDone(${puja.id})">Done</button>
-					</div>
-					<hr>
+			if (pujas.length > 0) {
+				html += `
+				<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+					<table class="table table-bordered table-sm mb-0">
+						<thead class="table-light">
+							<tr>
+								<th>Puja Committee</th>
+								<th>#Dhunuchi Participants</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
 				`;
-            });
-            $("#pujasItems").html(html || "<p class='text-muted'>No records found.</p>");
-            $("#commModal2").modal("show");
-        }, function(err) {
-            toastr.error(err.msg || "Failed to fetch stats");
-            $("#pujasItems").html("<p class='text-danger'>Error loading data</p>");
-        });
-    }
 
+				pujas.forEach(puja => {
+					html += `
+						<tr>
+							<td>${puja.puja_committee_name ?? '-'}</td>
+							<td>${puja.team_members ?? 0}</td>
+							<td>
+								<button class="btn btn-sm btn-success" onclick="markDone(${puja.id})">
+									Done
+								</button>
+							</td>
+						</tr>
+					`;
+				});
+
+				html += `</tbody></table></div>`;
+			} else {
+				html = "<p class='text-muted'>No records found.</p>";
+			}
+
+			$("#pujasItems").html(html);
+			$("#commModal2").modal("show");
+
+		}, function(err) {
+			toastr.error(err.msg || "Failed to fetch stats");
+			$("#pujasItems").html("<p class='text-danger'>Error loading data</p>");
+		});
+	}
     function markDone(id) {
         webserv("POST", "{{ route('att.dhunuchi_done') }}", {
             id
@@ -400,6 +450,38 @@ use Carbon\Carbon;
                 //$("#cnt8").html(resp.data[7]);
             }
             if (resp.dt) $("#today").html(resp.dt);
+
+			let pujas = resp.last_pujas || [];
+			let html = "";
+
+			if (pujas.length > 0) {
+				html += `
+				<div class="">
+					<table class="table table-bordered table-sm mb-0">						
+						<tbody>
+				`;
+
+				pujas.forEach(puja => {
+					html += `
+						<tr>
+							<td>
+								<b>${puja.puja_committee_name ?? '-'}</b>
+							</td>
+                            <td>								
+                                <div class="pujacommittee">${puja.puja_committee_address ?? ''}</div>
+							</td>							
+						</tr>
+					`;
+				});
+
+				html += `</tbody></table></div>`;
+				//$("#last_pujas_container").show();
+			} else {
+				//$("#last_pujas_container").hide();
+				html = "<p class='text-muted'>-</p>";
+			}
+
+			$("#last_pujas").html(html);
 
         }, null, false);
 

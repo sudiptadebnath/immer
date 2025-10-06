@@ -109,12 +109,13 @@ class ScanController extends Controller
 
     public function scanStat()
     {
-		[$start, $end] = getStEnDt();
+		[$start, $end] = getStEnDt(); //"2025-10-02"
 
 		$scans = DB::table('attendance as s')
 			->select(
 				's.puja_committee_id',
 				's.typ',
+				's.scan_datetime',
 				'p.team_members',
 				'p.dhun_done'
 			)
@@ -140,13 +141,15 @@ class ScanController extends Controller
 		$inmemb = (clone $scans)->where('typ', 'in');
 		//$outmemb = (clone $scans)->where('typ', 'out');
 
-		$qCount = $queuememb->count();
-		$iCount = $inmemb->count();
+		$qCount = $queuememb->unique('puja_committee_id')->count();
+		$iCount = $inmemb->unique('puja_committee_id')->count();
+		//$qCount = $queuememb->count();
+		//$iCount = $inmemb->count();
 		//$oCount = $outmemb->count();
 				
-		$qWithTeam = $queuememb->filter(fn($x) => !is_null($x->team_members))->count();
-		$iWithTeam = $inmemb->filter(fn($x) => !is_null($x->team_members))->count();
-		$iWithTeamDone = $inmemb->filter(fn($x) => !is_null($x->team_members) && $x->dhun_done)->count();
+		$qWithTeam = $queuememb->unique('puja_committee_id')->filter(fn($x) => !is_null($x->team_members))->count();
+		$iWithTeam = $inmemb->unique('puja_committee_id')->filter(fn($x) => !is_null($x->team_members))->count();
+		$iWithTeamDone = $inmemb->unique('puja_committee_id')->filter(fn($x) => !is_null($x->team_members) && $x->dhun_done)->count();
             
         $immersionData = DB::table('attendance')
             ->select(
@@ -186,7 +189,7 @@ class ScanController extends Controller
             $avgImmersionTime = sprintf("%02d:%02d", 0, 0); // HH:MM format
 		}
         
-		$totalOut = DB::table('attendance')->where('typ', 'in')->count();
+		$totalOut = DB::table('attendance')->where('typ', 'in')->distinct('puja_committee_id')->count('puja_committee_id');
 
 		$stats = [ $qCount, $iCount, 0, /*$oCount,*/ 
 			$qCount + $iCount /*+ $oCount*/, 
@@ -195,10 +198,40 @@ class ScanController extends Controller
 		];
 		
 		//Log::info("xxx",["stats"=>$stats]);
+		
+		$lastOutIds = $scans->where('typ', 'in')
+			->pluck('puja_committee_id')
+			->unique()->values();
+			
+		//Log::info("000",["data"=>$lastOutIds]);
 
+		$lastPujas = PujaCommittee::whereIn('id', $lastOutIds)
+			->get()
+			->map(function ($puja) use ($scans) {
+				$scan = $scans->firstWhere('puja_committee_id', $puja->id);
+
+				if ($scan) {
+					$puja->raw_scan_datetime = Carbon::parse($scan->scan_datetime, 'UTC')
+						->setTimezone('Asia/Kolkata');
+					$puja->scan_datetime = $puja->raw_scan_datetime->format('d M h:i A');
+				} else {
+					$puja->raw_scan_datetime = null;
+					$puja->scan_datetime = null;
+				}
+
+				return $puja;
+			})
+			->sortByDesc('raw_scan_datetime')
+			->take(5)
+			->values();
+		
+		//Log::info("111",["data"=>$lastPujas]);
+	
+	
 		return $this->ok("ok", [
 			"data" => $stats, 
-			"dt" => $start->format('d-M-Y')
+			"dt" => $start->format('d-M-Y'),
+			"last_pujas" => $lastPujas,
 		]);
     }
 

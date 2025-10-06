@@ -244,13 +244,14 @@ if (! function_exists('app_log')) {
 if (!function_exists('getStEnDt')) {
     function getStEnDt($date = null): array
     {
+		$dtnotgiven = ($date==null);
         $date = $date
             ? Carbon::parse($date, 'Asia/Kolkata')
             : Carbon::now('Asia/Kolkata');
         $now = Carbon::now('Asia/Kolkata');
         $start = $date->copy()->startOfDay()->addHours(3);
         $end   = $date->copy()->addDay()->startOfDay()->addHours(3);
-        if ($now->lt($start)) {
+        if ($dtnotgiven && $now->lt($start)) {
             $start = $date->copy()->subDay()->startOfDay()->addHours(3);
             $end   = $date->copy()->startOfDay()->addHours(3);
         }
