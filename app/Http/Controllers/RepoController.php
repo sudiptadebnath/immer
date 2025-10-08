@@ -34,9 +34,15 @@ class RepoController extends Controller
 
 		// --- Date filter for proposed immersion ---
 		$dt = $request->dt ?? null;
-		/*if ($dt) {
-			$query->whereDate('proposed_immersion_date', $dt);
-		}*/
+		if ($dt) {
+			$query->whereExists(function ($q) use ($start, $end, $dt) {
+				$q->select(DB::raw(1))
+				  ->from('attendance as a')
+				  ->whereColumn('a.puja_committee_id', 'puja_committees.id')
+				  ->whereBetween('a.scan_datetime', [$start, $end]);
+			});
+			//$query->whereDate('proposed_immersion_date', $dt);
+		}
 
 		// --- Filter by attendance status ---
 		if ($request->filled('istat')) {
