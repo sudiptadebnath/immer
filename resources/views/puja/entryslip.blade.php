@@ -9,29 +9,29 @@
 	@font-face {
 		font-family: 'Book Antiqua';
 		font-weight: bold;
-		src: url("<?= asset('public/fonts/BookAntiqua-Bold.woff2') ?>") format('woff2'),
-			url("<?= asset('public/fonts/BookAntiqua-Bold.woff') ?>") format('woff'),
-			url("<?= asset('public/fonts/bookantiqua_bold.ttf') ?>") format('truetype');
+		src: url("<?= storage_path('fonts/BookAntiqua-Bold.woff2') ?>") format('woff2'),
+			url("<?= storage_path('fonts/BookAntiqua-Bold.woff') ?>") format('woff'),
+			url("<?= storage_path('fonts/bookantiqua_bold.ttf') ?>") format('truetype');
 	}
 
 	@font-face {
 		font-family: 'Book Antiqua';
 		font-weight: normal;
-		src: url("<?= asset('public/fonts/BookAntiqua.woff2') ?>") format('woff2'),
-			url("<?= asset('public/fonts/BookAntiqua.woff') ?>") format('woff'),
-			url("<?= asset('public/fonts/bookantiqua.ttf') ?>") format('truetype');
+		src: url("<?= storage_path('fonts/BookAntiqua.woff2') ?>") format('woff2'),
+			url("<?= storage_path('fonts/BookAntiqua.woff') ?>") format('woff'),
+			url("<?= storage_path('fonts/bookantiqua.ttf') ?>") format('truetype');
 	}
 
 	@font-face {
 		font-family: 'Book Antiqua';
 		font-weight: normal;
-		src: url("{{ asset('public/fonts/bookantiqua.ttf') }}") format('truetype');
+		src: url("{{ asset('fonts/bookantiqua.ttf') }}") format('truetype');
 	}
 
 	@font-face {
 		font-family: 'Book Antiqua';
 		font-weight: bold;
-		src: url("{{ asset('public/fonts/bookantiqua_bold.ttf') }}") format('truetype');
+		src: url("{{ asset('fonts/bookantiqua_bold.ttf') }}") format('truetype');
 	}
 
 
@@ -59,7 +59,7 @@
             border: 1px solid #585858;
             max-width: 600px;
             margin: 0 auto; */
-		background-image: url('../../../resources/img/bg-mobile.jpg'),
+		background-image: url('resources/img/bg-mobile.jpg'),
 		url('{{ asset("resources/img/bg-mobile.jpg") }}');
 		background-repeat: no-repeat;
 		background-size: cover;

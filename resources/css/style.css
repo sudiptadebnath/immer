@@ -29,32 +29,6 @@ body {
     --bs-btn-disabled-border-color: #177f88;
 }
 
-.btn-outline-primary {
-    color: #177f88;
-    border: 1px solid #177f88;
-    background-color: #dffafc71;
-    --bs-btn-color: #177f88;
-    --bs-btn-border-color: #177f88;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #177f88;
-    --bs-btn-hover-border-color: #177f88;
-    --bs-btn-focus-shadow-rgb: 13, 110, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #177f88;
-    --bs-btn-active-border-color: #177f88;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #177f88;
-    --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: #177f88;
-    --bs-gradient: none;
-}
-
-.btn-outline-primary:hover {
-    color: #fff;
-    border-color: 1px solid #177f88;
-    background-color: #177f88;
-}
-
 input:focus {
     box-shadow: none !important;
     outline: 0;
@@ -216,17 +190,6 @@ a.nav-link:not(.collapsed) .transition-arrow {
 
 /*********************/
 
-.nkdaMobs_res .card-header {
-    background-color: #dff9fc !important;
-    color: #177f88 !important;
-    border-bottom: 1px solid #177f88 !important;
-}
-
-.card-header p {
-    font-size: 20px;
-    font-weight: 600;
-}
-
 table thead th {
     background-color: #dff9fc !important;
     color: #177f88 !important;
@@ -246,7 +209,7 @@ table thead th {
 }
 
 table tbody td {
-    /* text-transform: capitalize !important; */
+    text-transform: capitalize !important;
     padding: 3px 6px !important;
 }
 
@@ -402,14 +365,15 @@ table .btn-outline-primary:hover {
     display: none;
 }
 
+
 /*---------PCRegistration_sec-----------
 ---------------------------------------*/
 .PCRegist_sec {
     width: 100%;
     height: 100%;
     padding: 20px 0;
-    /* background-image: url(../img/green-sky-bg.jpg); */
-    background-image: url(../img/bg.jpg);
+    /* background-image: url(/resources/img/green-sky-bg.jpg); */
+    background-image: url(/resources/img/bg.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -556,8 +520,6 @@ table .btn-outline-primary:hover {
     background-color: #375e7b;
     color: #fff;
     border-radius: 0px 0px 8px 8px;
-    position: relative;
-    z-index: 2;
 }
 
 .PCRegist_footer p {
@@ -624,7 +586,6 @@ table .btn-outline-primary:hover {
 
 .PCRegist_form .input-group {
     margin-bottom: 10px;
-    z-index: 1;
 }
 
 .PCRegist_form .input-group:focus .input-group-text,
@@ -759,7 +720,7 @@ table .btn-outline-primary:hover {
     width: 100%;
     height: 100%;
     padding: 30px 0;
-    /* background-image: url(../img/login-bg.jpg);
+    /* background-image: url(/resources/img/login-bg.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -852,7 +813,7 @@ table .btn-outline-primary:hover {
     border: 1px solid #585858;
     max-width: 600px;
     margin: auto;
-    background-image: url(../img/bg2.jpg);
+    background-image: url(/resources/img/bg2.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -870,145 +831,7 @@ table .btn-outline-primary:hover {
 
 
 
-.compo-info {
-    font-size: 10px;
-    color: #375e7b !important;
-    background-color: #e3f1f9;
-    padding: 0.5px 5px;
-    border-radius: 20px;
-    margin: 0px;
-    position: absolute;
-    left: 50px;
-    top: -23%;
-    z-index: 5;
-}
 
-/* .compo-info::before {
-    content: "- ";
-} */
-
-
-/**********flatpickr***************/
-.flatpickr-calendar {
-    width: 220px !important;
-    color: #375e7b !important;
-    background-color: #e3f1f9 !important;
-    box-shadow: 0px 0px 5px 0px #6d6d6d;
-}
-
-.flatpickr-time input:focus,
-.flatpickr-time input:hover {
-    background: #fff !important;
-}
-
-/*-----------------------------------
-OTP css start this line
------------------------------------*/
-/* Card box */
-.otpverification_modal {
-    width: 100%;
-    height: 100%;
-    background-color: #00000065;
-    position: fixed;
-    top: -8px;
-    left: 0;
-    z-index: 99;
-    display: none;
-}
-
-.otpverification_modal.open {
-    display: block;
-}
-
-.otpverification_body {
-    background: #fff;
-    padding: 20px 25px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    width: 95%;
-    max-width: 400px;
-    height: auto;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-}
-
-.otpverification_body h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 1rem;
-    text-transform: capitalize;
-}
-
-.otpverification_body p {
-    color: #666;
-    margin-bottom: 0.9rem;
-    font-size: 0.95rem;
-}
-
-/* OTP boxes */
-.otp_inputs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-}
-
-.otp_inputs input {
-    width: 45px;
-    height: 50px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    outline: none;
-    transition: all 0.2s;
-}
-
-.otp_inputs input:focus {
-    border-color: #177f88;
-    box-shadow: 0 0 5px rgb(99, 233, 245, 0.5);
-}
-
-/* Button */
-.otpverification_body button {
-    width: 100%;
-    padding: 12px;
-    background: #177f88;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.otpverification_body button:hover {
-    background: #177f88;
-}
-
-/* Resend text */
-.resend {
-    margin-top: 0.6rem;
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.resend a {
-    color: #177f88;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.resend a:hover {
-    text-decoration: underline;
-}
 
 
 
@@ -1101,9 +924,9 @@ OTP css start this line
     }
 
     .PCRegist_sec {
+        height: auto;
         padding: 15px 0;
-		height: auto;
-        background-image: url(../img/bg-mobile.jpg);
+        background-image: url(/resources/img/bg-mobile.jpg);
     }
 
     input[type="time"]::before {
@@ -1129,4 +952,14 @@ OTP css start this line
     .PCRegist_header .logo_desc p {
         font-size: .6em;
     }
+}
+
+.compo-info {
+    font-size: 10px;
+    color: #177f88 !important;
+    padding: 0px 0px 0px 50px;
+    margin: 0px;
+}
+.compo-info::before {
+    content: "- ";
 }

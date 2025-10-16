@@ -13,7 +13,7 @@
 	<div class="content">
 		<!-- QR Code -->
 		<div class="qr-cell">
-			<img src="{{asset("public/qrs/{$puja->id}.png")}}" alt="QR Code">
+			<img src="{{asset("qrs/{$puja->id}.png")}}" alt="QR Code">
 		</div>
 		<div class="info2">
 			<span>Puja in New Town Area ?</span>
