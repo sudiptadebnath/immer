@@ -9,7 +9,7 @@
 @php
 	$immer_dts = dbVals("puja_immersion_dates",["idate","name"],"idate","asc");
     $opts = [
-        //"imp"=>[,3,4,5,6,7,8,9,10,11,12,13],
+        "imp"=>[0,2,3,5,7,9],
 		"ajaxdata"=>"getajaxdata",
     ];
 
@@ -83,7 +83,7 @@
 @endphp
 <div class="container-fluid m-0 p-2">
 
-<x-table name="pujaTable" title="Immersion By Date - " :url="route('repo.immerdata')" :data=$tbldata :opts=$opts>
+<x-table name="pujaTable" title="Immersion By Date" :url="route('repo.immerdata')" :data=$tbldata :opts=$opts>
 	<x-select size="2 col-12" icon="calendar-date" name="immersion_date" title="Date"
 	 :value="$immer_dts" required="true" />	
     <x-select size="2 col-12" icon="geo" name="is_newtown" title="Area"
