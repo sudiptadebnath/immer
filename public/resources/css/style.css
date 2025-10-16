@@ -1104,7 +1104,7 @@ OTP css start this line
     .PCRegist_sec {
         padding: 15px 0;
 		height: auto;
-        background-image: url(../img/bg-mobile.jpg);
+        background-image: url(../../../img/bg-mobile.jpg);
     }
 
     input[type="time"]::before {
