@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RepoController extends Controller
 {
@@ -153,35 +154,103 @@ class RepoController extends Controller
 	{
 		[$start, $end] = getStEnDt($request->dt);
 		$dt = $request->dt ?? null;
-		
-		$query = PujaCommittee::whereExists(function ($q) use ($start, $end, $request, $dt) {
-			$q->select(DB::raw(1))
-				->from('attendance as a')
-				->whereColumn('a.puja_committee_id', 'puja_committees.id');
+		//$query = PujaCommittee::query();
 
-			// Use date filter only if dt provided
-			if ($dt) {
-				$q->whereBetween('a.scan_datetime', [
-					$start->copy()->setTimezone('UTC'),
-					$end->copy()->setTimezone('UTC'),
-				]);
+		$attendanceSub = DB::table('attendance as a');
+		$attendanceSub->select('a.puja_committee_id',DB::raw('MAX(a.scan_datetime) as latest_scan'), DB::raw('MAX(a.typ) as mtp'));
+		if ($dt) {
+			$attendanceSub->whereBetween('a.scan_datetime', [$start->copy()->setTimezone('UTC'), $end->copy()->setTimezone('UTC')]);
+			// $attendanceSub->whereBetween('a.scan_datetime', [
+			// 	$start->copy()->setTimezone('UTC'),
+			// 	$end->copy()->setTimezone('UTC'),
+			// ]);
+		}
+
+		if ($request->istat AND $request->istat != 'natt') {
+			$cStat = $request->istat;
+			if ($request->istat === 'ndone'){
+				$cStat = 'queue';
 			}
+			$attendanceSub->where('a.typ', $cStat);
+			if ($request->istat === 'queue' OR $request->istat === 'ndone') {
+				$attendanceSub->whereNotIn('a.puja_committee_id', function ($sub) {
+					$sub->select('a2.puja_committee_id')
+						->from('attendance as a2')
+						->where('a2.typ', 'in');
+				});
+			}
+		}
 
-			// Use MAX(scan_datetime) only if dt is given
-			$q->whereRaw('a.scan_datetime = (
-				SELECT MAX(scan_datetime)
-				FROM attendance
-				WHERE puja_committee_id = a.puja_committee_id'
-				. ($dt ? ' AND scan_datetime BETWEEN ? AND ?' : '') . '
-			)', $dt ? [
-				$start->copy()->setTimezone('UTC'),
-				$end->copy()->setTimezone('UTC'),
-			] : []);
+		$attendanceSub->groupBy('a.puja_committee_id');
 
-			if ($request->istat) {
-				$q->where('a.typ', $request->istat);
+		$query = PujaCommittee::query();
+		$query->leftJoinSub($attendanceSub, 'att', function ($join) {
+			$join->on('att.puja_committee_id', '=', 'puja_committees.id');
+		});
+
+		$query->select(
+			'puja_committees.*',
+			'att.latest_scan',
+			DB::raw('CASE WHEN att.latest_scan IS NULL THEN 0 ELSE 1 END AS has_attendance')
+		);
+
+		$query->where(function ($q) use ($start, $end, $request, $dt) {
+			if ($dt) {
+				 $q->whereDate('puja_committees.proposed_immersion_date', $start->toDateString())
+				 ->orWhereNotNull('att.latest_scan');
+
+				//$q->whereDate('puja_committees.proposed_immersion_date', $start->toDateString());
 			}
 		});
+
+		if ($request->istat) {
+			if ($request->istat === 'natt') {
+				//$query->whereNull('att.latest_scan');
+				$query->whereNull('att.puja_committee_id');
+			}elseif ($request->istat === 'ndone') {
+				$query->where(function ($q) use ($start, $end) {
+					$q->whereNotNull('att.puja_committee_id') // committees with only queue scan
+					->orWhereNotIn('puja_committees.id', function ($sub2) use ($start, $end) {
+						$sub2->select('a3.puja_committee_id')
+							->from('attendance as a3')
+							->whereBetween('a3.scan_datetime', [$start->copy()->setTimezone('UTC'), $end->copy()->setTimezone('UTC')]);
+					}); // committees with no attendance
+				});
+			}else{
+				$query->whereNotNull('att.mtp');
+			}
+						
+		}
+
+		
+		// $query = PujaCommittee::whereExists(function ($q) use ($start, $end, $request, $dt) {
+		// 	$q->select(DB::raw(1))
+		// 		->from('attendance as a')
+		// 		->whereColumn('a.puja_committee_id', 'puja_committees.id');
+
+		// 	// Use date filter only if dt provided
+		// 	if ($dt) {
+		// 		$q->whereBetween('a.scan_datetime', [
+		// 			$start->copy()->setTimezone('UTC'),
+		// 			$end->copy()->setTimezone('UTC'),
+		// 		]);
+		// 	}
+
+		// 	// Use MAX(scan_datetime) only if dt is given
+		// 	$q->whereRaw('a.scan_datetime = (
+		// 		SELECT MAX(scan_datetime)
+		// 		FROM attendance
+		// 		WHERE puja_committee_id = a.puja_committee_id'
+		// 		. ($dt ? ' AND scan_datetime BETWEEN ? AND ?' : '') . '
+		// 	)', $dt ? [
+		// 		$start->copy()->setTimezone('UTC'),
+		// 		$end->copy()->setTimezone('UTC'),
+		// 	] : []);
+
+		// 	if ($request->istat) {
+		// 		$q->where('a.typ', $request->istat);
+		// 	}
+		// });
 
 		// --- typ filter ---
 		$typ = $request->typ ?? '';
@@ -203,6 +272,9 @@ class RepoController extends Controller
 			if ($request->dstat == "1") $query->whereNotNull('team_members');
 			if ($request->dstat == "0") $query->whereNull('team_members');
 		}
+
+		$sqlWithBindings = Str::replaceArray('?', $query->getBindings(), $query->toSql());
+		// Log::info('Generated PujaCommittee SQL:', ['query' => $sqlWithBindings]);
 
 		return DataTables::of($query)
 			->editColumn('proposed_immersion_date', function ($row) {

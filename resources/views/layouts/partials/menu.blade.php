@@ -105,9 +105,9 @@
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('repo.istat') ? 'active' : '' }}" href="{{ route('repo.istat') }}">Immersion Status</a>
       </li>
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('repo.regs') ? 'active' : '' }}" href="{{ route('repo.regs') }}">Registration List</a>
-      </li>
+      </li> --}}
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('repo.immer') ? 'active' : '' }}" href="{{ route('repo.immer') }}">Immersion By Date</a>
       </li>

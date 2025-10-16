@@ -88,8 +88,8 @@
 	 :value="$immer_dts" required="true" />	
     <x-select size="2 col-12" icon="geo" name="is_newtown" title="Area"
 	 :value="['nt'=>'Newtown','ont'=>'Outside Newtown']" />	
-	<x-select size="2 col-12" icon="list" name="immersion_stat" title="Queue Status"
-	 :value="['queue'=>'Queued','in'=>'Immersion Done']" required="true" />	
+	<x-select size="2 col-12" icon="list" name="immersion_stat" title="Immersion Status"
+	 :value="['queue'=>'Queued','in'=>'Immersion Done','natt'=>'Not Attended','ndone'=>'Immersion Not Done - Total']" required="true" />	
 	<x-select size="2 col-12" icon="info-circle" name="dhunuchi_stat" title="Dhunuchi"
 	 :value="['1'=>'Dhunuchi','0'=>'No Dhunuchi']" required="true" />	
 </x-table>
